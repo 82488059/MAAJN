@@ -1,0 +1,123 @@
+{
+    "无限水井": {
+        "next": [
+            "[JumpBack]任务流程"
+        ]
+    },
+    "任务流程": {
+        "post_delay": 333,
+        "next": [
+            "[JumpBack]普通水",
+            "[JumpBack]水井加速",
+            "[JumpBack]直接开始",
+            "[JumpBack]经验",
+            "[JumpBack]防机关术",
+            "[JumpBack]重试",
+            "[JumpBack]找水井",
+            //"[JumpBack]异常处理",
+            "[JumpBack]更多"
+        ],
+        "on_error": [
+            "任务流程"
+        ]
+    },
+    "异常处理": {
+        "post_delay": 800,
+        "next": [
+            "防机关术",
+            "更多"
+        ]
+    },
+    "找水井": {
+        "recognition": "TemplateMatch",
+        "template": "井1.png",
+        "action": "Click",
+        "index": 1,
+        "post_delay": 800,
+        "order_by": "Vertical",
+        "next": [
+            "[JumpBack]普通水",
+            "[JumpBack]水井加速",
+            "[JumpBack]防机关术",
+            "[JumpBack]重试",
+            "找水井",
+            "[JumpBack]异常处理"
+        ],
+        "on_error": [
+            "找水井"
+        ]
+    },
+    "重试": {
+        "recognition": "TemplateMatch",
+        "template": "重试.png",
+        "action": "Click",
+        "post_delay": 120,
+        "order_by": "Vertical",
+        "next": []
+    },
+    "普通水": {
+        "recognition": "OCR",
+        "expected": "普通水",
+        "action": "Click",
+        "post_delay": 700,
+        "next": [
+            "经验",
+            "直接开始",
+            "找水井"
+        ]
+    },
+    "直接开始": {
+        "recognition": "OCR",
+        "expected": "直接开始",
+        "action": "Click",
+        "post_delay": 800,
+        "next": []
+    },
+    "经验": {
+        "recognition": "OCR",
+        "expected": "经验",
+        "action": "Click",
+        "post_delay": 800,
+        "next": []
+    },
+    "收下": {
+        "recognition": "OCR",
+        "expected": "收下",
+        "action": "Click",
+        "post_delay": 800,
+        "next": []
+    },
+    "水井加速": {
+        "recognition": "OCR",
+        "expected": "水井加速",
+        "action": "DoNothing",
+        "post_delay": 700,
+        "next": [
+            "更多"
+        ]
+    },
+    "防机关术": {
+        "recognition": "OCR",
+        "expected": "防机关术",
+        "action": "DoNothing",
+        "post_delay": 1000,
+        "next": [
+            "破解机关"
+        ]
+    },
+    "休息": {
+        "recognition": "OCR",
+        "action": "DoNothing",
+        "post_delay": 3000,
+        "next": []
+    },
+    "更多": {
+        "recognition": "TemplateMatch",
+        "template": "更多.png",
+        "action": "Click",
+        "post_delay": 600,
+        "next": [
+            "任务流程"
+        ]
+    }
+}

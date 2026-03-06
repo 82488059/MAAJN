@@ -1,0 +1,199 @@
+{
+    "破解机关": {
+        "next": [
+            "机关1",
+            "收下"
+        ]
+    },
+    "机关1": {
+        "recognition": "TemplateMatch",
+        "template": "机关/1.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            426,
+            333
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关2",
+            "收下"
+        ]
+    },
+    "机关2": {
+        "recognition": "TemplateMatch",
+        "template": "机关/2.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            508,
+            333
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关3",
+            "收下"
+        ]
+    },
+    "机关3": {
+        "recognition": "TemplateMatch",
+        "template": "机关/3.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            602,
+            333
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关4",
+            "收下"
+        ]
+    },
+    "机关4": {
+        "recognition": "TemplateMatch",
+        "template": "机关/4.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            686,
+            333
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关5",
+            "收下"
+        ]
+    },
+    "机关5": {
+        "recognition": "TemplateMatch",
+        "template": "机关/5.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            766,
+            333
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关6",
+            "收下"
+        ]
+    },
+    "机关6": {
+        "recognition": "TemplateMatch",
+        "template": "机关/6.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            856,
+            333
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关7",
+            "收下"
+        ]
+    },
+    "机关7": {
+        "recognition": "TemplateMatch",
+        "template": "机关/7.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            428,
+            444
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关8",
+            "收下"
+        ]
+    },
+    "机关8": {
+        "recognition": "TemplateMatch",
+        "template": "机关/8.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            508,
+            444
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关9",
+            "收下"
+        ]
+    },
+    "机关9": {
+        "recognition": "TemplateMatch",
+        "template": "机关/9.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            602,
+            444
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关10",
+            "收下"
+        ]
+    },
+    "机关10": {
+        "recognition": "TemplateMatch",
+        "template": "机关/10.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            686,
+            444
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关11",
+            "收下"
+        ]
+    },
+    "机关11": {
+        "recognition": "TemplateMatch",
+        "template": "机关/11.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            766,
+            444
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "机关12",
+            "收下"
+        ]
+    },
+    "机关12": {
+        "recognition": "TemplateMatch",
+        "template": "机关/12.png",
+        "action": "Swipe",
+        "begin": true,
+        "end": [
+            856,
+            444
+        ],
+        "duration": 500,
+        "end_hold": 200,
+        "next": [
+            "收下"
+        ]
+    }
+}
