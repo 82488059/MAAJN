@@ -2,105 +2,143 @@
     "无限水井": {
         "next": [
             "[JumpBack]任务流程"
+        ],
+        "on_error": [
+            "无限水井"
         ]
     },
     "任务流程": {
-        "post_delay": 333,
+        "post_delay": 50,
         "next": [
-            "[JumpBack]普通水",
-            "[JumpBack]水井加速",
-            "[JumpBack]直接开始",
-            "[JumpBack]经验",
-            "[JumpBack]防机关术",
-            "[JumpBack]重试",
-            "[JumpBack]找水井",
-            //"[JumpBack]异常处理",
-            "[JumpBack]更多"
+            "[JumpBack]正常流程",
+            "[JumpBack]回主界面"
         ],
         "on_error": [
             "任务流程"
         ]
     },
-    "异常处理": {
-        "post_delay": 800,
+    "正常流程": {
+        "next": [
+            "[JumpBack]找水井",
+            "[JumpBack]没找到"
+        ]
+    },
+    "没找到": {
+        //"post_delay": 100,
         "next": [
             "防机关术",
-            "更多"
+            "关闭设置",
+            "普通水",
+            "水井加速",
+            "直接开始",
+            "经验",
+            "回主界面"
+        ]
+    },
+    "异常处理": {
+        "post_delay": 333,
+        "next": [
+            "防机关术",
+            "重试",
+            "关闭设置",
+            "撤销",
+            "x",
+            "关闭改布局",
+            "回主界面"
         ]
     },
     "找水井": {
         "recognition": "TemplateMatch",
         "template": "井1.png",
         "action": "Click",
-        "index": 1,
-        "post_delay": 800,
-        "order_by": "Vertical",
+        //"index": 1,
+        "post_delay": 500,
+        // "order_by": "Vertical",
+        "order_by": "Random",
         "next": [
-            "[JumpBack]普通水",
-            "[JumpBack]水井加速",
-            "[JumpBack]防机关术",
-            "[JumpBack]重试",
-            "找水井",
-            "[JumpBack]异常处理"
+            "普通水",
+            "水井加速",
+            "异常处理"
         ],
         "on_error": [
-            "找水井"
+            "任务流程"
+        ]
+    },
+    "免费完成": {
+        "recognition": "TemplateMatch",
+        "template": "免费完成.png",
+        "action": "Click",
+        "post_delay": 222,
+        "next": []
+    },
+    "20": {
+        "recognition": "TemplateMatch",
+        "template": "20.png",
+        "next": [
+            "回主界面"
         ]
     },
     "重试": {
         "recognition": "TemplateMatch",
         "template": "重试.png",
         "action": "Click",
-        "post_delay": 120,
-        "order_by": "Vertical",
+        "post_delay": 222,
         "next": []
     },
     "普通水": {
         "recognition": "OCR",
         "expected": "普通水",
         "action": "Click",
-        "post_delay": 700,
+        "post_delay": 333,
         "next": [
             "经验",
             "直接开始",
-            "找水井"
+            "观看广告",
+            "什么也不做"
         ]
+    },
+    "什么也不做": {
+        "action": "DoNothing",
+        "post_delay": 0,
+        "next": []
     },
     "直接开始": {
         "recognition": "OCR",
         "expected": "直接开始",
         "action": "Click",
-        "post_delay": 800,
+        "post_delay": 222,
         "next": []
     },
     "经验": {
         "recognition": "OCR",
         "expected": "经验",
         "action": "Click",
-        "post_delay": 800,
+        "post_delay": 222,
         "next": []
     },
     "收下": {
         "recognition": "OCR",
         "expected": "收下",
         "action": "Click",
-        "post_delay": 800,
+        "post_delay": 222,
         "next": []
     },
     "水井加速": {
         "recognition": "OCR",
         "expected": "水井加速",
         "action": "DoNothing",
-        "post_delay": 700,
+        "post_delay": 500,
         "next": [
-            "更多"
+            "20",
+            "免费完成",
+            "回主界面"
         ]
     },
     "防机关术": {
         "recognition": "OCR",
         "expected": "防机关术",
         "action": "DoNothing",
-        "post_delay": 1000,
+        "post_delay": 333,
         "next": [
             "破解机关"
         ]
@@ -111,13 +149,90 @@
         "post_delay": 3000,
         "next": []
     },
-    "更多": {
+    "关闭设置": {
+        "recognition": "OCR",
+        "expected": "设置",
+        "action": "DoNothing",
+        "post_delay": 222,
+        "next": [
+            "..."
+        ]
+    },
+    "观看广告": {
+        "recognition": "OCR",
+        "expected": "观看广告",
+        "action": "DoNothing",
+        "post_delay": 111,
+        "next": [
+            "算了"
+        ]
+    },
+    "算了": {
+        "recognition": "OCR",
+        "expected": "算了",
+        "action": "Click",
+        "post_delay": 10000,
+        "next": []
+    },
+    "回主界面": {
+        //"recognition": "TemplateMatch",
+        //"template": "更多.png",
+        "target": [
+            644,
+            695,
+            10,
+            10
+        ],
+        "action": "Click",
+        "post_delay": 111,
+        "next": []
+    },
+    "...": {
         "recognition": "TemplateMatch",
         "template": "更多.png",
         "action": "Click",
-        "post_delay": 600,
+        "post_delay": 100,
+        "next": []
+    },
+    "撤销": {
+        "recognition": "TemplateMatch",
+        "template": "撤销.png",
+        "action": "Click",
+        "post_delay": 100,
         "next": [
-            "任务流程"
+            "撤销",
+            "完成布局"
+        ]
+    },
+    "完成布局": {
+        "recognition": "TemplateMatch",
+        "template": "完成.png",
+        "action": "Click",
+        "post_delay": 100,
+        "next": []
+    },
+    "印": {
+        "recognition": "TemplateMatch",
+        "template": "印.png",
+        "action": "Click",
+        "post_delay": 100,
+        "next": []
+    },
+    "关闭改布局": {
+        "recognition": "TemplateMatch",
+        "template": "改布局.png",
+        "post_delay": 0,
+        "next": [
+            "印"
+        ]
+    },
+    "x": {
+        "recognition": "TemplateMatch",
+        "template": "x.png",
+        "action": "Click",
+        "post_delay": 333,
+        "next": [
+            "完成布局"
         ]
     }
 }
