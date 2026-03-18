@@ -38,5 +38,10 @@
     "[markdown]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
-    }
+    },
+    "Lingma.cloudModelManualTriggerGenerateLength": "long",
+    "Lingma.cloudModelAutoTriggerGenerateLength": "long",
+    "Lingma.localMachineModel": true,
+    "Lingma.localMachineModelInferenceMode": "speed",
+    "Lingma.aI Chat.webToolsInAsk/AgentMode": "Auto-execute"
 }

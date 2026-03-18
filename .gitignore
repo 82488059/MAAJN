@@ -452,3 +452,17 @@ tools/ImageCropper/**/*.png
 
 config
 debug
+/docs/zh_cn/NodeJS
+/docs/zh_cn/1.1-快速开始.md
+/docs/zh_cn/1.2-术语解释.md
+/docs/zh_cn/2.1-集成文档.md
+/docs/zh_cn/2.2-集成接口一览.md
+/docs/zh_cn/2.3-回调协议.md
+/docs/zh_cn/2.4-控制方式说明.md
+/docs/zh_cn/3.1-任务流水线协议.md
+/docs/zh_cn/3.2-ProjectInterface协议.md
+/docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+/docs/zh_cn/4.1-构建指南.md
+/docs/zh_cn/4.2-标准化接口设计.md
+/docs/zh_cn/5.1-问题反馈.md
+/docs/zh_cn/个性化配置.md
