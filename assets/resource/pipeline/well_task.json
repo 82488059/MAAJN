@@ -3,6 +3,7 @@
         "attach": {
             "description": "主入口节点，持续循环寻找水井"
         },
+        "post_delay": 0,
         "next": [
             "[JumpBack]寻找水井小循环",
             "[JumpBack]寻找水井大循环",
@@ -21,14 +22,9 @@
             "井小.png"
         ],
         "order_by": "Random",
-        "roi": [
-            0,
-            0,
-            0,
-            0
-        ],
         "action": "Click",
-        "post_delay": 188,
+        "post_delay": 0,
+        "pre_wait_freezes": 166,
         "next": [
             "处理水井选项"
         ],
@@ -48,6 +44,8 @@
             "[JumpBack]寻找水井小",
             "[JumpBack]处理其他情况"
         ],
+        "post_delay": 0,
+        "pre_wait_freezes": 166,
         "on_error": [
             "无限水井"
         ]
@@ -56,6 +54,8 @@
         "attach": {
             "description": "循环识别大水井"
         },
+        "post_delay": 0,
+        "pre_wait_freezes": 166,
         "recognition": "TemplateMatch",
         "template": [
             "井大.png"
@@ -77,14 +77,9 @@
             "井大.png"
         ],
         "order_by": "Random",
-        "roi": [
-            0,
-            0,
-            0,
-            0
-        ],
         "action": "Click",
-        "post_delay": 188,
+        "post_delay": 0,
+        "pre_wait_freezes": 166,
         "next": [
             "处理水井选项"
         ],
@@ -96,6 +91,8 @@
         "attach": {
             "description": "处理水井相关选项"
         },
+        "post_delay": 0,
+        "post_wait_freezes": 188,
         "next": [
             "处理普通水",
             "处理水井加速",
@@ -115,7 +112,8 @@
             250
         ],
         "action": "Click",
-        "post_delay": 300,
+        "post_delay": 0,
+        "post_wait_freezes": 200,
         "next": [
             "经验",
             "直接开始",
@@ -130,6 +128,14 @@
         "recognition": "OCR",
         "expected": "直接开始",
         "action": "Click",
+        "post_wait_freezes": 0,
+        "pre_wait_freezes": 0,
+        "roi": [
+            0,
+            0,
+            0,
+            360
+        ],
         "post_delay": 188,
         "next": []
     },
@@ -157,6 +163,7 @@
         "recognition": "OCR",
         "expected": "水井加速",
         "action": "DoNothing",
+        "post_delay": 0,
         "roi": [
             0,
             0,
@@ -164,8 +171,8 @@
             360
         ],
         "next": [
-            "免费完成",
             "20",
+            "免费完成",
             "回主界面"
         ]
     },
@@ -173,24 +180,42 @@
         "attach": {
             "description": "免费完成选项"
         },
-        "recognition": "TemplateMatch",
-        "template": "免费完成.png",
+        "recognition": "OCR",
+        "expected": "免费",
+        "post_delay": 0,
         "roi": [
             200,
             200,
             640,
             700
         ],
+        "next": [
+            "立即完成"
+        ]
+    },
+    "立即完成": {
+        "attach": {
+            "description": "点击 立即完成 按钮"
+        },
+        "recognition": "OCR",
+        "expected": "立即完成",
         "action": "Click",
+        "roi": [
+            0,
+            0,
+            640,
+            700
+        ],
         "post_delay": 188,
         "next": []
     },
     "20": {
         "attach": {
-            "description": "20选项"
+            "description": "匹配到需要花费20补天石则回主界面"
         },
         "recognition": "TemplateMatch",
         "template": "20.png",
+        "post_delay": 0,
         "roi": [
             200,
             200,
@@ -208,6 +233,8 @@
         "recognition": "OCR",
         "expected": "观看广告",
         "action": "DoNothing",
+        "post_delay": 0,
+        "post_wait_freezes": 0,
         "roi": [
             200,
             200,
@@ -223,6 +250,7 @@
             "description": "什么也不做选项"
         },
         "action": "DoNothing",
+        "post_wait_freezes": 0,
         "post_delay": 0,
         "next": []
     },
@@ -246,7 +274,7 @@
         "attach": {
             "description": "处理异常情况"
         },
-        "post_delay": 300,
+        "post_delay": 0,
         "next": [
             "防机关术",
             "重试",
@@ -283,7 +311,6 @@
         "recognition": "OCR",
         "expected": "防机关术",
         "action": "DoNothing",
-        "post_delay": 300,
         "next": [
             "破解机关"
         ]
@@ -295,7 +322,13 @@
         "recognition": "OCR",
         "expected": "设置",
         "action": "DoNothing",
-        "post_delay": 188,
+        "post_delay": 0,
+        "roi": [
+            640,
+            360,
+            0,
+            0
+        ],
         "next": [
             "返回上级菜单"
         ]
@@ -304,20 +337,11 @@
         "attach": {
             "description": "返回上级菜单选项"
         },
+        "post_delay": 0,
         "next": [
-            "点击更多",
+            "点击...",
             "关闭改布局"
         ]
-    },
-    "点击更多": {
-        "attach": {
-            "description": "点击更多选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "更多.png",
-        "action": "Click",
-        "post_delay": 111,
-        "next": []
     },
     "回主界面": {
         "attach": {
@@ -326,9 +350,16 @@
         "recognition": "TemplateMatch",
         "template": "更多.png",
         "action": "Click",
+        "roi": [
+            1180,
+            560,
+            0,
+            0
+        ],
         "post_delay": 111,
         "next": [
-            "关闭更多"
+            "关闭更多",
+            "什么也不做"
         ]
     },
     "关闭更多": {
@@ -337,6 +368,13 @@
         },
         "recognition": "TemplateMatch",
         "template": "设置.png",
+        "roi": [
+            640,
+            360,
+            0,
+            0
+        ],
+        "post_delay": 0,
         "next": [
             "点击..."
         ]
@@ -348,6 +386,12 @@
         "recognition": "TemplateMatch",
         "template": "撤销.png",
         "action": "Click",
+        "roi": [
+            0,
+            360,
+            0,
+            0
+        ],
         "post_delay": 111,
         "next": [
             "撤销",
@@ -361,6 +405,12 @@
         "recognition": "TemplateMatch",
         "template": "完成.png",
         "action": "Click",
+        "roi": [
+            0,
+            360,
+            640,
+            0
+        ],
         "post_delay": 111,
         "next": []
     },
@@ -371,6 +421,12 @@
         "recognition": "TemplateMatch",
         "template": "印.png",
         "action": "Click",
+        "roi": [
+            0,
+            360,
+            0,
+            0
+        ],
         "post_delay": 111,
         "next": []
     },
@@ -381,6 +437,12 @@
         "recognition": "TemplateMatch",
         "template": "改布局.png",
         "post_delay": 0,
+        "roi": [
+            0,
+            0,
+            640,
+            0
+        ],
         "next": [
             "印"
         ]
@@ -392,7 +454,13 @@
         "recognition": "TemplateMatch",
         "template": "x.png",
         "action": "Click",
-        "post_delay": 300,
+        "post_delay": 111,
+        "roi": [
+            0,
+            0,
+            0,
+            0
+        ],
         "next": [
             "完成布局"
         ]
@@ -401,6 +469,7 @@
         "attach": {
             "description": "处理其他情况选项"
         },
+        "post_delay": 0,
         "next": [
             "处理普通水",
             "处理水井加速",
@@ -414,7 +483,7 @@
         "recognition": "OCR",
         "expected": "收下",
         "action": "Click",
-        "post_delay": 199,
+        "post_delay": 111,
         "next": []
     },
     "点击...": {
@@ -424,7 +493,13 @@
         "recognition": "TemplateMatch",
         "template": "更多.png",
         "action": "Click",
-        "post_delay": 99,
+        "post_delay": 111,
+        "roi": [
+            1180,
+            560,
+            0,
+            0
+        ],
         "next": []
     }
 }
