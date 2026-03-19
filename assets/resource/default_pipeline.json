@@ -1,17 +1,17 @@
 {
     "Default": {
         "roi": [
-            140,
-            0,
-            1120,
-            0
+            150,
+            30,
+            970,
+            670
         ],
         "pre_delay": 0,
         "post_delay": 188,
-        "post_wait_freezes": 88,
+        "post_wait_freezes": 100,
         "pre_wait_freezes": 0,
         "rate_limit": 1000,
-        "timeout": 20000
+        "timeout": 10000
     },
     "TemplateMatch": {
         "recognition": "TemplateMatch",
