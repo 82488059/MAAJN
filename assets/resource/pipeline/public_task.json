@@ -46,6 +46,54 @@
         "action": "Click",
         "next": []
     },
+    "农牧": {
+        "attach": {
+            "description": "农牧选项"
+        },
+        "recognition": "OCR",
+        "expected": "农牧",
+        "roi": [
+            0,
+            0,
+            0,
+            360
+        ],
+        "order_by": "Horizontal",
+        "action": "Click",
+        "next": []
+    },
+    "制作": {
+        "attach": {
+            "description": "制作选项"
+        },
+        "recognition": "OCR",
+        "expected": "制作",
+        "roi": [
+            0,
+            0,
+            0,
+            360
+        ],
+        "order_by": "Horizontal",
+        "action": "Click",
+        "next": []
+    },
+    "建造": {
+        "attach": {
+            "description": "建造选项"
+        },
+        "recognition": "OCR",
+        "expected": "建造",
+        "roi": [
+            0,
+            0,
+            0,
+            360
+        ],
+        "order_by": "Horizontal",
+        "action": "Click",
+        "next": []
+    },
     "免费完成": {
         "attach": {
             "description": "免费完成选项"
@@ -373,6 +421,25 @@
         "action": "Click",
         "next": [
             "印"
+        ]
+    },
+    "处理加速": {
+        "attach": {
+            "description": "处理加速选项"
+        },
+        "recognition": "OCR",
+        "expected": "加速",
+        "action": "DoNothing",
+        "roi": [
+            0,
+            0,
+            0,
+            360
+        ],
+        "next": [
+            "20",
+            "免费完成",
+            "回主界面"
         ]
     }
 }

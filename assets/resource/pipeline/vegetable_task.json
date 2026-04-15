@@ -1,13 +1,84 @@
 {
     "无限蔬菜": {
         "attach": {
-            "description": "主入口节点，持续循环寻找水井"
+            "description": "主入口节点，持续循环寻找"
         },
         "next": [
-            "[JumpBack]无限循环水井"
+            "[JumpBack]无限循环蔬菜"
         ],
         "on_error": [
             "无限蔬菜"
         ]
+    },
+    "无限循环蔬菜": {
+        "attach": {
+            "description": "持续循环蔬菜"
+        },
+        "next": [
+            "[JumpBack]寻找蔬菜"
+        ],
+        "on_error": [
+            "处理异常"
+        ]
+    },
+    "寻找蔬菜": {
+        "attach": {
+            "description": "循环识别蔬菜"
+        },
+        "recognition": "TemplateMatch",
+        "template": [
+            "井小.png",
+            "井大.png"
+        ],
+        "threshold": 0.8,
+        "order_by": "Random",
+        "action": "Click",
+        "post_delay": 200,
+        "next": [
+            "处理普通蔬菜",
+            "处理加速"
+        ],
+        "on_error": [
+            "处理异常",
+            "无限蔬菜"
+        ]
+    },
+    "处理普通蔬菜": {
+        "attach": {
+            "description": "处理普通水选项"
+        },
+        "recognition": "OCR",
+        "expected": "少许蔬菜",
+        "roi": [
+            400,
+            100,
+            200,
+            100
+        ],
+        "action": "Click",
+        "post_delay": 200,
+        "next": [
+            "农牧",
+            "查找水井",
+            "直接开始",
+            "观看广告"
+        ],
+        "on_error": [
+            "处理异常"
+        ]
+    },
+    "查找蔬菜": {
+        "attach": {
+            "description": "查找蔬菜"
+        },
+        "action": "DoNothing",
+        "recognition": "TemplateMatch",
+        "template": [
+            "井小.png",
+            "井大.png"
+        ],
+        "threshold": 0.8,
+        "post_delay": 200,
+        "next": []
     }
 }

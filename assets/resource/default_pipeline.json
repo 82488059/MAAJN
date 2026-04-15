@@ -7,20 +7,20 @@
             670
         ],
         "pre_delay": 0,
-        "post_delay": 188,
-        "post_wait_freezes": 100,
+        "post_delay": 99,
+        "post_wait_freezes": 0,
         "pre_wait_freezes": 0,
-        "rate_limit": 1000,
-        "timeout": 10000
+        "rate_limit": 444,
+        "timeout": 4444
     },
     "TemplateMatch": {
         "recognition": "TemplateMatch",
-        "threshold": 0.7,
+        "threshold": 0.8,
         "order_by": "Horizontal"
     },
     "OCR": {
         "recognition": "OCR",
-        "threshold": 0.5
+        "threshold": 0.6
     },
     "Click": {
         "action": "Click",
