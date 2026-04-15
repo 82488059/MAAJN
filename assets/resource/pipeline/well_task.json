@@ -3,14 +3,22 @@
         "attach": {
             "description": "主入口节点，持续循环寻找水井"
         },
-        "post_wait_freezes": 0,
-        "post_delay": 0,
         "next": [
-            "[JumpBack]寻找水井",
-            "[JumpBack]处理异常"
+            "[JumpBack]无限循环水井"
         ],
         "on_error": [
             "无限水井"
+        ]
+    },
+    "无限循环水井": {
+        "attach": {
+            "description": "持续循环水井"
+        },
+        "next": [
+            "[JumpBack]寻找水井"
+        ],
+        "on_error": [
+            "处理异常"
         ]
     },
     "寻找水井": {
@@ -22,15 +30,16 @@
             "井小.png",
             "井大.png"
         ],
+        "threshold": 0.8,
         "order_by": "Random",
         "action": "Click",
-        "post_delay": 0,
-        "pre_wait_freezes": 166,
+        "post_delay": 200,
         "next": [
             "处理普通水",
             "处理水井加速"
         ],
         "on_error": [
+            "处理异常",
             "无限水井"
         ]
     },
@@ -47,53 +56,18 @@
             100
         ],
         "action": "Click",
-        "post_delay": 0,
-        "post_wait_freezes": 222,
+        "post_delay": 200,
         "next": [
-            "经验",
+            "理财",
+            // "经验",
+            "查找水井",
+            //"寻找水井",
             "直接开始",
-            "观看广告",
-            "寻找水井"
+            "观看广告"
         ],
         "on_error": [
             "处理异常"
         ]
-    },
-    "直接开始": {
-        "attach": {
-            "description": "直接开始选项"
-        },
-        "recognition": "OCR",
-        "expected": "直接开始",
-        "action": "Click",
-        "post_wait_freezes": 0,
-        "pre_wait_freezes": 0,
-        "roi": [
-            0,
-            0,
-            0,
-            360
-        ],
-        "post_delay": 188,
-        "next": []
-    },
-    "经验": {
-        "attach": {
-            "description": "经验选项"
-        },
-        "recognition": "OCR",
-        "expected": "经验",
-        "roi": [
-            0,
-            0,
-            0,
-            360
-        ],
-        "order_by": "Horizontal",
-        "action": "Click",
-        "post_wait_freezes": 188,
-        "post_delay": 188,
-        "next": []
     },
     "处理水井加速": {
         "attach": {
@@ -102,7 +76,6 @@
         "recognition": "OCR",
         "expected": "水井加速",
         "action": "DoNothing",
-        "post_delay": 0,
         "roi": [
             0,
             0,
@@ -115,365 +88,18 @@
             "回主界面"
         ]
     },
-    "免费完成": {
+    "查找水井": {
         "attach": {
-            "description": "免费完成选项"
-        },
-        "recognition": "OCR",
-        "expected": "免费",
-        "post_delay": 0,
-        "roi": [
-            200,
-            200,
-            640,
-            700
-        ],
-        "next": [
-            "立即完成"
-        ]
-    },
-    "立即完成": {
-        "attach": {
-            "description": "点击 立即完成 按钮"
-        },
-        "recognition": "OCR",
-        "expected": "立即完成",
-        "action": "Click",
-        "roi": [
-            0,
-            0,
-            640,
-            700
-        ],
-        "post_delay": 188,
-        "next": []
-    },
-    "20": {
-        "attach": {
-            "description": "匹配到需要花费20补天石则回主界面"
-        },
-        "recognition": "TemplateMatch",
-        "template": "20.png",
-        "post_delay": 0,
-        "roi": [
-            200,
-            200,
-            640,
-            700
-        ],
-        "next": [
-            "回主界面"
-        ]
-    },
-    "观看广告": {
-        "attach": {
-            "description": "观看广告选项"
-        },
-        "recognition": "OCR",
-        "expected": "观看广告",
-        "action": "DoNothing",
-        "post_delay": 0,
-        "post_wait_freezes": 0,
-        "roi": [
-            200,
-            200,
-            0,
-            350
-        ],
-        "next": [
-            "算了"
-        ]
-    },
-    "什么也不做": {
-        "attach": {
-            "description": "什么也不做选项"
+            "description": "查找水井"
         },
         "action": "DoNothing",
-        "post_wait_freezes": 0,
-        "post_delay": 0,
+        "recognition": "TemplateMatch",
+        "template": [
+            "井小.png",
+            "井大.png"
+        ],
+        "threshold": 0.8,
+        "post_delay": 200,
         "next": []
-    },
-    "算了": {
-        "attach": {
-            "description": "算了选项"
-        },
-        "recognition": "OCR",
-        "expected": "算了",
-        "action": "Click",
-        "roi": [
-            200,
-            200,
-            640,
-            0
-        ],
-        "post_delay": 8888,
-        "next": []
-    },
-    "处理异常": {
-        "attach": {
-            "description": "处理异常情况"
-        },
-        "post_delay": 0,
-        "next": [
-            "防机关术",
-            "重试",
-            "经验",
-            "直接开始",
-            "处理普通水",
-            "观看广告",
-            "关闭设置",
-            "撤销",
-            "x",
-            "关闭改布局",
-            "回主界面"
-        ]
-    },
-    "重试": {
-        "attach": {
-            "description": "重试选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "重试.png",
-        "action": "Click",
-        "roi": [
-            0,
-            360,
-            0,
-            0
-        ],
-        "post_delay": 188,
-        "next": []
-    },
-    "防机关术": {
-        "attach": {
-            "description": "防机关术选项"
-        },
-        "recognition": "OCR",
-        "expected": "防机关术",
-        "action": "DoNothing",
-        "next": [
-            "破解机关"
-        ]
-    },
-    "关闭设置": {
-        "attach": {
-            "description": "关闭设置选项"
-        },
-        "recognition": "OCR",
-        "expected": "设置",
-        "action": "DoNothing",
-        "post_delay": 0,
-        "roi": [
-            640,
-            360,
-            0,
-            0
-        ],
-        "next": [
-            "返回上级菜单"
-        ]
-    },
-    "返回上级菜单": {
-        "attach": {
-            "description": "返回上级菜单选项"
-        },
-        "post_delay": 0,
-        "next": [
-            "点击...",
-            "关闭改布局"
-        ]
-    },
-    "回主界面": {
-        "attach": {
-            "description": "回主界面选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "更多.png",
-        "action": "Click",
-        "roi": [
-            1180,
-            560,
-            0,
-            0
-        ],
-        "post_delay": 111,
-        "next": [
-            "关闭更多",
-            "什么也不做"
-        ]
-    },
-    "关闭更多": {
-        "attach": {
-            "description": "关闭更多选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "设置.png",
-        "roi": [
-            640,
-            360,
-            0,
-            0
-        ],
-        "post_delay": 0,
-        "next": [
-            "点击..."
-        ]
-    },
-    "撤销": {
-        "attach": {
-            "description": "撤销选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "撤销.png",
-        "action": "Click",
-        "roi": [
-            0,
-            360,
-            0,
-            0
-        ],
-        "post_delay": 111,
-        "next": [
-            "撤销",
-            "完成布局"
-        ]
-    },
-    "完成布局": {
-        "attach": {
-            "description": "完成布局选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "完成.png",
-        "action": "Click",
-        "roi": [
-            0,
-            360,
-            640,
-            0
-        ],
-        "post_delay": 111,
-        "next": []
-    },
-    "印": {
-        "attach": {
-            "description": "印选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "印.png",
-        "action": "Click",
-        "roi": [
-            0,
-            360,
-            0,
-            0
-        ],
-        "post_delay": 111,
-        "next": []
-    },
-    "关闭改布局": {
-        "attach": {
-            "description": "关闭改布局选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "改布局.png",
-        "post_delay": 0,
-        "roi": [
-            0,
-            0,
-            640,
-            0
-        ],
-        "next": [
-            "印"
-        ]
-    },
-    "x": {
-        "attach": {
-            "description": "x选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "x.png",
-        "action": "Click",
-        "post_delay": 111,
-        "roi": [
-            0,
-            0,
-            0,
-            0
-        ],
-        "next": [
-            "完成布局"
-        ]
-    },
-    "收下": {
-        "attach": {
-            "description": "收下选项"
-        },
-        "recognition": "OCR",
-        "expected": "收下",
-        "action": "Click",
-        "post_delay": 111,
-        "next": []
-    },
-    "点击...": {
-        "attach": {
-            "description": "点击选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "更多.png",
-        "action": "Click",
-        "post_delay": 111,
-        "roi": [
-            1180,
-            560,
-            0,
-            0
-        ],
-        "next": []
-    },
-    "修改为地基模式": {
-        "attach": {
-            "description": "修改为地基模式选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "印.png",
-        "action": "Click",
-        "post_delay": 180,
-        "post_wait_freezes": 188,
-        "roi": [
-            0,
-            360,
-            0,
-            0
-        ],
-        "next": [
-            "是地基",
-            "不是地基",
-            "修改为地基模式"
-        ]
-    },
-    "是地基": {
-        "attach": {
-            "description": "是地基选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "地基.png",
-        "post_delay": 0,
-        "next": [
-            "印"
-        ]
-    },
-    "不是地基": {
-        "attach": {
-            "description": "不是地基选项"
-        },
-        "recognition": "TemplateMatch",
-        "template": "非地基.png",
-        "post_delay": 0,
-        "action": "Click",
-        "post_wait_freezes": 188,
-        "next": [
-            "印"
-        ]
     }
 }

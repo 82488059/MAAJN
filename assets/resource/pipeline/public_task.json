@@ -1,0 +1,378 @@
+{
+    "直接开始": {
+        "attach": {
+            "description": "直接开始选项"
+        },
+        "recognition": "OCR",
+        "expected": "直接开始",
+        "action": "Click",
+        "roi": [
+            0,
+            0,
+            0,
+            360
+        ],
+        "next": []
+    },
+    "经验": {
+        "attach": {
+            "description": "经验选项"
+        },
+        "recognition": "OCR",
+        "expected": "经验",
+        "roi": [
+            0,
+            0,
+            0,
+            360
+        ],
+        "order_by": "Horizontal",
+        "action": "Click",
+        "next": []
+    },
+    "理财": {
+        "attach": {
+            "description": "理财选项"
+        },
+        "recognition": "OCR",
+        "expected": "理财",
+        "roi": [
+            0,
+            0,
+            0,
+            360
+        ],
+        "order_by": "Horizontal",
+        "action": "Click",
+        "next": []
+    },
+    "免费完成": {
+        "attach": {
+            "description": "免费完成选项"
+        },
+        "recognition": "OCR",
+        "expected": "免费",
+        "roi": [
+            200,
+            200,
+            640,
+            700
+        ],
+        "next": [
+            "立即完成"
+        ]
+    },
+    "立即完成": {
+        "attach": {
+            "description": "点击 立即完成 按钮"
+        },
+        "recognition": "OCR",
+        "expected": "立即完成",
+        "action": "Click",
+        "roi": [
+            0,
+            0,
+            640,
+            700
+        ],
+        "next": []
+    },
+    "20": {
+        "attach": {
+            "description": "匹配到需要花费20补天石则回主界面"
+        },
+        "recognition": "TemplateMatch",
+        "template": "20.png",
+        "roi": [
+            200,
+            200,
+            640,
+            700
+        ],
+        "next": [
+            "回主界面"
+        ]
+    },
+    "观看广告": {
+        "attach": {
+            "description": "观看广告选项"
+        },
+        "recognition": "OCR",
+        "expected": "观看广告",
+        "action": "DoNothing",
+        "roi": [
+            200,
+            200,
+            0,
+            350
+        ],
+        "next": [
+            "算了"
+        ]
+    },
+    "什么也不做": {
+        "attach": {
+            "description": "什么也不做选项"
+        },
+        "post_delay": 200,
+        "action": "DoNothing",
+        "next": []
+    },
+    "算了": {
+        "attach": {
+            "description": "算了选项"
+        },
+        "recognition": "OCR",
+        "expected": "算了",
+        "action": "Click",
+        "roi": [
+            200,
+            200,
+            640,
+            0
+        ],
+        "post_delay": 5555,
+        "next": []
+    },
+    "处理异常": {
+        "attach": {
+            "description": "处理异常情况"
+        },
+        "next": [
+            "防机关术",
+            "重试",
+            "理财",
+            // "经验",
+            "直接开始",
+            "处理普通水",
+            "观看广告",
+            "关闭设置",
+            "撤销",
+            "x",
+            "关闭改布局",
+            "回主界面"
+        ]
+    },
+    "重试": {
+        "attach": {
+            "description": "重试选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "重试.png",
+        "action": "Click",
+        "roi": [
+            0,
+            360,
+            0,
+            0
+        ],
+        "next": []
+    },
+    "防机关术": {
+        "attach": {
+            "description": "防机关术选项"
+        },
+        "recognition": "OCR",
+        "expected": "防机关术",
+        "action": "DoNothing",
+        "next": [
+            "破解机关"
+        ]
+    },
+    "关闭设置": {
+        "attach": {
+            "description": "关闭设置选项"
+        },
+        "recognition": "OCR",
+        "expected": "设置",
+        "action": "DoNothing",
+        "roi": [
+            640,
+            360,
+            0,
+            0
+        ],
+        "next": [
+            "点击..."
+        ]
+    },
+    "回主界面": {
+        "attach": {
+            "description": "回主界面选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "更多.png",
+        "action": "Click",
+        "roi": [
+            1180,
+            560,
+            0,
+            0
+        ],
+        "next": [
+            "关闭更多",
+            "什么也不做"
+        ]
+    },
+    "关闭更多": {
+        "attach": {
+            "description": "关闭更多选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "设置.png",
+        "roi": [
+            640,
+            0,
+            0,
+            0
+        ],
+        "next": [
+            "点击..."
+        ]
+    },
+    "撤销": {
+        "attach": {
+            "description": "撤销选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "撤销.png",
+        "action": "Click",
+        "roi": [
+            0,
+            360,
+            0,
+            0
+        ],
+        "next": [
+            "撤销",
+            "完成布局"
+        ]
+    },
+    "完成布局": {
+        "attach": {
+            "description": "完成布局选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "完成.png",
+        "action": "Click",
+        "roi": [
+            0,
+            360,
+            640,
+            0
+        ],
+        "next": []
+    },
+    "印": {
+        "attach": {
+            "description": "印选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "印.png",
+        "action": "Click",
+        "roi": [
+            0,
+            360,
+            0,
+            0
+        ],
+        "next": []
+    },
+    "关闭改布局": {
+        "attach": {
+            "description": "关闭改布局选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "改布局.png",
+        "roi": [
+            0,
+            0,
+            640,
+            0
+        ],
+        "next": [
+            "印"
+        ]
+    },
+    "x": {
+        "attach": {
+            "description": "x选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "x.png",
+        "action": "Click",
+        "roi": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "next": [
+            "完成布局"
+        ]
+    },
+    "收下": {
+        "attach": {
+            "description": "收下选项"
+        },
+        "recognition": "OCR",
+        "expected": "收下",
+        "action": "Click",
+        "next": []
+    },
+    "点击...": {
+        "attach": {
+            "description": "点击选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "更多.png",
+        "action": "Click",
+        "roi": [
+            1180,
+            560,
+            0,
+            0
+        ],
+        "next": []
+    },
+    "修改为地基模式": {
+        "attach": {
+            "description": "修改为地基模式选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "印.png",
+        "action": "Click",
+        "roi": [
+            0,
+            360,
+            0,
+            0
+        ],
+        "next": [
+            "是地基",
+            "不是地基",
+            "修改为地基模式"
+        ]
+    },
+    "是地基": {
+        "attach": {
+            "description": "是地基选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "地基.png",
+        "next": [
+            "印"
+        ]
+    },
+    "不是地基": {
+        "attach": {
+            "description": "不是地基选项"
+        },
+        "recognition": "TemplateMatch",
+        "template": "非地基.png",
+        "action": "Click",
+        "next": [
+            "印"
+        ]
+    }
+}
