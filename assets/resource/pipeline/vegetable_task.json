@@ -27,8 +27,8 @@
         },
         "recognition": "TemplateMatch",
         "template": [
-            "井小.png",
-            "井大.png"
+            "vegetable/菜大.png",
+            "vegetable/菜小.png"
         ],
         "threshold": 0.8,
         "order_by": "Random",
@@ -58,14 +58,33 @@
         "action": "Click",
         "post_delay": 200,
         "next": [
-            "农牧",
-            "查找水井",
+            "特殊农牧",
+            "查找蔬菜",
             "直接开始",
             "观看广告"
         ],
         "on_error": [
             "处理异常"
         ]
+    },
+    "特殊农牧": {
+        "attach": {
+            "description": "特殊农牧"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "文俶",
+            "乐闻"
+        ],
+        "roi": [
+            0,
+            0,
+            0,
+            360
+        ],
+        "order_by": "Horizontal",
+        "action": "Click",
+        "next": []
     },
     "查找蔬菜": {
         "attach": {
@@ -74,8 +93,8 @@
         "action": "DoNothing",
         "recognition": "TemplateMatch",
         "template": [
-            "井小.png",
-            "井大.png"
+            "vegetable/菜大.png",
+            "vegetable/菜小.png"
         ],
         "threshold": 0.8,
         "post_delay": 200,

@@ -166,6 +166,14 @@
         "action": "DoNothing",
         "next": []
     },
+    "等一分钟": {
+        "attach": {
+            "description": "等一分钟"
+        },
+        "post_delay": 60000,
+        "action": "DoNothing",
+        "next": []
+    },
     "算了": {
         "attach": {
             "description": "算了选项"
