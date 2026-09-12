@@ -1,0 +1,120 @@
+{
+    "无限集英": {
+        "attach": {
+            "description": "主入口节点，持续循环寻找"
+        },
+        "action": "DoNothing",
+        "next": [
+            "[JumpBack]无限集英1"
+        ],
+        "on_error": [
+            "无限集英"
+        ]
+    },
+    "无限集英1": {
+        "attach": {
+            "description": "主入口节点，持续循环寻找"
+        },
+        "action": "DoNothing",
+        "next": [
+            "集英",
+            "取消yysls",
+            "点击空白区域关闭"
+        ],
+        "on_error": [
+            "等10秒"
+        ]
+    },
+    "无限太极": {
+        "attach": {
+            "description": "主入口节点，持续循环寻找"
+        },
+        "next": [
+            "[JumpBack]太极",
+            "[JumpBack]等10秒"
+        ],
+        "on_error": [
+            "无限太极"
+        ]
+    },
+    "等10秒": {
+        "attach": {
+            "description": "等10秒"
+        },
+        "post_delay": 10000,
+        "action": "DoNothing",
+        "next": []
+    },
+    "集英": {
+        "attach": {
+            "description": "集英"
+        },
+        "action": "Click",
+        "recognition": "OCR",
+        "expected": "集英",
+        "threshold": 0.8,
+        "roi": [
+            800,
+            360,
+            0,
+            0
+        ],
+        "post_delay": 11000,
+        "next": [],
+        "on_error": []
+    },
+    "取消yysls": {
+        "attach": {
+            "description": "取消"
+        },
+        "action": "Click",
+        "recognition": "OCR",
+        "expected": "取消",
+        "threshold": 0.8,
+        "roi": [
+            0,
+            0,
+            720,
+            0
+        ],
+        "post_delay": 200,
+        "next": [],
+        "on_error": []
+    },
+    "点击空白区域关闭": {
+        "attach": {
+            "description": "点击空白区域关闭"
+        },
+        "action": "Click",
+        "recognition": "OCR",
+        "expected": "点击空白区域关闭",
+        "threshold": 0.8,
+        "roi": [
+            0,
+            360,
+            0,
+            0
+        ],
+        "post_delay": 200,
+        "next": [],
+        "on_error": []
+    },
+    "太极": {
+        "attach": {
+            "description": "太极"
+        },
+        "action": "Click",
+        "recognition": "OCR",
+        "expected": "太极",
+        "threshold": 0.8,
+        "roi": [
+            800,
+            360,
+            0,
+            0
+        ],
+        "post_delay": 20000,
+        "next": [],
+        "on_error": []
+    }
+}
