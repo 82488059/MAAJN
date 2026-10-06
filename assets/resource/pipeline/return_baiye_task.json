@@ -64,7 +64,7 @@
     },
     "回百业_点百业": {
         "attach": {
-            "description": "功能菜单点「百业」。只点一次。timeout 留给过场后认「返回驻地」"
+            "description": "功能菜单点「百业」。只点一次。timeout 120 秒留给过场后认「返回驻地」；过场有时超过 1 分钟"
         },
         "recognition": "OCR",
         "expected": "百业",
@@ -81,7 +81,7 @@
         "next": [
             "回百业_点返回驻地"
         ],
-        "timeout": 20000,
+        "timeout": 120000,
         "rate_limit": 500,
         "on_error": [
             "回百业_结束失败"
@@ -117,7 +117,7 @@
     },
     "回百业_点确定": {
         "attach": {
-            "description": "弹窗金色按钮「确定」。只认确定，勿认确认（正文「是否确认返回…」会误点）。timeout 留给进驻地后认右上退出"
+            "description": "弹窗金色按钮「确定」。只认确定，勿认确认（正文「是否确认返回…」会误点）。timeout 120 秒留给进驻地加载，等右上退出；加载有时超过 1 分钟"
         },
         "recognition": "OCR",
         "expected": "确定",
@@ -134,7 +134,7 @@
         "next": [
             "回百业_等退出出现"
         ],
-        "timeout": 20000,
+        "timeout": 120000,
         "rate_limit": 500,
         "on_error": [
             "回百业_结束失败"
@@ -142,7 +142,7 @@
     },
     "回百业_点确定坐标": {
         "attach": {
-            "description": "确定 OCR 未命中时点金色确认中心（与买药_点离开确认坐标同）。timeout 同样留给右上退出"
+            "description": "确定 OCR 未命中时点金色确认中心（与离百业_点确认坐标同）。timeout 120 秒同样留给进驻地加载，等右上退出"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -155,7 +155,7 @@
         "next": [
             "回百业_等退出出现"
         ],
-        "timeout": 20000,
+        "timeout": 120000,
         "rate_limit": 500,
         "on_error": [
             "回百业_结束失败"
@@ -163,7 +163,7 @@
     },
     "回百业_等退出出现": {
         "attach": {
-            "description": "进驻地加载结束标志：右上「退出」（与买药_点退出同一 ROI）。只认不点"
+            "description": "进驻地加载结束标志：右上「退出」（与离百业_点退出同一 ROI）。只认不点"
         },
         "recognition": "OCR",
         "expected": "退出",
