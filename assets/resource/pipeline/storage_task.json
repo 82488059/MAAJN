@@ -1,0 +1,1152 @@
+{
+    "存放原料": {
+        "attach": {
+            "description": "入口。人在主界面。打开包裹，把原料存进仓库，草药和枯茱萸留在背包"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "存放_离开后": "存放_结束"
+        },
+        "next": [
+            "存放_点主菜单"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "存放_直接失败"
+        ]
+    },
+    "存放_点主菜单": {
+        "attach": {
+            "description": "点右上角最右侧主菜单图标。模板来自主界面，带不带红点都能对上"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/主菜单.png",
+        "roi": [
+            1080,
+            0,
+            200,
+            90
+        ],
+        "threshold": 0.85,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "存放_点包裹"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "存放_直接失败"
+        ]
+    },
+    "存放_点包裹": {
+        "attach": {
+            "description": "功能菜单第一格。只点文字「包裹」"
+        },
+        "recognition": "OCR",
+        "expected": "包裹",
+        "roi": [
+            780,
+            150,
+            480,
+            260
+        ],
+        "threshold": 0.5,
+        "action": "Click",
+        "post_wait_freezes": 500,
+        "post_delay": 300,
+        "next": [
+            "存放_确认道具"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "存放_点包裹坐标"
+        ]
+    },
+    "存放_点包裹坐标": {
+        "attach": {
+            "description": "菜单里没读到包裹时，点第一格中心"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            875,
+            213
+        ],
+        "post_wait_freezes": 500,
+        "post_delay": 300,
+        "max_hit": 2,
+        "next": [
+            "存放_确认道具"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_确认道具": {
+        "attach": {
+            "description": "背包面板标题是道具，才去看筛选"
+        },
+        "recognition": "OCR",
+        "expected": "道具",
+        "roi": [
+            780,
+            0,
+            280,
+            78
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "next": [
+            "存放_检查筛选"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "存放_点包裹坐标"
+        ]
+    },
+    "存放_检查筛选": {
+        "attach": {
+            "description": "先看右下角筛选是不是已经是原料"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_筛选已是原料"
+        ],
+        "timeout": 1000,
+        "rate_limit": 300,
+        "on_error": [
+            "存放_打开筛选"
+        ]
+    },
+    "存放_筛选已是原料": {
+        "attach": {
+            "description": "筛选条上已经是原料就不要再点开"
+        },
+        "recognition": "OCR",
+        "expected": "原料",
+        "roi": [
+            830,
+            598,
+            150,
+            42
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "next": [
+            "存放_确保仓库"
+        ]
+    },
+    "存放_打开筛选": {
+        "attach": {
+            "description": "点右下角第一个筛选"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            920,
+            621
+        ],
+        "post_delay": 400,
+        "next": [
+            "存放_点列表原料"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "存放_点原料坐标"
+        ]
+    },
+    "存放_点列表原料": {
+        "attach": {
+            "description": "下拉列表里点原料。范围只盖住列表下半段，不包含背包格子"
+        },
+        "recognition": "OCR",
+        "expected": "原料",
+        "roi": [
+            800,
+            500,
+            230,
+            110
+        ],
+        "threshold": 0.5,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "存放_确认原料筛选"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "存放_点原料坐标"
+        ]
+    },
+    "存放_点原料坐标": {
+        "attach": {
+            "description": "列表里没读到原料时，点原料那一行。随后必须在筛选条上再确认一次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            868,
+            587
+        ],
+        "post_delay": 400,
+        "max_hit": 2,
+        "next": [
+            "存放_确认原料筛选"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_确认原料筛选": {
+        "attach": {
+            "description": "筛选条重新显示原料，才打开仓库"
+        },
+        "recognition": "OCR",
+        "expected": "原料",
+        "roi": [
+            830,
+            598,
+            150,
+            42
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "next": [
+            "存放_确保仓库"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "存放_点原料坐标"
+        ]
+    },
+    "存放_确保仓库": {
+        "attach": {
+            "description": "左侧已经有仓库面板就不要再点图标，点一下会把它关掉"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_看到固定容量",
+            "存放_看到仓库标题"
+        ],
+        "timeout": 1200,
+        "rate_limit": 300,
+        "on_error": [
+            "存放_点仓库图标"
+        ]
+    },
+    "存放_看到固定容量": {
+        "attach": {
+            "description": "左侧有固定容量，说明仓库面板开着"
+        },
+        "recognition": "OCR",
+        "expected": "固定容量",
+        "roi": [
+            400,
+            108,
+            420,
+            85
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "存放_第1页"
+        ]
+    },
+    "存放_看到仓库标题": {
+        "attach": {
+            "description": "左侧标题是仓库。不搜右上角图标旁边的字"
+        },
+        "recognition": "OCR",
+        "expected": "仓库",
+        "roi": [
+            390,
+            8,
+            230,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "存放_第1页"
+        ]
+    },
+    "存放_点仓库图标": {
+        "attach": {
+            "description": "点仓库两个字右边的图标"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/仓库图标.png",
+        "roi": [
+            980,
+            0,
+            160,
+            70
+        ],
+        "threshold": 0.85,
+        "action": "Click",
+        "post_wait_freezes": 500,
+        "post_delay": 300,
+        "next": [
+            "存放_看到固定容量",
+            "存放_看到仓库标题"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "存放_点仓库坐标"
+        ]
+    },
+    "存放_点仓库坐标": {
+        "attach": {
+            "description": "图标模板没对上时点仓库图标中心"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1058,
+            34
+        ],
+        "post_wait_freezes": 500,
+        "post_delay": 300,
+        "max_hit": 2,
+        "next": [
+            "存放_看到固定容量",
+            "存放_看到仓库标题"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_第1页": {
+        "attach": {
+            "description": "切到仓库第 1 页，先解锁再存"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            528,
+            90
+        ],
+        "post_delay": 450,
+        "anchor": {
+            "存放_下一页": "存放_第2页"
+        },
+        "next": [
+            "存放_解锁循环"
+        ]
+    },
+    "存放_第2页": {
+        "attach": {
+            "description": "切到仓库第 2 页，先解锁再存"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            591,
+            90
+        ],
+        "post_delay": 450,
+        "anchor": {
+            "存放_下一页": "存放_第3页"
+        },
+        "next": [
+            "存放_解锁循环"
+        ]
+    },
+    "存放_第3页": {
+        "attach": {
+            "description": "切到仓库第 3 页，先解锁再存"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            664,
+            90
+        ],
+        "post_delay": 450,
+        "anchor": {
+            "存放_下一页": "存放_页已尽"
+        },
+        "next": [
+            "存放_解锁循环"
+        ]
+    },
+    "存放_页已尽": {
+        "attach": {
+            "description": "三页都试过。正常回主界面"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "存放_离开后": "存放_结束"
+        },
+        "next": [
+            "存放_退出循环"
+        ]
+    },
+    "存放_解锁循环": {
+        "attach": {
+            "description": "这一页还有锁就点一把。没有锁再看容量"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_点锁",
+            "存放_看是否已满"
+        ],
+        "timeout": 1000,
+        "rate_limit": 250,
+        "on_error": [
+            "存放_看是否已满"
+        ]
+    },
+    "存放_点锁": {
+        "attach": {
+            "description": "只在仓库格子里点锁。背包上的物品不在这个范围"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/锁.png",
+        "roi": [
+            380,
+            150,
+            450,
+            480
+        ],
+        "threshold": 0.85,
+        "action": "Click",
+        "post_delay": 400,
+        "max_hit": 20,
+        "next": [
+            "存放_等解锁弹窗"
+        ]
+    },
+    "存放_等解锁弹窗": {
+        "attach": {
+            "description": "等解锁弹窗。文案里同时有解锁和仓库才点确认，否则取消并失败"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_解锁文案合格",
+            "存放_点取消"
+        ],
+        "timeout": 2500,
+        "rate_limit": 300,
+        "on_error": [
+            "存放_点取消坐标"
+        ]
+    },
+    "存放_文案有解锁": {
+        "attach": {
+            "description": "解锁弹窗正文里有解锁。只给文案合格做子识别"
+        },
+        "recognition": "OCR",
+        "expected": "解锁",
+        "roi": [
+            400,
+            310,
+            500,
+            80
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing"
+    },
+    "存放_文案有仓库": {
+        "attach": {
+            "description": "同一段正文里有仓库。左侧仓库标题不在这个范围"
+        },
+        "recognition": "OCR",
+        "expected": "仓库",
+        "roi": [
+            400,
+            310,
+            500,
+            80
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing"
+    },
+    "存放_解锁文案合格": {
+        "attach": {
+            "description": "两个词都在，才允许点金色确认"
+        },
+        "recognition": "And",
+        "all_of": [
+            "存放_文案有解锁",
+            "存放_文案有仓库"
+        ],
+        "action": "DoNothing",
+        "next": [
+            "存放_点确认解锁",
+            "存放_点确认解锁坐标"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_点取消"
+        ]
+    },
+    "存放_点确认解锁": {
+        "attach": {
+            "description": "点弹窗右下金色确认"
+        },
+        "recognition": "OCR",
+        "expected": "确认",
+        "roi": [
+            940,
+            440,
+            280,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_wait_freezes": 600,
+        "post_delay": 300,
+        "next": [
+            "存放_解锁循环"
+        ]
+    },
+    "存放_点确认解锁坐标": {
+        "attach": {
+            "description": "文案已经合格但没读到确认时，点金色按钮中心"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1082,
+            475
+        ],
+        "post_wait_freezes": 600,
+        "post_delay": 300,
+        "max_hit": 20,
+        "next": [
+            "存放_解锁循环"
+        ]
+    },
+    "存放_点取消": {
+        "attach": {
+            "description": "文案对不上。点取消，不解锁"
+        },
+        "recognition": "OCR",
+        "expected": "取消",
+        "roi": [
+            60,
+            440,
+            180,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 300,
+        "next": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_点取消坐标": {
+        "attach": {
+            "description": "没读到取消时点左侧按钮中心，然后失败退出"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            140,
+            474
+        ],
+        "post_delay": 300,
+        "max_hit": 3,
+        "next": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_看是否已满": {
+        "attach": {
+            "description": "这一页固定容量若已经满，就换下一页。认不出就照常去存"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_本页已满"
+        ],
+        "timeout": 800,
+        "rate_limit": 250,
+        "on_error": [
+            "存放_存一轮"
+        ]
+    },
+    "存放_本页已满": {
+        "attach": {
+            "description": "固定容量分子和分母相同才算满。不看顶部仓库总容量"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "固定容量\\s*[（(]\\s*(\\d+)\\s*[/／]\\s*\\1\\s*[）)]",
+            "固定容量\\s*(\\d+)\\s*[/／]\\s*\\1"
+        ],
+        "roi": [
+            400,
+            108,
+            420,
+            85
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_下一页",
+                "anchor": true
+            }
+        ]
+    },
+    "存放_存一轮": {
+        "attach": {
+            "description": "进入批量存入。这一页没出现批量存入或全选，就再试一次打开仓库"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_点批量存入",
+            "存放_已在批量"
+        ],
+        "timeout": 2000,
+        "rate_limit": 300,
+        "on_error": [
+            "存放_补开仓库",
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_点批量存入": {
+        "attach": {
+            "description": "点背包底部批量存入"
+        },
+        "recognition": "OCR",
+        "expected": "批量存入",
+        "roi": [
+            980,
+            630,
+            250,
+            85
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "存放_点全选"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "存放_点全选坐标"
+        ]
+    },
+    "存放_已在批量": {
+        "attach": {
+            "description": "已经在批量模式。只认全选、恢复或确认存入，不靠坐标"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "全选",
+            "确认存入",
+            "恢复"
+        ],
+        "roi": [
+            790,
+            630,
+            470,
+            85
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "存放_点全选"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_点全选": {
+        "attach": {
+            "description": "点全选。刚进批量时它在中间，选中后会挪到左边，都靠文字找"
+        },
+        "recognition": "OCR",
+        "expected": "全选",
+        "roi": [
+            800,
+            630,
+            280,
+            85
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 450,
+        "max_hit": 24,
+        "next": [
+            "存放_取消草药"
+        ]
+    },
+    "存放_点全选坐标": {
+        "attach": {
+            "description": "刚点过批量存入、还没读到全选时，点这一状态下的全选中心。已经选中后不能用这个坐标，那个位置会变成恢复"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            996,
+            681
+        ],
+        "post_delay": 450,
+        "max_hit": 8,
+        "next": [
+            "存放_取消草药"
+        ]
+    },
+    "存放_取消草药": {
+        "attach": {
+            "description": "草药如果带着红标就点掉。没选中就直接看枯茱萸"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "存放_关详情后": "存放_取消枯茱萸"
+        },
+        "next": [
+            "存放_点选中草药",
+            "存放_取消枯茱萸"
+        ],
+        "timeout": 800,
+        "rate_limit": 200
+    },
+    "存放_点选中草药": {
+        "attach": {
+            "description": "只点还带着红标的草药。点一下会弹出详情"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/草药_选中.png",
+        "roi": [
+            790,
+            110,
+            470,
+            530
+        ],
+        "threshold": 0.72,
+        "order_by": "Score",
+        "action": "Click",
+        "post_delay": 300,
+        "max_hit": 12,
+        "next": [
+            "存放_关详情"
+        ]
+    },
+    "存放_取消枯茱萸": {
+        "attach": {
+            "description": "再取消枯茱萸的红标"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "存放_关详情后": "存放_复核"
+        },
+        "next": [
+            "存放_点选中枯茱萸",
+            "存放_复核"
+        ],
+        "timeout": 800,
+        "rate_limit": 200
+    },
+    "存放_点选中枯茱萸": {
+        "attach": {
+            "description": "只点还带着红标的枯茱萸。清掉红标后的图标长得不一样，不会用那张图来点"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/枯茱萸_选中.png",
+        "roi": [
+            790,
+            110,
+            470,
+            530
+        ],
+        "threshold": 0.78,
+        "order_by": "Score",
+        "action": "Click",
+        "post_delay": 300,
+        "max_hit": 12,
+        "next": [
+            "存放_关详情"
+        ]
+    },
+    "存放_关详情": {
+        "attach": {
+            "description": "点左下空白关掉物品详情。不点详情里的确认"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            240,
+            656
+        ],
+        "post_delay": 400,
+        "next": [
+            {
+                "name": "存放_关详情后",
+                "anchor": true
+            }
+        ]
+    },
+    "存放_复核": {
+        "attach": {
+            "description": "先确认草药和枯茱萸都没有红标，再看还有没有别的原料被选中"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_草药仍选中",
+            "存放_枯茱萸仍选中",
+            "存放_还有别的原料",
+            "存放_本页无需再存"
+        ],
+        "timeout": 1200,
+        "rate_limit": 200
+    },
+    "存放_草药仍选中": {
+        "attach": {
+            "description": "草药还有红标。阈值比点选时更低，宁可拦住也不许点确认存入"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/草药_选中.png",
+        "roi": [
+            790,
+            110,
+            470,
+            530
+        ],
+        "threshold": 0.62,
+        "order_by": "Score",
+        "action": "DoNothing",
+        "next": [
+            "存放_选择不对"
+        ]
+    },
+    "存放_枯茱萸仍选中": {
+        "attach": {
+            "description": "枯茱萸还有红标。阈值比点选时更低，宁可拦住也不许点确认存入"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/枯茱萸_选中.png",
+        "roi": [
+            790,
+            110,
+            470,
+            530
+        ],
+        "threshold": 0.7,
+        "order_by": "Score",
+        "action": "DoNothing",
+        "next": [
+            "存放_选择不对"
+        ]
+    },
+    "存放_还有别的原料": {
+        "attach": {
+            "description": "别的格子还带着红标，说明这一页还有空位而且背包里还有别的原料"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/红标.png",
+        "roi": [
+            790,
+            110,
+            470,
+            530
+        ],
+        "threshold": 0.8,
+        "action": "DoNothing",
+        "next": [
+            "存放_点确认存入"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_点确认存入": {
+        "attach": {
+            "description": "点确认存入。读不到这两个字就不点"
+        },
+        "recognition": "OCR",
+        "expected": "确认存入",
+        "roi": [
+            1000,
+            630,
+            260,
+            85
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_wait_freezes": 800,
+        "post_delay": 400,
+        "max_hit": 18,
+        "next": [
+            "存放_存一轮"
+        ]
+    },
+    "存放_本页无需再存": {
+        "attach": {
+            "description": "全选之后没有别的红标。这一页要么满了，要么背包里只剩草药和枯茱萸。先退出批量再翻页"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_离开批量再翻页"
+        ]
+    },
+    "存放_离开批量再翻页": {
+        "attach": {
+            "description": "批量模式下页签点不动。先点一次右上角返回，只退出批量"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_离开批量"
+        ],
+        "timeout": 1200,
+        "rate_limit": 300,
+        "on_error": [
+            {
+                "name": "存放_下一页",
+                "anchor": true
+            }
+        ]
+    },
+    "存放_离开批量": {
+        "attach": {
+            "description": "点右上角返回，离开批量，仓库面板还留着"
+        },
+        "recognition": "TemplateMatch",
+        "template": [
+            "storage/返回_界面.png",
+            "storage/返回_菜单.png"
+        ],
+        "roi": [
+            1080,
+            0,
+            200,
+            90
+        ],
+        "threshold": 0.82,
+        "order_by": "Score",
+        "action": "Click",
+        "post_delay": 450,
+        "max_hit": 4,
+        "next": [
+            {
+                "name": "存放_下一页",
+                "anchor": true
+            }
+        ]
+    },
+    "存放_选择不对": {
+        "attach": {
+            "description": "草药或枯茱萸仍被选中。点恢复，再退出并让任务失败"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_点恢复"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_点恢复坐标"
+        ]
+    },
+    "存放_点恢复": {
+        "attach": {
+            "description": "点恢复，清掉本轮选择"
+        },
+        "recognition": "OCR",
+        "expected": "恢复",
+        "roi": [
+            860,
+            630,
+            220,
+            85
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 300,
+        "next": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_点恢复坐标": {
+        "attach": {
+            "description": "没读到恢复时，点选中之后那一排中间的恢复"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            995,
+            681
+        ],
+        "post_delay": 300,
+        "max_hit": 2,
+        "next": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_补开仓库": {
+        "attach": {
+            "description": "批量存入没出现。可能仓库被点关了，再开一次，并从第 1 页重来"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "max_hit": 2,
+        "next": [
+            "存放_点仓库图标"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_点仓库坐标"
+        ]
+    },
+    "存放_准备失败退出": {
+        "attach": {
+            "description": "先回到主界面，再让任务失败。返回途中不点确认存入"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "存放_离开后": "存放_标记失败"
+        },
+        "next": [
+            "存放_退出循环"
+        ]
+    },
+    "存放_退出循环": {
+        "attach": {
+            "description": "右上角已经是主菜单图标就停。否则点返回。安卓返回键在批量模式没有用"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_主界面菜单",
+            "存放_点返回"
+        ],
+        "timeout": 1500,
+        "rate_limit": 350,
+        "on_error": [
+            "存放_点返回坐标",
+            "存放_直接失败"
+        ]
+    },
+    "存放_主界面菜单": {
+        "attach": {
+            "description": "认出主菜单图标说明已经回到主界面。这里只识别，不再点它"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/主菜单.png",
+        "roi": [
+            1080,
+            0,
+            200,
+            90
+        ],
+        "threshold": 0.85,
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_离开后",
+                "anchor": true
+            }
+        ]
+    },
+    "存放_点返回": {
+        "attach": {
+            "description": "点右上角返回。仓库、背包和功能菜单的箭头都在这一小块里"
+        },
+        "recognition": "TemplateMatch",
+        "template": [
+            "storage/返回_界面.png",
+            "storage/返回_菜单.png"
+        ],
+        "roi": [
+            1080,
+            0,
+            200,
+            90
+        ],
+        "threshold": 0.82,
+        "order_by": "Score",
+        "action": "Click",
+        "post_delay": 400,
+        "max_hit": 6,
+        "next": [
+            "存放_退出循环"
+        ]
+    },
+    "存放_点返回坐标": {
+        "attach": {
+            "description": "箭头模板没对上时点右上角。批量、仓库和菜单的箭头都经过这个点"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1188,
+            32
+        ],
+        "post_delay": 400,
+        "max_hit": 4,
+        "next": [
+            "存放_退出循环"
+        ],
+        "on_error": [
+            "存放_直接失败"
+        ]
+    },
+    "存放_结束": {
+        "attach": {
+            "description": "正常结束，人在主界面"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "存放_标记失败": {
+        "attach": {
+            "description": "人已经回到主界面，或返回次数用完。接着用一个必然失败的识别让任务报失败"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_失败哨兵"
+        ],
+        "timeout": 400
+    },
+    "存放_直接失败": {
+        "attach": {
+            "description": "还没点进界面，或返回也失败。同样让任务报失败"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_失败哨兵"
+        ],
+        "timeout": 400
+    },
+    "存放_失败哨兵": {
+        "attach": {
+            "description": "主界面不会出现这句。超时后进入错误处理"
+        },
+        "recognition": "OCR",
+        "expected": "存放原料任务失败哨兵",
+        "roi": [
+            0,
+            0,
+            30,
+            24
+        ],
+        "threshold": 0.3,
+        "action": "DoNothing",
+        "timeout": 200
+    }
+}
