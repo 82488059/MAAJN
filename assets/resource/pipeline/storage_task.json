@@ -401,7 +401,7 @@
             "存放_页签加号": "存放_第1页是加号"
         },
         "next": [
-            "存放_看页签锁"
+            "存放_先看本页数字"
         ]
     },
     "存放_开锁第2页": {
@@ -421,7 +421,7 @@
             "存放_页签加号": "存放_第2页是加号"
         },
         "next": [
-            "存放_看页签锁"
+            "存放_先看本页数字"
         ]
     },
     "存放_开锁第3页": {
@@ -441,12 +441,30 @@
             "存放_页签加号": "存放_第3页是加号"
         },
         "next": [
+            "存放_先看本页数字"
+        ]
+    },
+    "存放_先看本页数字": {
+        "attach": {
+            "description": "先看页签是不是已经是数字。是的话直接下一页，不再对已解开的页签空认解锁可获得"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_本页签数字",
+                "anchor": true
+            }
+        ],
+        "timeout": 600,
+        "rate_limit": 200,
+        "on_error": [
             "存放_看页签锁"
         ]
     },
     "存放_看页签锁": {
         "attach": {
-            "description": "先认中间的解锁可获得。没有再单独看这一页的页签是不是加号。都没有就换下一页"
+            "description": "页签上不是数字时，再认中间的解锁可获得。没有再单独看是不是加号"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -1217,7 +1235,7 @@
     },
     "存放_点选中草药": {
         "attach": {
-            "description": "只点还带着红标的草药。模板裁掉了底部叠放数字，点击阈值 0.75。点一下会弹出详情"
+            "description": "只点还带着红标的草药。现有图是药囊上半，不含红标。点击阈值 0.82。点一下会弹出详情"
         },
         "recognition": "TemplateMatch",
         "template": "storage/草药_选中.png",
@@ -1227,7 +1245,7 @@
             470,
             530
         ],
-        "threshold": 0.75,
+        "threshold": 0.82,
         "order_by": "Score",
         "action": "Click",
         "post_delay": 300,
@@ -1310,7 +1328,7 @@
     },
     "存放_草药仍选中": {
         "attach": {
-            "description": "草药还有红标。阈值 0.65，比点选的 0.75 低，宁可拦住也不许点确认存入"
+            "description": "草药还有红标。阈值 0.72。实机里别的格子最高 0.649，低于这个值才不会误拦"
         },
         "recognition": "TemplateMatch",
         "template": "storage/草药_选中.png",
@@ -1320,7 +1338,7 @@
             470,
             530
         ],
-        "threshold": 0.65,
+        "threshold": 0.72,
         "order_by": "Score",
         "action": "DoNothing",
         "next": [
@@ -1348,7 +1366,7 @@
     },
     "存放_还有别的原料": {
         "attach": {
-            "description": "别的格子还带着红标，说明这一页还有空位而且背包里还有别的原料"
+            "description": "别的格子还带着红标。模板只留红标本身，阈值 0.9。旧图带格子边，盐碗只到 0.671"
         },
         "recognition": "TemplateMatch",
         "template": "storage/红标.png",
@@ -1358,7 +1376,7 @@
             470,
             530
         ],
-        "threshold": 0.8,
+        "threshold": 0.9,
         "action": "DoNothing",
         "next": [
             "存放_点确认存入"
