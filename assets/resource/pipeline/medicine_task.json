@@ -2951,10 +2951,10 @@
     },
     "买药_点击清河商店": {
         "attach": {
-            "description": "获取途径里点清河生活杂物商店。底部一行可能只露出「清河生活杂物」，ROI 收到 y 600"
+            "description": "只点完整的「清河生活杂物商店」。不含生活物资、支援箱、捕猎、仓库取出、兑换商店、不见山、钓鱼、采集。首屏只有支援箱时对不上，改去列表内下滑，最多 3 次"
         },
         "recognition": "OCR",
-        "expected": "清河生活杂物",
+        "expected": "^(?!.*生活物资)(?!.*支援箱)(?!.*捕猎)(?!.*仓库取出)(?!.*兑换商店)(?!.*不见山)(?!.*钓鱼)(?!.*采集).*清河生活杂物商店",
         "roi": [
             540,
             330,
@@ -2975,10 +2975,10 @@
     },
     "买药_点击开封商店": {
         "attach": {
-            "description": "获取途径里点开封生活杂物商店。底部一行可能只露出「开封生活杂物」，ROI 收到 y 600"
+            "description": "只点完整的「开封生活杂物商店」。不含生活物资、支援箱、捕猎、仓库取出、兑换商店、不见山、钓鱼、采集。首屏只有支援箱时对不上，改去列表内下滑，最多 3 次"
         },
         "recognition": "OCR",
-        "expected": "开封生活杂物",
+        "expected": "^(?!.*生活物资)(?!.*支援箱)(?!.*捕猎)(?!.*仓库取出)(?!.*兑换商店)(?!.*不见山)(?!.*钓鱼)(?!.*采集).*开封生活杂物商店",
         "roi": [
             540,
             330,
@@ -2999,27 +2999,27 @@
     },
     "买药_清河途径上滑": {
         "attach": {
-            "description": "当前画面没有清河生活杂物。在弹窗列表内向下翻：手指从 (700, 520) 到 (700, 380)，两点都在列表上，不滑到外面把弹窗关掉。停稳后再认。最多 3 次里的第 1 次"
+            "description": "当前画面没有完整的清河生活杂物商店。在列表右侧空白从 (745, 560) 滑到 (745, 420)，y 差 140，历时 600 毫秒，避开条目中心，避免被收成点击。不滑出弹窗。停稳后再认。最多 3 次里的第 1 次"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -3039,22 +3039,22 @@
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -3074,22 +3074,22 @@
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -3104,27 +3104,27 @@
     },
     "买药_开封途径上滑": {
         "attach": {
-            "description": "当前画面没有开封生活杂物。在弹窗列表内向下翻，手指从 (700, 520) 到 (700, 380)，不滑出列表。和清河分开。最多 3 次里的第 1 次"
+            "description": "当前画面没有完整的开封生活杂物商店。在列表右侧空白从 (745, 560) 滑到 (745, 420)，历时 600 毫秒，避开条目中心。不滑出列表。和清河分开。最多 3 次里的第 1 次"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -3144,22 +3144,22 @@
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -3179,22 +3179,22 @@
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -3209,10 +3209,10 @@
     },
     "买药_点击胡牛儿商店": {
         "attach": {
-            "description": "获取途径里点胡牛儿动使杂货"
+            "description": "只点完整的「胡牛儿动使杂货」。不含生活物资、支援箱、捕猎、仓库取出、兑换商店、不见山、钓鱼、采集。首屏没有这几个字就在列表内下滑，最多 3 次"
         },
         "recognition": "OCR",
-        "expected": "胡牛儿动使杂货",
+        "expected": "^(?!.*生活物资)(?!.*支援箱)(?!.*捕猎)(?!.*仓库取出)(?!.*兑换商店)(?!.*不见山)(?!.*钓鱼)(?!.*采集).*胡牛儿动使杂货",
         "roi": [
             480,
             260,
@@ -3233,27 +3233,27 @@
     },
     "买药_胡牛儿途径上滑": {
         "attach": {
-            "description": "当前画面没有胡牛儿动使杂货。在弹窗列表内向下翻，手指从 (700, 520) 到 (700, 380)，不滑出列表，也不点捕猎或仓库取出。最多 3 次里的第 1 次"
+            "description": "当前画面没有完整的胡牛儿动使杂货。在列表右侧空白从 (745, 560) 滑到 (745, 420)，历时 600 毫秒，避开条目中心。不滑出列表，也不点捕猎或仓库取出。最多 3 次里的第 1 次"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -3273,22 +3273,22 @@
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -3308,22 +3308,22 @@
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -6693,27 +6693,27 @@
     },
     "买药_提交途径下滑": {
         "attach": {
-            "description": "当前画面没有商店条目。在弹窗列表内向下翻，手指从 (700, 520) 到 (700, 380)，两点都在列表上。停稳后再认。第 1 次"
+            "description": "当前画面没有完整店名。在列表右侧空白从 (745, 560) 滑到 (745, 420)，历时 600 毫秒，避开条目中心，避免点开支援箱。不滑出列表。停稳后再认。第 1 次"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -6733,22 +6733,22 @@
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -6768,22 +6768,22 @@
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
-            700,
-            520
+            745,
+            560
         ],
         "end": [
-            700,
-            380
+            745,
+            420
         ],
-        "duration": 400,
-        "end_hold": 80,
+        "duration": 600,
+        "end_hold": 120,
         "post_wait_freezes": {
             "time": 400,
             "timeout": 1200,
             "rate_limit": 100,
             "target": [
-                700,
-                450
+                640,
+                480
             ],
             "threshold": 0.95
         },
@@ -6798,17 +6798,10 @@
     },
     "买药_提交找商店": {
         "attach": {
-            "description": "获取途径里只点商店：杂货摊、货柜、生活杂物、动使、杂货、杂物。不点仓库取出，也不点钓鱼或采集。当前画面没有时由前面的下滑节点再找；点到店但没进成才返回"
+            "description": "只点完整店名：清河生活杂物商店、开封生活杂物商店、胡牛儿动使杂货、杂货摊、货柜。不认「生活物资」「生活杂物」「杂物」这类短串，避免点到生活物资支援箱。捕猎、仓库取出、兑换商店、不见山、钓鱼、采集也不点。当前画面没有就先下滑再认"
         },
         "recognition": "OCR",
-        "expected": [
-            "杂货摊",
-            "货柜",
-            "生活杂物",
-            "动使",
-            "杂货",
-            "杂物"
-        ],
+        "expected": "^(?!.*生活物资)(?!.*支援箱)(?!.*捕猎)(?!.*仓库取出)(?!.*兑换商店)(?!.*不见山)(?!.*钓鱼)(?!.*采集).*(?:清河生活杂物商店|开封生活杂物商店|胡牛儿动使杂货|杂货摊|货柜)",
         "roi": [
             400,
             180,
