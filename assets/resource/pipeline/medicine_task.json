@@ -38,7 +38,7 @@
     },
     "买药_点击温无双坐标": {
         "attach": {
-            "description": "OCR 未命中时，点对话条实测中心（1600x900 的 1031,516 ×0.8）"
+            "description": "OCR 未命中时，点对话条实测中心（1600x900 的 1031,516 ×0.8）。领奖回到大世界后还要再进货运，这里最多 4 次"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -47,7 +47,7 @@
             413
         ],
         "post_delay": 400,
-        "max_hit": 2,
+        "max_hit": 4,
         "next": [
             "买药_寻找货运选项"
         ],
@@ -89,7 +89,7 @@
         "action": "Click",
         "post_wait_freezes": 700,
         "post_delay": 300,
-        "max_hit": 4,
+        "max_hit": 6,
         "next": [
             "买药_确认货运界面"
         ],
@@ -100,7 +100,7 @@
     },
     "买药_点对话展开选项": {
         "attach": {
-            "description": "选项未出现时点底部对话文本，最多 5 次，再回到选项识别"
+            "description": "选项未出现时点底部对话文本，最多 12 次，再回到选项识别。次数放宽是为了领奖后重新进货运"
         },
         "recognition": "OCR",
         "expected": [
@@ -119,7 +119,7 @@
         "action": "Click",
         "post_wait_freezes": 400,
         "post_delay": 350,
-        "max_hit": 5,
+        "max_hit": 12,
         "next": [
             "买药_寻找货运选项"
         ],
@@ -130,7 +130,7 @@
     },
     "买药_点击百业货运坐标": {
         "attach": {
-            "description": "OCR 未点到选项时，点百业货运实测中心（1156,620 ×0.8）"
+            "description": "OCR 未点到选项时，点百业货运实测中心（1156,620 ×0.8）。领奖后还要再进，这里最多 3 次"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -140,7 +140,7 @@
         ],
         "post_wait_freezes": 700,
         "post_delay": 300,
-        "max_hit": 1,
+        "max_hit": 3,
         "next": [
             "买药_确认货运界面"
         ],
@@ -225,7 +225,7 @@
     },
     "买药_准备清河": {
         "attach": {
-            "description": "先去清河。从生活杂物候选的第一张开始，和开封用同一排序"
+            "description": "先去清河。从生活杂物候选的第一张开始，和开封用同一排序。本轮还没进过药店，三家都没有入口时改去看轮次"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -239,7 +239,8 @@
             "买药_本店保1": "买药_清河_确保数量为1",
             "买药_本店输入": "买药_清河_输入数量1",
             "买药_本店买满": "买药_清河_点击最大",
-            "买药_本店买满确认": "买药_清河_确认买满"
+            "买药_本店买满确认": "买药_清河_确认买满",
+            "买药_三店都没有": "买药_轮次检查"
         },
         "next": [
             "买药_生活杂物候选0"
@@ -277,7 +278,7 @@
     },
     "买药_准备胡牛儿": {
         "attach": {
-            "description": "最后去胡牛儿买枯茱萸。入口卡都会试，都进不去就正常结束"
+            "description": "最后去胡牛儿买枯茱萸。入口卡都会试。都进不去时，看本轮有没有进过药店"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -323,11 +324,18 @@
     },
     "买药_胡牛儿跳过_无入口": {
         "attach": {
-            "description": "胡牛儿没有可用入口。任务正常结束"
+            "description": "胡牛儿没有可用入口。本轮没进过药店就去看轮次：第一轮和第二轮买一种提交一种，第三轮失败。已经进过店就正常结束"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
+            {
+                "name": "买药_三店都没有",
+                "anchor": true
+            }
+        ],
+        "timeout": 1500,
+        "on_error": [
             "买药_结束"
         ]
     },
@@ -2127,7 +2135,7 @@
     },
     "买药_确认商店": {
         "attach": {
-            "description": "确认进入生活杂物商店。货架停稳后按这家店的锚点找草药，先看当前画面"
+            "description": "确认进入生活杂物商店。货架停稳后按这家店的锚点找草药，先看当前画面。这一轮已经进过店，三家都没有入口时正常结束，不再提交材料"
         },
         "recognition": "OCR",
         "expected": "生活杂物",
@@ -2140,6 +2148,9 @@
         "threshold": 0.45,
         "action": "DoNothing",
         "post_delay": 100,
+        "anchor": {
+            "买药_三店都没有": "买药_结束"
+        },
         "next": [
             {
                 "name": "买药_本店找货",
@@ -2665,7 +2676,7 @@
     },
     "买药_确认胡牛儿": {
         "attach": {
-            "description": "确认进入胡牛儿动使杂货。货架停稳后按这家店的锚点找枯茱萸，先看当前画面"
+            "description": "确认进入胡牛儿动使杂货。货架停稳后按这家店的锚点找枯茱萸，先看当前画面。这一轮已经进过店，三家都没有入口时正常结束，不再提交材料"
         },
         "recognition": "OCR",
         "expected": "胡牛儿动使杂货",
@@ -2678,6 +2689,9 @@
         "threshold": 0.4,
         "action": "DoNothing",
         "post_delay": 100,
+        "anchor": {
+            "买药_三店都没有": "买药_结束"
+        },
         "next": [
             {
                 "name": "买药_本店找货",
@@ -4768,9 +4782,1629 @@
             "买药_强制结束"
         ]
     },
+    "买药_轮次检查": {
+        "attach": {
+            "description": "三家药店都没进成。读左上角「百业货运·第x轮」。认到第三轮就失败，否则开始买一种提交一种"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_是第三轮"
+        ],
+        "timeout": 1500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_开始提交"
+        ]
+    },
+    "买药_是第三轮": {
+        "attach": {
+            "description": "轮次是中文数字。只把「第三轮」当成第三轮，正则第\\s*三\\s*轮；也接受第\\s*3\\s*轮。第一轮、第二轮不会命中"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "第\\s*三\\s*轮",
+            "第\\s*3\\s*轮"
+        ],
+        "roi": [
+            20,
+            0,
+            520,
+            78
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "买药_第三轮失败"
+        ]
+    },
+    "买药_第三轮失败": {
+        "attach": {
+            "description": "第三轮仍然没有材料能打开药店。不提交、不领奖，用哨兵让任务失败"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_第三轮失败哨兵"
+        ],
+        "timeout": 400
+    },
+    "买药_第三轮失败哨兵": {
+        "attach": {
+            "description": "货运界面不会出现这句。超时后任务返回失败"
+        },
+        "recognition": "OCR",
+        "expected": "第三轮仍无商店任务失败哨兵",
+        "roi": [
+            0,
+            0,
+            30,
+            24
+        ],
+        "threshold": 0.3,
+        "action": "DoNothing",
+        "timeout": 200
+    },
+    "买药_开始提交": {
+        "attach": {
+            "description": "第一轮或第二轮，三家药店都没有入口。宝箱旁计数已经到 5/8 就直接领奖，否则从第一张材料卡开始买一种提交一种"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_计数已满五"
+        ],
+        "timeout": 1000,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交卡0"
+        ]
+    },
+    "买药_提交卡0": {
+        "attach": {
+            "description": "点第 1 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，否则去获取途径"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            270,
+            300
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "anchor": {
+            "买药_这张之后": "买药_提交卡1"
+        },
+        "next": [
+            "买药_卡0看已提交"
+        ]
+    },
+    "买药_卡0看已提交": {
+        "attach": {
+            "description": "看第 1 张卡上有没有「已提交」。有就跳过，没有就去买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_卡0已提交"
+        ],
+        "timeout": 500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交看横幅"
+        ]
+    },
+    "买药_卡0已提交": {
+        "attach": {
+            "description": "第 1 张卡已经提交过，换下一张，不重复购买"
+        },
+        "recognition": "OCR",
+        "expected": "已提交",
+        "roi": [
+            200,
+            250,
+            140,
+            130
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交卡1"
+        ]
+    },
+    "买药_提交卡1": {
+        "attach": {
+            "description": "点第 2 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，否则去获取途径"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            414,
+            300
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "anchor": {
+            "买药_这张之后": "买药_提交卡2"
+        },
+        "next": [
+            "买药_卡1看已提交"
+        ]
+    },
+    "买药_卡1看已提交": {
+        "attach": {
+            "description": "看第 2 张卡上有没有「已提交」。有就跳过，没有就去买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_卡1已提交"
+        ],
+        "timeout": 500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交看横幅"
+        ]
+    },
+    "买药_卡1已提交": {
+        "attach": {
+            "description": "第 2 张卡已经提交过，换下一张，不重复购买"
+        },
+        "recognition": "OCR",
+        "expected": "已提交",
+        "roi": [
+            344,
+            250,
+            140,
+            130
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交卡2"
+        ]
+    },
+    "买药_提交卡2": {
+        "attach": {
+            "description": "点第 3 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，否则去获取途径"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            558,
+            300
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "anchor": {
+            "买药_这张之后": "买药_提交卡3"
+        },
+        "next": [
+            "买药_卡2看已提交"
+        ]
+    },
+    "买药_卡2看已提交": {
+        "attach": {
+            "description": "看第 3 张卡上有没有「已提交」。有就跳过，没有就去买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_卡2已提交"
+        ],
+        "timeout": 500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交看横幅"
+        ]
+    },
+    "买药_卡2已提交": {
+        "attach": {
+            "description": "第 3 张卡已经提交过，换下一张，不重复购买"
+        },
+        "recognition": "OCR",
+        "expected": "已提交",
+        "roi": [
+            488,
+            250,
+            140,
+            130
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交卡3"
+        ]
+    },
+    "买药_提交卡3": {
+        "attach": {
+            "description": "点第 4 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，否则去获取途径"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            703,
+            300
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "anchor": {
+            "买药_这张之后": "买药_提交卡4"
+        },
+        "next": [
+            "买药_卡3看已提交"
+        ]
+    },
+    "买药_卡3看已提交": {
+        "attach": {
+            "description": "看第 4 张卡上有没有「已提交」。有就跳过，没有就去买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_卡3已提交"
+        ],
+        "timeout": 500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交看横幅"
+        ]
+    },
+    "买药_卡3已提交": {
+        "attach": {
+            "description": "第 4 张卡已经提交过，换下一张，不重复购买"
+        },
+        "recognition": "OCR",
+        "expected": "已提交",
+        "roi": [
+            633,
+            250,
+            140,
+            130
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交卡4"
+        ]
+    },
+    "买药_提交卡4": {
+        "attach": {
+            "description": "点第 5 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，否则去获取途径"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            270,
+            512
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "anchor": {
+            "买药_这张之后": "买药_提交卡5"
+        },
+        "next": [
+            "买药_卡4看已提交"
+        ]
+    },
+    "买药_卡4看已提交": {
+        "attach": {
+            "description": "看第 5 张卡上有没有「已提交」。有就跳过，没有就去买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_卡4已提交"
+        ],
+        "timeout": 500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交看横幅"
+        ]
+    },
+    "买药_卡4已提交": {
+        "attach": {
+            "description": "第 5 张卡已经提交过，换下一张，不重复购买"
+        },
+        "recognition": "OCR",
+        "expected": "已提交",
+        "roi": [
+            200,
+            462,
+            140,
+            130
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交卡5"
+        ]
+    },
+    "买药_提交卡5": {
+        "attach": {
+            "description": "点第 6 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，否则去获取途径"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            414,
+            512
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "anchor": {
+            "买药_这张之后": "买药_提交卡6"
+        },
+        "next": [
+            "买药_卡5看已提交"
+        ]
+    },
+    "买药_卡5看已提交": {
+        "attach": {
+            "description": "看第 6 张卡上有没有「已提交」。有就跳过，没有就去买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_卡5已提交"
+        ],
+        "timeout": 500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交看横幅"
+        ]
+    },
+    "买药_卡5已提交": {
+        "attach": {
+            "description": "第 6 张卡已经提交过，换下一张，不重复购买"
+        },
+        "recognition": "OCR",
+        "expected": "已提交",
+        "roi": [
+            344,
+            462,
+            140,
+            130
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交卡6"
+        ]
+    },
+    "买药_提交卡6": {
+        "attach": {
+            "description": "点第 7 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，否则去获取途径"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            558,
+            512
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "anchor": {
+            "买药_这张之后": "买药_提交卡7"
+        },
+        "next": [
+            "买药_卡6看已提交"
+        ]
+    },
+    "买药_卡6看已提交": {
+        "attach": {
+            "description": "看第 7 张卡上有没有「已提交」。有就跳过，没有就去买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_卡6已提交"
+        ],
+        "timeout": 500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交看横幅"
+        ]
+    },
+    "买药_卡6已提交": {
+        "attach": {
+            "description": "第 7 张卡已经提交过，换下一张，不重复购买"
+        },
+        "recognition": "OCR",
+        "expected": "已提交",
+        "roi": [
+            488,
+            462,
+            140,
+            130
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交卡7"
+        ]
+    },
+    "买药_提交卡7": {
+        "attach": {
+            "description": "点第 8 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，否则去获取途径"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            703,
+            512
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "anchor": {
+            "买药_这张之后": "买药_提交未满五"
+        },
+        "next": [
+            "买药_卡7看已提交"
+        ]
+    },
+    "买药_卡7看已提交": {
+        "attach": {
+            "description": "看第 8 张卡上有没有「已提交」。有就跳过，没有就去买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_卡7已提交"
+        ],
+        "timeout": 500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交看横幅"
+        ]
+    },
+    "买药_卡7已提交": {
+        "attach": {
+            "description": "第 8 张卡已经提交过，换下一张，不重复购买"
+        },
+        "recognition": "OCR",
+        "expected": "已提交",
+        "roi": [
+            633,
+            462,
+            140,
+            130
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交未满五"
+        ]
+    },
+    "买药_提交看横幅": {
+        "attach": {
+            "description": "买材料前先看货运上有没有派对横幅。有就点标题栏空白，没有就点获取途径"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "买药_点横幅": "买药_提交_点掉横幅",
+            "买药_横幅之后": "买药_提交等途径"
+        },
+        "next": [
+            "买药_横幅还在"
+        ],
+        "timeout": 400,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交等途径"
+        ]
+    },
+    "买药_提交_点掉横幅": {
+        "attach": {
+            "description": "提交材料时货运上有横幅。点标题栏正中空白 (640, 32)，最多 3 次。不点返回、卡片和提交"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            640,
+            32
+        ],
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 3,
+        "next": [
+            "买药_横幅再看"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_横幅没点掉"
+        ]
+    },
+    "买药_提交等途径": {
+        "attach": {
+            "description": "等右侧「获取途径」。认不到就点实测坐标"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_提交点途径"
+        ],
+        "timeout": 2000,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交点途径坐标"
+        ]
+    },
+    "买药_提交点途径": {
+        "attach": {
+            "description": "点这张卡的获取途径，只在按钮那一块里认"
+        },
+        "recognition": "OCR",
+        "expected": "获取途径",
+        "roi": [
+            840,
+            280,
+            280,
+            120
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "买药_提交找商店"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_提交关弹窗"
+        ]
+    },
+    "买药_提交点途径坐标": {
+        "attach": {
+            "description": "获取途径 OCR 没命中时，点 1600x900 的 (1250, 425) ×0.8"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1000,
+            340
+        ],
+        "post_delay": 400,
+        "max_hit": 8,
+        "next": [
+            "买药_提交找商店"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_提交关弹窗"
+        ]
+    },
+    "买药_提交找商店": {
+        "attach": {
+            "description": "获取途径里只点商店：杂货摊、货柜、生活杂物、动使、杂货、杂物。不点仓库取出，也不点钓鱼或采集。没有商店就关弹窗换下一张"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "杂货摊",
+            "货柜",
+            "生活杂物",
+            "动使",
+            "杂货",
+            "杂物"
+        ],
+        "roi": [
+            400,
+            180,
+            560,
+            460
+        ],
+        "threshold": 0.4,
+        "order_by": "Vertical",
+        "action": "Click",
+        "post_wait_freezes": 700,
+        "post_delay": 300,
+        "next": [
+            "买药_提交确认进店"
+        ],
+        "timeout": 3500,
+        "on_error": [
+            "买药_提交点返回跳过"
+        ]
+    },
+    "买药_提交关弹窗": {
+        "attach": {
+            "description": "这张卡的获取途径里没有商店。点左侧空白 (400, 300) 关掉弹窗，换下一张。不点仓库取出"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            400,
+            300
+        ],
+        "post_delay": 400,
+        "next": [
+            {
+                "name": "买药_这张之后",
+                "anchor": true
+            }
+        ]
+    },
+    "买药_提交确认进店": {
+        "attach": {
+            "description": "右下角出现「购买」才算进了商店。材料应已选中且数量是缺口。看不到购买就离开，不点库存不足"
+        },
+        "recognition": "OCR",
+        "expected": "购买",
+        "roi": [
+            1040,
+            640,
+            220,
+            75
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交看价入口"
+        ]
+    },
+    "买药_提交看价入口": {
+        "attach": {
+            "description": "购买前看一眼单价。数量栏上方若读到 5000 或更高就不买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_提交看价格"
+        ],
+        "timeout": 600,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交买入口"
+        ]
+    },
+    "买药_提交买入口": {
+        "attach": {
+            "description": "单价没到 5000，或没读到价格。等右下角购买，认不到再点坐标"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_提交点购买"
+        ],
+        "timeout": 2000,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交点购买坐标"
+        ]
+    },
+    "买药_提交看价格": {
+        "attach": {
+            "description": "在数量栏上方认单价。5000、5,000 或五位数以上就放弃这张。这块区域是估的，认不到就照常购买"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "(?:[5-9]\\d{3}|[5-9][,，]\\d{3}|\\d{5,})"
+        ],
+        "roi": [
+            1000,
+            400,
+            240,
+            140
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交价过高"
+        ]
+    },
+    "买药_提交价过高": {
+        "attach": {
+            "description": "这一份看起来不低于 5000。不点购买，回货运换下一张"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_提交点返回跳过"
+        ]
+    },
+    "买药_提交点购买": {
+        "attach": {
+            "description": "只点右下角「购买」。数量沿用商店已经填好的缺口，不去改加减和最大"
+        },
+        "recognition": "OCR",
+        "expected": "购买",
+        "roi": [
+            1040,
+            640,
+            220,
+            75
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "买药_提交处理结果"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_提交点购买坐标"
+        ]
+    },
+    "买药_提交点购买坐标": {
+        "attach": {
+            "description": "购买 OCR 没命中时，点 1600x900 的 (1422, 847) ×0.8。每张卡最多一次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1138,
+            678
+        ],
+        "post_delay": 400,
+        "max_hit": 8,
+        "next": [
+            "买药_提交处理结果"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_提交点返回跳过"
+        ]
+    },
+    "买药_提交处理结果": {
+        "attach": {
+            "description": "等购买成功或兑换横条。两个词都在才点确认；只有一边、或文字对不上，就点取消。不点手动兑换，不勾本赛季不再提醒"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_提交看到成功",
+            "买药_提交看到补足",
+            "买药_提交看到不足部分",
+            "买药_提交点取消",
+            "买药_提交无弹窗"
+        ],
+        "timeout": 4000,
+        "rate_limit": 400,
+        "on_error": [
+            "买药_提交点返回跳过"
+        ]
+    },
+    "买药_提交看到成功": {
+        "attach": {
+            "description": "顶部出现购买成功。回货运，准备点提交"
+        },
+        "recognition": "OCR",
+        "expected": "购买成功",
+        "roi": [
+            480,
+            100,
+            320,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交点返回"
+        ]
+    },
+    "买药_提交看到补足": {
+        "attach": {
+            "description": "兑换横条里有补足。必须同时看到不足部分才点确认"
+        },
+        "recognition": "OCR",
+        "expected": "补足",
+        "roi": [
+            400,
+            290,
+            460,
+            70
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交核对不足"
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "买药_提交点取消"
+        ]
+    },
+    "买药_提交核对不足": {
+        "attach": {
+            "description": "已经看到补足，再确认横条里有不足部分，才点金色确认"
+        },
+        "recognition": "OCR",
+        "expected": "不足部分",
+        "roi": [
+            400,
+            290,
+            460,
+            70
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交点确认",
+            "买药_提交点确认坐标"
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "买药_提交点取消"
+        ]
+    },
+    "买药_提交看到不足部分": {
+        "attach": {
+            "description": "兑换横条里有不足部分。必须同时看到补足才点确认"
+        },
+        "recognition": "OCR",
+        "expected": "不足部分",
+        "roi": [
+            400,
+            290,
+            460,
+            70
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交确认有补足"
+        ],
+        "timeout": 1200,
+        "on_error": [
+            "买药_提交点取消"
+        ]
+    },
+    "买药_提交确认有补足": {
+        "attach": {
+            "description": "已经看到不足部分，再确认有补足，才点金色确认。没有补足就点取消"
+        },
+        "recognition": "OCR",
+        "expected": "补足",
+        "roi": [
+            400,
+            290,
+            460,
+            70
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交点确认",
+            "买药_提交点确认坐标"
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "买药_提交点取消"
+        ]
+    },
+    "买药_提交点确认": {
+        "attach": {
+            "description": "只点兑换横条右侧金色确认。不点手动兑换，也不勾本赛季不再提醒"
+        },
+        "recognition": "OCR",
+        "expected": "确认",
+        "roi": [
+            990,
+            440,
+            190,
+            70
+        ],
+        "threshold": 0.45,
+        "order_by": "Horizontal",
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "买药_提交等成功"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_提交点确认坐标"
+        ]
+    },
+    "买药_提交点确认坐标": {
+        "attach": {
+            "description": "金色确认的实测中心 (1082, 475)。这一路每张卡最多点一次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1082,
+            475
+        ],
+        "post_delay": 500,
+        "max_hit": 8,
+        "next": [
+            "买药_提交等成功"
+        ]
+    },
+    "买药_提交等成功": {
+        "attach": {
+            "description": "点过确认后等购买成功，再回货运点提交"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_提交看到成功"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_提交点返回"
+        ]
+    },
+    "买药_提交点取消": {
+        "attach": {
+            "description": "兑换文字对不上，或不能补足。点左下取消，不买这张，回货运换下一张"
+        },
+        "recognition": "OCR",
+        "expected": "取消",
+        "roi": [
+            60,
+            440,
+            180,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "买药_提交点返回跳过"
+        ],
+        "timeout": 1200,
+        "on_error": [
+            "买药_提交点取消坐标"
+        ]
+    },
+    "买药_提交点取消坐标": {
+        "attach": {
+            "description": "取消 OCR 没命中时点左下 (140, 475)，然后离开这家店"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            140,
+            475
+        ],
+        "post_delay": 400,
+        "max_hit": 8,
+        "next": [
+            "买药_提交点返回跳过"
+        ]
+    },
+    "买药_提交无弹窗": {
+        "attach": {
+            "description": "没有成功提示，也没有兑换或失败弹窗，当作已经买上，回货运点提交"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "确定",
+            "确认",
+            "取消",
+            "知道了",
+            "不足部分",
+            "补足",
+            "手动兑换",
+            "本赛季不再提醒",
+            "售罄",
+            "无法购买",
+            "点击空白",
+            "购买成功"
+        ],
+        "roi": [
+            280,
+            90,
+            720,
+            430
+        ],
+        "threshold": 0.45,
+        "inverse": true,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交点返回"
+        ]
+    },
+    "买药_提交点返回": {
+        "attach": {
+            "description": "材料买完，点右上角返回，回到百业货运后点提交"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1125,
+            0,
+            145,
+            68
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "post_wait_freezes": 600,
+        "post_delay": 300,
+        "next": [
+            "买药_提交确认回货运"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_提交返回坐标"
+        ]
+    },
+    "买药_提交返回坐标": {
+        "attach": {
+            "description": "返回模板没命中时，点 1600x900 的 (1481, 42) ×0.8，然后确认回到货运"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1185,
+            34
+        ],
+        "post_wait_freezes": 600,
+        "post_delay": 300,
+        "max_hit": 8,
+        "next": [
+            "买药_提交确认回货运"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_强制结束"
+        ]
+    },
+    "买药_提交确认回货运": {
+        "attach": {
+            "description": "标题栏认出百业货运。先看横幅，再点这张卡的提交"
+        },
+        "recognition": "OCR",
+        "expected": "百业货运",
+        "roi": [
+            40,
+            0,
+            420,
+            72
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "买药_提交交前横幅"
+        ]
+    },
+    "买药_提交交前横幅": {
+        "attach": {
+            "description": "点提交前再看一次派对横幅。有就点空白，没有就点提交"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "买药_点横幅": "买药_提交_点掉横幅",
+            "买药_横幅之后": "买药_提交等按钮"
+        },
+        "next": [
+            "买药_横幅还在"
+        ],
+        "timeout": 400,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交等按钮"
+        ]
+    },
+    "买药_提交等按钮": {
+        "attach": {
+            "description": "等右下角「提交」。认不到就点实测坐标。点过才计入这一轮的提交次数"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_提交点提交"
+        ],
+        "timeout": 2000,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交点提交坐标"
+        ]
+    },
+    "买药_提交点提交": {
+        "attach": {
+            "description": "卡片已经是 2/2 时，点右下角金色「提交」。只在按钮那一块里认"
+        },
+        "recognition": "OCR",
+        "expected": "提交",
+        "roi": [
+            980,
+            630,
+            270,
+            80
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 300,
+        "next": [
+            "买药_提交已点"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            {
+                "name": "买药_这张之后",
+                "anchor": true
+            }
+        ]
+    },
+    "买药_提交点提交坐标": {
+        "attach": {
+            "description": "提交 OCR 没命中时，点 1600x900 的 (1422, 847) ×0.8。这一轮最多 5 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1138,
+            678
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 300,
+        "max_hit": 5,
+        "next": [
+            "买药_提交已点"
+        ],
+        "on_error": [
+            {
+                "name": "买药_这张之后",
+                "anchor": true
+            }
+        ]
+    },
+    "买药_提交已点": {
+        "attach": {
+            "description": "这一张已经点过提交。计数到 5/8 就领奖；读不到计数时，自己点满 5 次也去领奖"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_计数已满五"
+        ],
+        "timeout": 1000,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_未满五",
+            "买药_点宝箱"
+        ]
+    },
+    "买药_计数已满五": {
+        "attach": {
+            "description": "宝箱右侧的提交计数。读到 5/8、6/8、7/8 或 8/8 就去点宝箱领奖，不再买后面的卡"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "[5-8]\\s*[/／]\\s*8"
+        ],
+        "roi": [
+            270,
+            70,
+            280,
+            110
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "买药_点宝箱"
+        ]
+    },
+    "买药_未满五": {
+        "attach": {
+            "description": "这次提交后计数还不到 5。最多放行 4 次，第 5 次提交后改去领奖"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "max_hit": 4,
+        "next": [
+            {
+                "name": "买药_这张之后",
+                "anchor": true
+            }
+        ]
+    },
+    "买药_提交未满五": {
+        "attach": {
+            "description": "八张卡都看过，商店材料仍凑不满 5 份。不点宝箱，停在百业货运，任务正常结束"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_结束"
+        ]
+    },
+    "买药_提交点返回跳过": {
+        "attach": {
+            "description": "这张不买了。点右上角返回，回到货运后换下一张，不点提交"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1125,
+            0,
+            145,
+            68
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "post_wait_freezes": 600,
+        "post_delay": 300,
+        "next": [
+            "买药_提交确认跳过回货运"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_提交返回跳过坐标"
+        ]
+    },
+    "买药_提交返回跳过坐标": {
+        "attach": {
+            "description": "跳过这张时返回模板没命中，点 (1185, 34)，然后换下一张"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1185,
+            34
+        ],
+        "post_wait_freezes": 600,
+        "post_delay": 300,
+        "max_hit": 8,
+        "next": [
+            "买药_提交确认跳过回货运"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_强制结束"
+        ]
+    },
+    "买药_提交确认跳过回货运": {
+        "attach": {
+            "description": "已经回到百业货运，但这张没买成。换下一张，不点提交"
+        },
+        "recognition": "OCR",
+        "expected": "百业货运",
+        "roi": [
+            40,
+            0,
+            420,
+            72
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "买药_这张之后",
+                "anchor": true
+            }
+        ]
+    },
+    "买药_点宝箱": {
+        "attach": {
+            "description": "已经提交满 5 份。点左侧宝箱（1600x900 的 315,163 ×0.8），打开奖励一览"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            252,
+            130
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 300,
+        "next": [
+            "买药_看到奖励一览"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_点领取坐标"
+        ]
+    },
+    "买药_看到奖励一览": {
+        "attach": {
+            "description": "右侧出现奖励一览或领取奖励，才去点领取"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "奖励一览",
+            "领取奖励"
+        ],
+        "roi": [
+            860,
+            0,
+            420,
+            700
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_点领取奖励"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_点领取坐标"
+        ]
+    },
+    "买药_点领取奖励": {
+        "attach": {
+            "description": "点奖励一览底部的领取奖励"
+        },
+        "recognition": "OCR",
+        "expected": "领取奖励",
+        "roi": [
+            900,
+            600,
+            300,
+            110
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "买药_看到领取确认"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_点领取坐标"
+        ]
+    },
+    "买药_点领取坐标": {
+        "attach": {
+            "description": "领取奖励 OCR 没命中时，点 1600x900 的 (1311, 834) ×0.8"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1049,
+            667
+        ],
+        "post_delay": 400,
+        "max_hit": 2,
+        "next": [
+            "买药_看到领取确认"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_强制结束"
+        ]
+    },
+    "买药_看到领取确认": {
+        "attach": {
+            "description": "确认框写着领了就会开启下一轮、拿不到全部奖励。看到这句才点确认"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "是否领取",
+            "无法获得全部奖励",
+            "开启下轮货运"
+        ],
+        "roi": [
+            280,
+            250,
+            760,
+            180
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_点领取确认"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_点领取确认坐标"
+        ]
+    },
+    "买药_点领取确认": {
+        "attach": {
+            "description": "只点确认框右侧的确认，不点取消"
+        },
+        "recognition": "OCR",
+        "expected": "确认",
+        "roi": [
+            960,
+            440,
+            220,
+            80
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "买药_看到轮次完成"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_点领取确认坐标"
+        ]
+    },
+    "买药_点领取确认坐标": {
+        "attach": {
+            "description": "确认 OCR 没命中时，点 1600x900 的 (1326, 600) ×0.8"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1061,
+            480
+        ],
+        "post_delay": 500,
+        "max_hit": 2,
+        "next": [
+            "买药_看到轮次完成"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_强制结束"
+        ]
+    },
+    "买药_看到轮次完成": {
+        "attach": {
+            "description": "出现「已完成当前货运轮次」或「点击空白区域关闭」后，点左上空白关掉"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "已完成当前货运轮次",
+            "点击空白区域"
+        ],
+        "roi": [
+            180,
+            80,
+            920,
+            520
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_点空白关轮次"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_点空白关轮次"
+        ]
+    },
+    "买药_点空白关轮次": {
+        "attach": {
+            "description": "点 1600x900 的 (200, 200) ×0.8 关掉结算。回到温无双身边后，重新走自动买药的对话"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            160,
+            160
+        ],
+        "post_delay": 1000,
+        "next": [
+            "买药_点击温无双对话条"
+        ],
+        "on_error": [
+            "买药_点击温无双坐标"
+        ]
+    },
     "买药_结束": {
         "attach": {
-            "description": "三家都处理完，或最后一家没有入口。停在百业货运，任务正常结束"
+            "description": "三家都处理完，这一轮已经进过店，或材料提交没凑满 5 份。停在百业货运，任务正常结束"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
