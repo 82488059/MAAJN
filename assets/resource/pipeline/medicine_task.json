@@ -151,7 +151,7 @@
     },
     "买药_确认货运界面": {
         "attach": {
-            "description": "确认已进入百业货运界面"
+            "description": "确认已进入百业货运界面。接着先处理派对横幅"
         },
         "recognition": "OCR",
         "expected": "百业货运",
@@ -165,11 +165,62 @@
         "action": "DoNothing",
         "post_delay": 200,
         "next": [
-            "买药_准备清河"
+            "买药_进货运看横幅"
         ],
         "timeout": 1500,
         "on_error": [
             "买药_强制结束"
+        ]
+    },
+    "买药_进货运看横幅": {
+        "attach": {
+            "description": "刚进百业货运。先认派对横幅，没有就去清河"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "买药_点横幅": "买药_进货运_点掉横幅",
+            "买药_横幅之后": "买药_准备清河"
+        },
+        "next": [
+            "买药_横幅还在"
+        ],
+        "timeout": 400,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_准备清河"
+        ]
+    },
+    "买药_进货运_点掉横幅": {
+        "attach": {
+            "description": "刚进百业货运，点标题栏正中空白 (640, 32)，关掉派对横幅。不点返回、货架、数量栏和购买。点完等画面停稳。这里最多 3 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            640,
+            32
+        ],
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 3,
+        "next": [
+            "买药_横幅再看"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_横幅没点掉"
         ]
     },
     "买药_准备清河": {
@@ -2112,72 +2163,191 @@
     },
     "买药_横幅还在": {
         "attach": {
-            "description": "顶部或货架上的「百业派对已开启」会挡住商品格子。只识别，不点击"
+            "description": "认出「百业派对」或「点击空白区域」。只识别，接着点标题栏空白，不点横幅上的字"
         },
         "recognition": "OCR",
-        "expected": "百业派对已开启",
+        "expected": [
+            "百业派对",
+            "点击空白区域"
+        ],
         "roi": [
+            40,
             60,
-            30,
-            1100,
-            380
+            1200,
+            560
         ],
         "threshold": 0.45,
         "action": "DoNothing",
         "next": [
-            "买药_等横幅走"
+            {
+                "name": "买药_点横幅",
+                "anchor": true
+            }
+        ],
+        "timeout": 800,
+        "on_error": [
+            "买药_横幅没点掉"
         ]
     },
-    "买药_等横幅走": {
+    "买药_横幅再看": {
         "attach": {
-            "description": "等横幅自己消失。最多 5 秒，到点就继续找货，避免点进派对界面"
+            "description": "点过空白后等画面停稳，再看横幅还在不在"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
-            "买药_横幅已走"
+            "买药_横幅仍在"
         ],
-        "timeout": 5000,
-        "rate_limit": 400,
+        "timeout": 500,
+        "rate_limit": 200,
         "on_error": [
             {
-                "name": "买药_本店点货",
+                "name": "买药_横幅之后",
                 "anchor": true
             }
         ]
     },
-    "买药_横幅已走": {
+    "买药_横幅仍在": {
         "attach": {
-            "description": "画面上已经没有「百业派对已开启」，开始找商品"
+            "description": "横幅还在，再点一次标题栏空白"
         },
         "recognition": "OCR",
-        "expected": "百业派对已开启",
+        "expected": [
+            "百业派对",
+            "点击空白区域"
+        ],
         "roi": [
+            40,
             60,
-            30,
-            1100,
-            380
+            1200,
+            560
         ],
         "threshold": 0.45,
-        "inverse": true,
         "action": "DoNothing",
         "next": [
             {
-                "name": "买药_本店点货",
+                "name": "买药_点横幅",
                 "anchor": true
             }
         ],
-        "timeout": 1500,
+        "timeout": 300,
+        "rate_limit": 200,
         "on_error": [
+            "买药_横幅没点掉"
+        ]
+    },
+    "买药_横幅没点掉": {
+        "attach": {
+            "description": "空白处已经点过 3 次，横幅还在。不再点，继续后面的步骤"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
             {
-                "name": "买药_本店点货",
+                "name": "买药_横幅之后",
                 "anchor": true
             }
+        ]
+    },
+    "买药_清河_点掉横幅": {
+        "attach": {
+            "description": "清河货架上，点标题栏正中空白 (640, 32)，关掉派对横幅。不点返回、货架、数量栏和购买。点完等画面停稳。这里最多 3 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            640,
+            32
+        ],
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 3,
+        "next": [
+            "买药_横幅再看"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_横幅没点掉"
+        ]
+    },
+    "买药_开封_点掉横幅": {
+        "attach": {
+            "description": "开封货架上，点标题栏正中空白 (640, 32)，关掉派对横幅。不点返回、货架、数量栏和购买。点完等画面停稳。这里最多 3 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            640,
+            32
+        ],
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 3,
+        "next": [
+            "买药_横幅再看"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_横幅没点掉"
+        ]
+    },
+    "买药_胡牛儿_点掉横幅": {
+        "attach": {
+            "description": "胡牛儿货架上，点标题栏正中空白 (640, 32)，关掉派对横幅。不点返回、货架、数量栏和购买。点完等画面停稳。这里最多 3 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            640,
+            32
+        ],
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 3,
+        "next": [
+            "买药_横幅再看"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_横幅没点掉"
         ]
     },
     "买药_清河_等货架": {
         "attach": {
-            "description": "清河先看有没有「百业派对已开启」挡住货架。没有就点草药"
+            "description": "清河先看有没有派对横幅挡住货架。在就点空白关掉，没有就点草药"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -2188,7 +2358,11 @@
         "rate_limit": 200,
         "on_error": [
             "买药_清河_点货"
-        ]
+        ],
+        "anchor": {
+            "买药_点横幅": "买药_清河_点掉横幅",
+            "买药_横幅之后": "买药_清河_点货"
+        }
     },
     "买药_清河_点货": {
         "attach": {
@@ -2321,7 +2495,7 @@
     },
     "买药_开封_等货架": {
         "attach": {
-            "description": "开封先看有没有「百业派对已开启」挡住货架。没有就点草药"
+            "description": "开封先看有没有派对横幅挡住货架。在就点空白关掉，没有就点草药"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -2332,7 +2506,11 @@
         "rate_limit": 200,
         "on_error": [
             "买药_开封_点货"
-        ]
+        ],
+        "anchor": {
+            "买药_点横幅": "买药_开封_点掉横幅",
+            "买药_横幅之后": "买药_开封_点货"
+        }
     },
     "买药_开封_点货": {
         "attach": {
@@ -2523,7 +2701,7 @@
     },
     "买药_胡牛儿_等货架": {
         "attach": {
-            "description": "胡牛儿先看有没有「百业派对已开启」挡住货架。没有就点枯茱萸"
+            "description": "胡牛儿先看有没有派对横幅挡住货架。在就点空白关掉，没有就点枯茱萸"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -2534,7 +2712,11 @@
         "rate_limit": 200,
         "on_error": [
             "买药_胡牛儿_点货"
-        ]
+        ],
+        "anchor": {
+            "买药_点横幅": "买药_胡牛儿_点掉横幅",
+            "买药_横幅之后": "买药_胡牛儿_点货"
+        }
     },
     "买药_胡牛儿_点货": {
         "attach": {
@@ -4462,7 +4644,7 @@
     },
     "买药_确认回到货运": {
         "attach": {
-            "description": "确认回到百业货运，且获取途径弹窗已关掉"
+            "description": "确认回到百业货运。接着先处理派对横幅，再确认获取途径弹窗已关掉"
         },
         "recognition": "OCR",
         "expected": "百业货运",
@@ -4475,12 +4657,63 @@
         "threshold": 0.5,
         "action": "DoNothing",
         "next": [
-            "买药_货运无弹窗"
+            "买药_回货运看横幅"
         ],
         "timeout": 2500,
         "on_error": [
             "买药_关闭途径弹窗",
             "买药_强制结束"
+        ]
+    },
+    "买药_回货运看横幅": {
+        "attach": {
+            "description": "回到百业货运。先认派对横幅，没有就继续确认弹窗已关"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "买药_点横幅": "买药_回货运_点掉横幅",
+            "买药_横幅之后": "买药_货运无弹窗"
+        },
+        "next": [
+            "买药_横幅还在"
+        ],
+        "timeout": 400,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_货运无弹窗"
+        ]
+    },
+    "买药_回货运_点掉横幅": {
+        "attach": {
+            "description": "回到百业货运，点标题栏正中空白 (640, 32)，关掉派对横幅。不点返回、货架、数量栏和购买。点完等画面停稳。这里最多 3 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            640,
+            32
+        ],
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 3,
+        "next": [
+            "买药_横幅再看"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_横幅没点掉"
         ]
     },
     "买药_货运无弹窗": {
