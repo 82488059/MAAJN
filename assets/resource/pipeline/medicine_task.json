@@ -1,7 +1,7 @@
 {
     "自动买药": {
         "attach": {
-            "description": "入口。角色已站在温无双旁，点开对话并买两家杂货铺的草药"
+            "description": "入口。角色已站在温无双旁，清河和开封买草药，胡牛儿买枯茱萸"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -15,7 +15,7 @@
     },
     "买药_点击温无双对话条": {
         "attach": {
-            "description": "点屏幕右侧中部的温无双对话条，不点头顶名牌"
+            "description": "点屏幕右侧中部的温无双对话条。大世界画面不会静止，只等一小段延迟"
         },
         "recognition": "OCR",
         "expected": "温无双",
@@ -27,8 +27,7 @@
         ],
         "threshold": 0.5,
         "action": "Click",
-        "post_wait_freezes": 500,
-        "post_delay": 300,
+        "post_delay": 400,
         "next": [
             "买药_寻找货运选项"
         ],
@@ -47,8 +46,7 @@
             809,
             413
         ],
-        "post_wait_freezes": 500,
-        "post_delay": 300,
+        "post_delay": 400,
         "max_hit": 2,
         "next": [
             "买药_寻找货运选项"
@@ -176,7 +174,7 @@
     },
     "买药_准备清河": {
         "attach": {
-            "description": "先去清河生活杂物商店，买完再去开封"
+            "description": "先去清河生活杂物商店。没有入口材料就改去开封"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -189,36 +187,67 @@
         ],
         "timeout": 6000,
         "on_error": [
-            "买药_无可用材料"
+            "买药_准备开封"
         ]
     },
     "买药_准备开封": {
         "attach": {
-            "description": "再去开封生活杂物商店，买完结束"
+            "description": "再去开封。优先点另一件生活杂物材料，避免和清河用同一张卡"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "anchor": {
             "买药_目标商店": "买药_点击开封商店",
-            "买药_买完返回": "买药_结束"
+            "买药_买完返回": "买药_准备胡牛儿"
         },
+        "next": [
+            "买药_点击商店材料_另一件"
+        ],
+        "timeout": 1800,
+        "on_error": [
+            "买药_开封改点第一件"
+        ]
+    },
+    "买药_开封改点第一件": {
+        "attach": {
+            "description": "没有第二件生活杂物材料时仍用第一件。一件都没有就去胡牛儿"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
         "next": [
             "买药_点击商店材料"
         ],
-        "timeout": 6000,
+        "timeout": 5000,
         "on_error": [
-            "买药_无可用材料"
+            "买药_准备胡牛儿"
+        ]
+    },
+    "买药_准备胡牛儿": {
+        "attach": {
+            "description": "清河和开封之后去胡牛儿动使杂货买枯茱萸。八张卡都对不上就直接结束"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "买药_目标商店": "买药_点击胡牛儿商店",
+            "买药_买完返回": "买药_结束"
+        },
+        "next": [
+            "买药_点击胡牛儿材料"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_结束"
         ]
     },
     "买药_点击商店材料": {
         "attach": {
-            "description": "在 8 张材料卡里点一个生活杂物商店也卖的同名物品"
+            "description": "在 8 张材料卡里点第一件生活杂物商店也卖的同名物品，不含单字"
         },
         "recognition": "OCR",
         "expected": [
             "厚脂肉块",
             "碎肉块",
-            "蛋",
             "蕈菇",
             "野果",
             "河鱼",
@@ -267,7 +296,7 @@
             560,
             270
         ],
-        "threshold": 0.45,
+        "threshold": 0.5,
         "order_by": "Horizontal",
         "index": 0,
         "action": "Click",
@@ -282,14 +311,175 @@
             "买药_关闭途径弹窗"
         ]
     },
-    "买药_无可用材料": {
+    "买药_点击商店材料_另一件": {
         "attach": {
-            "description": "八个材料都不是杂货铺商品，结束任务"
+            "description": "开封优先点另一件生活杂物材料。没有第二件时改回第一件"
         },
-        "recognition": "DirectHit",
-        "action": "DoNothing",
+        "recognition": "OCR",
+        "expected": [
+            "厚脂肉块",
+            "碎肉块",
+            "蕈菇",
+            "野果",
+            "河鱼",
+            "草药",
+            "昆虫",
+            "甲壳",
+            "短毛羽",
+            "粗矿石",
+            "原木",
+            "粗毛皮",
+            "桦木",
+            "白蜡",
+            "冬青木",
+            "枫木",
+            "梨花木",
+            "梅花木",
+            "古松木",
+            "海棠木",
+            "榆木",
+            "胡杨木",
+            "榉木",
+            "柳木",
+            "紫藤木",
+            "桃木",
+            "竹子",
+            "银杏木",
+            "玉兰木"
+        ],
+        "replace": [
+            [
+                "草菇",
+                "蕈菇"
+            ],
+            [
+                "蕈茹",
+                "蕈菇"
+            ],
+            [
+                "白腊",
+                "白蜡"
+            ]
+        ],
+        "roi": [
+            200,
+            350,
+            560,
+            270
+        ],
+        "threshold": 0.5,
+        "order_by": "Horizontal",
+        "index": 1,
+        "action": "Click",
+        "post_wait_freezes": 400,
+        "post_delay": 250,
+        "max_hit": 6,
         "next": [
-            "买药_强制结束"
+            "买药_点击获取途径"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "买药_关闭途径弹窗"
+        ]
+    },
+    "买药_点击胡牛儿材料": {
+        "attach": {
+            "description": "点一张胡牛儿动使杂货也卖的材料卡，用来打开获取途径"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "拔霞供",
+            "神仙酿鱼",
+            "三蔬杂菇",
+            "木箭",
+            "止血散",
+            "盛景路牌",
+            "普通鱼饵",
+            "面食饵",
+            "虫饵",
+            "草饵",
+            "稚子垂纶",
+            "小蟾蜍钓竿",
+            "野山参",
+            "魏紫",
+            "玉楼春",
+            "耶悉茗",
+            "枯茱萸",
+            "一丈红",
+            "寒菌幼株",
+            "东陵瓜",
+            "龙骨",
+            "独山蓝玉",
+            "青礞石",
+            "寒铁",
+            "独山玉",
+            "洛口石首鱼",
+            "鳙鱼",
+            "鲈鱼",
+            "河豚",
+            "脂尾羊皮",
+            "豪猪棘券",
+            "鼬皮",
+            "吠鹿肉",
+            "獾子油",
+            "野鸡肉",
+            "长尾羽",
+            "柳叶羽",
+            "火箭"
+        ],
+        "replace": [
+            [
+                "耗悉茗",
+                "耶悉茗"
+            ],
+            [
+                "鱼饥",
+                "鱼饵"
+            ],
+            [
+                "面食饥",
+                "面食饵"
+            ],
+            [
+                "虫饥",
+                "虫饵"
+            ],
+            [
+                "草饥",
+                "草饵"
+            ],
+            [
+                "青礙石",
+                "青礞石"
+            ],
+            [
+                "长尾玽",
+                "长尾羽"
+            ],
+            [
+                "柳叶玽",
+                "柳叶羽"
+            ]
+        ],
+        "roi": [
+            200,
+            350,
+            560,
+            270
+        ],
+        "threshold": 0.5,
+        "order_by": "Horizontal",
+        "index": 0,
+        "action": "Click",
+        "post_wait_freezes": 400,
+        "post_delay": 250,
+        "max_hit": 4,
+        "next": [
+            "买药_点击获取途径"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_结束"
         ]
     },
     "买药_点击获取途径": {
@@ -361,6 +551,30 @@
         "post_delay": 300,
         "next": [
             "买药_确认商店"
+        ],
+        "timeout": 8000,
+        "on_error": [
+            "买药_关闭途径弹窗"
+        ]
+    },
+    "买药_点击胡牛儿商店": {
+        "attach": {
+            "description": "获取途径里点胡牛儿动使杂货"
+        },
+        "recognition": "OCR",
+        "expected": "胡牛儿动使杂货",
+        "roi": [
+            480,
+            260,
+            420,
+            320
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_wait_freezes": 700,
+        "post_delay": 300,
+        "next": [
+            "买药_确认胡牛儿"
         ],
         "timeout": 8000,
         "on_error": [
@@ -462,11 +676,185 @@
         "post_wait_freezes": 400,
         "post_delay": 250,
         "next": [
+            "买药_校验草药标题"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_校验草药标题": {
+        "attach": {
+            "description": "购买前确认右侧详情标题是草药。对不上就放弃这家店，不购买"
+        },
+        "recognition": "OCR",
+        "expected": "草药",
+        "roi": [
+            800,
+            78,
+            250,
+            62
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "next": [
             "买药_设定数量"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_确认胡牛儿": {
+        "attach": {
+            "description": "确认进入胡牛儿动使杂货"
+        },
+        "recognition": "OCR",
+        "expected": "胡牛儿动使杂货",
+        "roi": [
+            15,
+            0,
+            420,
+            72
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "post_delay": 200,
+        "next": [
+            "买药_寻找枯茱萸"
         ],
         "timeout": 2000,
         "on_error": [
-            "买药_返回货运"
+            "买药_关闭途径弹窗"
+        ]
+    },
+    "买药_寻找枯茱萸": {
+        "attach": {
+            "description": "先看枯茱萸是否已在货架上，没有就往下翻"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_点击枯茱萸",
+            "买药_枯茱萸向下翻"
+        ],
+        "timeout": 900,
+        "on_error": [
+            "买药_枯茱萸改向上翻"
+        ]
+    },
+    "买药_枯茱萸向下翻": {
+        "attach": {
+            "description": "手指上滑，露出更下面的行。第五行第一列是枯茱萸"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            300,
+            520
+        ],
+        "end": [
+            300,
+            260
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_delay": 450,
+        "max_hit": 3,
+        "next": [
+            "买药_寻找枯茱萸"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_枯茱萸改向上翻"
+        ]
+    },
+    "买药_枯茱萸改向上翻": {
+        "attach": {
+            "description": "往下翻仍没看到枯茱萸时，改往上翻"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_点击枯茱萸",
+            "买药_枯茱萸向上翻"
+        ],
+        "timeout": 900,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_枯茱萸向上翻": {
+        "attach": {
+            "description": "手指下滑，把更上面的商品拉回来"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            300,
+            260
+        ],
+        "end": [
+            300,
+            520
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_delay": 450,
+        "max_hit": 3,
+        "next": [
+            "买药_枯茱萸改向上翻"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_点击枯茱萸": {
+        "attach": {
+            "description": "点货架上的枯茱萸。只认左侧商品区，不点右侧详情"
+        },
+        "recognition": "OCR",
+        "expected": "枯茱萸",
+        "roi": [
+            40,
+            140,
+            720,
+            500
+        ],
+        "threshold": 0.5,
+        "order_by": "Horizontal",
+        "action": "Click",
+        "post_wait_freezes": 400,
+        "post_delay": 250,
+        "next": [
+            "买药_校验枯茱萸标题"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_校验枯茱萸标题": {
+        "attach": {
+            "description": "购买前确认右侧详情标题是枯茱萸。对不上就放弃这家店，不购买"
+        },
+        "recognition": "OCR",
+        "expected": "枯茱萸",
+        "roi": [
+            800,
+            78,
+            250,
+            62
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "next": [
+            "买药_设定数量"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_放弃本店"
         ]
     },
     "买药_设定数量": {
@@ -480,7 +868,7 @@
         ],
         "timeout": 2000,
         "on_error": [
-            "买药_输入数量1"
+            "买药_放弃本店"
         ]
     },
     "买药_确保数量为1": {
@@ -497,7 +885,8 @@
         "timeout": 1500,
         "rate_limit": 300,
         "on_error": [
-            "买药_输入数量1"
+            "买药_输入数量1",
+            "买药_放弃本店"
         ]
     },
     "买药_数量已是1": {
@@ -519,7 +908,7 @@
         ],
         "timeout": 4000,
         "on_error": [
-            "买药_点击购买坐标"
+            "买药_放弃本店"
         ]
     },
     "买药_点击减号": {
@@ -575,7 +964,7 @@
         ],
         "timeout": 2000,
         "on_error": [
-            "买药_点击购买"
+            "买药_放弃本店"
         ]
     },
     "买药_输入文本1": {
@@ -588,11 +977,11 @@
         "post_delay": 400,
         "next": [
             "买药_数量键盘确定",
-            "买药_点击购买"
+            "买药_确保数量为1"
         ],
         "timeout": 2500,
         "on_error": [
-            "买药_点击购买坐标"
+            "买药_放弃本店"
         ]
     },
     "买药_数量键盘确定": {
@@ -616,11 +1005,11 @@
         "post_delay": 300,
         "max_hit": 1,
         "next": [
-            "买药_点击购买"
+            "买药_确保数量为1"
         ],
         "timeout": 3000,
         "on_error": [
-            "买药_点击购买坐标"
+            "买药_放弃本店"
         ]
     },
     "买药_点击最大": {
@@ -663,12 +1052,12 @@
         ],
         "timeout": 3000,
         "on_error": [
-            "买药_点击购买坐标"
+            "买药_放弃本店"
         ]
     },
     "买药_点击购买": {
         "attach": {
-            "description": "点右下角购买"
+            "description": "点右下角购买。识别不到购买按钮就放弃这家店，不按坐标盲点"
         },
         "recognition": "OCR",
         "expected": "购买",
@@ -680,61 +1069,269 @@
         ],
         "threshold": 0.5,
         "action": "Click",
-        "post_wait_freezes": 600,
-        "post_delay": 300,
+        "post_delay": 400,
         "next": [
             "买药_处理购买结果"
         ],
         "timeout": 1500,
         "on_error": [
-            "买药_点击购买坐标"
-        ]
-    },
-    "买药_点击购买坐标": {
-        "attach": {
-            "description": "OCR 未点到购买时，点按钮实测中心（1400,848 ×0.8）"
-        },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            1126,
-            679
-        ],
-        "post_wait_freezes": 600,
-        "post_delay": 300,
-        "max_hit": 2,
-        "next": [
-            "买药_处理购买结果"
-        ],
-        "timeout": 1500,
-        "on_error": [
-            "买药_返回货运"
+            "买药_放弃本店"
         ]
     },
     "买药_处理购买结果": {
         "attach": {
-            "description": "购买后处理确认框、买不了或没有弹窗，避免卡住"
+            "description": "先认购买成功和可补足的兑换弹窗。看不懂或补不足就点取消"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
+            "买药_看到购买成功",
+            "买药_兑换看到补足",
+            "买药_兑换看到不足部分",
+            "买药_点兑换取消",
             "买药_购买失败",
             "买药_购买确认",
             "买药_无购买弹窗"
         ],
-        "timeout": 3000,
+        "timeout": 4000,
         "rate_limit": 400,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_看到购买成功": {
+        "attach": {
+            "description": "顶部正中的购买成功提示"
+        },
+        "recognition": "OCR",
+        "expected": "购买成功",
+        "roi": [
+            480,
+            100,
+            320,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "买药_返回货运"
+        ],
+        "timeout": 2000,
         "on_error": [
             "买药_返回货运"
         ]
     },
+    "买药_兑换看到补足": {
+        "attach": {
+            "description": "横条里有补足，表示另一种钱够补上，点金色确认"
+        },
+        "recognition": "OCR",
+        "expected": "补足",
+        "roi": [
+            400,
+            290,
+            460,
+            70
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_兑换补足后核对不足部分"
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "买药_不足时点取消"
+        ]
+    },
+    "买药_兑换补足后核对不足部分": {
+        "attach": {
+            "description": "已经看到补足，再核对同一横条里有不足部分，两项都在才点确认"
+        },
+        "recognition": "OCR",
+        "expected": "不足部分",
+        "roi": [
+            400,
+            290,
+            460,
+            70
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_点兑换确认",
+            "买药_点兑换确认坐标"
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "买药_不足时点取消"
+        ]
+    },
+    "买药_兑换看到不足部分": {
+        "attach": {
+            "description": "兑换弹窗横条里有不足部分，接着确认能不能补足"
+        },
+        "recognition": "OCR",
+        "expected": "不足部分",
+        "roi": [
+            400,
+            290,
+            460,
+            70
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_兑换确认有补足"
+        ],
+        "timeout": 1200,
+        "on_error": [
+            "买药_点兑换取消"
+        ]
+    },
+    "买药_兑换确认有补足": {
+        "attach": {
+            "description": "同一行还有补足，说明另一种钱够补上，去点金色确认"
+        },
+        "recognition": "OCR",
+        "expected": "补足",
+        "roi": [
+            400,
+            290,
+            460,
+            70
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "买药_点兑换确认"
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "买药_不足时点取消"
+        ]
+    },
+    "买药_点兑换确认": {
+        "attach": {
+            "description": "只点右侧金色确认。不点手动兑换，也不勾本赛季不再提醒"
+        },
+        "recognition": "OCR",
+        "expected": "确认",
+        "roi": [
+            990,
+            440,
+            190,
+            70
+        ],
+        "threshold": 0.45,
+        "order_by": "Horizontal",
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "买药_等待购买成功"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_点兑换确认坐标"
+        ]
+    },
+    "买药_点兑换确认坐标": {
+        "attach": {
+            "description": "金色确认的实测中心 (1082, 475)，在手动兑换右侧"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1082,
+            475
+        ],
+        "post_delay": 500,
+        "max_hit": 1,
+        "next": [
+            "买药_等待购买成功"
+        ]
+    },
+    "买药_等待购买成功": {
+        "attach": {
+            "description": "点过确认后等购买成功提示，然后回百业货运"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_看到购买成功"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "买药_返回货运"
+        ]
+    },
+    "买药_点兑换取消": {
+        "attach": {
+            "description": "弹窗上有取消时点左下取消，然后放弃这家店"
+        },
+        "recognition": "OCR",
+        "expected": "取消",
+        "roi": [
+            60,
+            440,
+            180,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "买药_放弃本店"
+        ],
+        "timeout": 1200,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_不足时点取消": {
+        "attach": {
+            "description": "已经确认弹窗在，但文字不是可补足。点左下取消"
+        },
+        "recognition": "OCR",
+        "expected": "取消",
+        "roi": [
+            60,
+            440,
+            180,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "买药_放弃本店"
+        ],
+        "timeout": 1200,
+        "on_error": [
+            "买药_点兑换取消坐标"
+        ]
+    },
+    "买药_点兑换取消坐标": {
+        "attach": {
+            "description": "取消按钮的实测中心 (140, 475)"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            140,
+            475
+        ],
+        "post_delay": 400,
+        "max_hit": 1,
+        "next": [
+            "买药_放弃本店"
+        ]
+    },
     "买药_购买失败": {
         "attach": {
-            "description": "周库存为 0、钱不够或其他买不了的提示，关掉后继续"
+            "description": "周库存为 0 或其他明确买不了的提示。钱不够交给兑换弹窗"
         },
         "recognition": "OCR",
         "expected": [
-            "不足",
             "售罄",
             "已达上限",
             "无法购买"
@@ -757,13 +1354,11 @@
     },
     "买药_关闭购买弹窗": {
         "attach": {
-            "description": "关掉购买失败或确认弹窗"
+            "description": "关掉失败提示。不点确认，避免误点兑换"
         },
         "recognition": "OCR",
         "expected": [
             "取消",
-            "确定",
-            "确认",
             "知道了",
             "关闭"
         ],
@@ -787,21 +1382,18 @@
     },
     "买药_购买确认": {
         "attach": {
-            "description": "购买成功或二次确认"
+            "description": "其他需要点掉的提示。购买成功和兑换确认不走这里"
         },
         "recognition": "OCR",
         "expected": [
-            "确定",
-            "确认",
             "知道了",
-            "购买成功",
             "点击空白"
         ],
         "roi": [
             280,
-            160,
+            140,
             680,
-            400
+            220
         ],
         "threshold": 0.5,
         "action": "Click",
@@ -817,7 +1409,7 @@
     },
     "买药_无购买弹窗": {
         "attach": {
-            "description": "画面中间没有确认或失败文案，视为可以离开商店"
+            "description": "没有成功提示，也没有兑换或失败弹窗，才离开商店"
         },
         "recognition": "OCR",
         "expected": [
@@ -825,16 +1417,20 @@
             "确认",
             "取消",
             "知道了",
-            "不足",
+            "不足部分",
+            "补足",
+            "手动兑换",
+            "本赛季不再提醒",
             "售罄",
             "无法购买",
-            "点击空白"
+            "点击空白",
+            "购买成功"
         ],
         "roi": [
-            300,
-            180,
-            640,
-            360
+            280,
+            90,
+            720,
+            430
         ],
         "threshold": 0.45,
         "inverse": true,
@@ -847,19 +1443,29 @@
             "买药_点击返回坐标"
         ]
     },
+    "买药_放弃本店": {
+        "attach": {
+            "description": "数量、标题或钱不够时放弃这家店，回到百业货运继续下一家"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_返回货运"
+        ]
+    },
     "买药_返回货运": {
         "attach": {
-            "description": "点商店右上角返回，回到百业货运"
+            "description": "点商店右上角返回。只在右上角小范围匹配，阈值收紧到 0.8"
         },
         "recognition": "TemplateMatch",
         "template": "medicine/返回.png",
         "roi": [
-            1100,
+            1125,
             0,
-            180,
-            80
+            145,
+            68
         ],
-        "threshold": 0.65,
+        "threshold": 0.8,
         "action": "Click",
         "post_wait_freezes": 600,
         "post_delay": 300,
@@ -917,12 +1523,13 @@
     },
     "买药_货运无弹窗": {
         "attach": {
-            "description": "清河/开封入口不可见，说明弹窗已关"
+            "description": "获取途径弹窗已关掉，再去下一家或结束"
         },
         "recognition": "OCR",
         "expected": [
             "清河生活杂物商店",
-            "开封生活杂物商店"
+            "开封生活杂物商店",
+            "胡牛儿动使杂货"
         ],
         "roi": [
             520,
@@ -968,7 +1575,7 @@
     },
     "买药_结束": {
         "attach": {
-            "description": "两家都处理完，停在百业货运界面"
+            "description": "三家都处理完，或胡牛儿没有入口材料，停在百业货运界面"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
