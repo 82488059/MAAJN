@@ -1337,12 +1337,12 @@
     },
     "存放_取消枯茱萸": {
         "attach": {
-            "description": "等最多 800 毫秒找带着红标的枯茱萸。没有就去复核，不在同一帧里跳过"
+            "description": "等最多 800 毫秒找带着红标的枯茱萸。没有就去复核。点完之后先再认一次，红标还在就补点，不在同一帧里跳过"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "anchor": {
-            "存放_关详情后": "存放_去复核"
+            "存放_关详情后": "存放_枯茱萸再认"
         },
         "next": [
             "存放_点选中枯茱萸"
@@ -1368,7 +1368,7 @@
     },
     "存放_点选中枯茱萸": {
         "attach": {
-            "description": "只点还带着红标的枯茱萸。模板只要图标上半，不含叠放数字，点击阈值 0.75"
+            "description": "点这张卡右上角的红标来取消。模板仍是图标上半，红标在右缘。点整块中心只会弹出详情，第 2 页上红标还在。点击框收在红标上"
         },
         "recognition": "TemplateMatch",
         "template": "storage/枯茱萸_选中.png",
@@ -1381,7 +1381,13 @@
         "threshold": 0.75,
         "order_by": "Score",
         "action": "Click",
-        "post_delay": 300,
+        "target_offset": [
+            42,
+            -1,
+            -32,
+            -18
+        ],
+        "post_delay": 200,
         "max_hit": 12,
         "next": [
             "存放_关详情"
@@ -1389,7 +1395,7 @@
     },
     "存放_关详情": {
         "attach": {
-            "description": "点左下空白关掉物品详情。不点详情里的确认"
+            "description": "点左下空白关掉物品详情。不点详情里的确认。等背包区域停稳再往下认，避免详情还没收完就被复核看成仍选中"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -1397,12 +1403,116 @@
             240,
             656
         ],
-        "post_delay": 400,
+        "post_wait_freezes": {
+            "time": 350,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                790,
+                110,
+                470,
+                520
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 150,
         "next": [
             {
                 "name": "存放_关详情后",
                 "anchor": true
             }
+        ]
+    },
+    "存放_枯茱萸再认": {
+        "attach": {
+            "description": "详情关掉、背包停稳之后，再看枯茱萸还有没有红标。没有就去复核。这一等不和直接命中排在一起"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_枯茱萸还带红标"
+        ],
+        "timeout": 700,
+        "rate_limit": 150,
+        "on_error": [
+            "存放_去复核"
+        ]
+    },
+    "存放_枯茱萸还带红标": {
+        "attach": {
+            "description": "第一下没取消掉。阈值 0.75，和点选一样，旁边格子不会因此再被点一次"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/枯茱萸_选中.png",
+        "roi": [
+            790,
+            110,
+            470,
+            530
+        ],
+        "threshold": 0.75,
+        "order_by": "Score",
+        "action": "DoNothing",
+        "next": [
+            "存放_再点枯茱萸红标"
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "存放_选择不对"
+        ]
+    },
+    "存放_再点枯茱萸红标": {
+        "attach": {
+            "description": "再点一次右上角红标。最多 6 次，三页各补两次也不会把次数用完"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/枯茱萸_选中.png",
+        "roi": [
+            790,
+            110,
+            470,
+            530
+        ],
+        "threshold": 0.75,
+        "order_by": "Score",
+        "action": "Click",
+        "target_offset": [
+            42,
+            -1,
+            -32,
+            -18
+        ],
+        "post_delay": 200,
+        "max_hit": 6,
+        "next": [
+            "存放_枯茱萸再关详情"
+        ]
+    },
+    "存放_枯茱萸再关详情": {
+        "attach": {
+            "description": "补点之后再点一次左下空白关掉详情，等背包停稳，然后做最后复核"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            240,
+            656
+        ],
+        "post_wait_freezes": {
+            "time": 350,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                790,
+                110,
+                470,
+                520
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 150,
+        "next": [
+            "存放_去复核"
         ]
     },
     "存放_复核": {
@@ -1455,7 +1565,7 @@
     },
     "存放_枯茱萸仍选中": {
         "attach": {
-            "description": "枯茱萸还有红标。阈值 0.65，比点选的 0.75 低，宁可拦住也不许点确认存入"
+            "description": "枯茱萸还有红标。阈值 0.75，和点选相同。r6 第 2 页旁边的格子在 0.65 上会误拦；真选中能到点选阈值。没取消干净仍然不许点确认存入"
         },
         "recognition": "TemplateMatch",
         "template": "storage/枯茱萸_选中.png",
@@ -1465,7 +1575,7 @@
             470,
             530
         ],
-        "threshold": 0.65,
+        "threshold": 0.75,
         "order_by": "Score",
         "action": "DoNothing",
         "next": [
