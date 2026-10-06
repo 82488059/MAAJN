@@ -388,7 +388,7 @@
     },
     "存放_开锁第1页": {
         "attach": {
-            "description": "存之前先点第 1 页。页签上是加号就先解开，不是加号就当已经解开。用户已同意消耗玉环"
+            "description": "存之前先点第 1 页。页签上是加号就先解开。不是加号不点解锁。灰色图标稍后不往里存。用户已同意消耗玉环"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -408,7 +408,7 @@
     },
     "存放_开锁第2页": {
         "attach": {
-            "description": "存之前先点第 2 页。页签上是加号就先解开，不是加号就当已经解开。用户已同意消耗玉环"
+            "description": "存之前先点第 2 页。页签上是加号就先解开。不是加号不点解锁。灰色图标稍后不往里存。用户已同意消耗玉环"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -428,7 +428,7 @@
     },
     "存放_开锁第3页": {
         "attach": {
-            "description": "存之前先点第 3 页。页签上是加号就先解开，不是加号就当已经解开。用户已同意消耗玉环"
+            "description": "存之前先点第 3 页。页签上是加号就先解开。不是加号不点解锁。灰色图标稍后不往里存。用户已同意消耗玉环"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -448,7 +448,7 @@
     },
     "存放_看本页加号": {
         "attach": {
-            "description": "用加号模板看当前页签。对上就去解锁。对不上立刻当已解开，不再认数字，也不再空等解锁可获得"
+            "description": "用加号模板看当前页签。对上就去解锁。对不上不点解锁。灰色图标不当成已解开的可存页，存的时候会跳过"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -469,10 +469,13 @@
     },
     "存放_第1页是加号": {
         "attach": {
-            "description": "第 1 页页签对上加号模板，说明这一页还锁着"
+            "description": "第 1 页页签对上加号（选中或未选中），说明这一页还锁着，可以解锁"
         },
         "recognition": "TemplateMatch",
-        "template": "storage/页签加号.png",
+        "template": [
+            "storage/页签加号.png",
+            "storage/页签加号_未选中.png"
+        ],
         "roi": [
             504,
             68,
@@ -492,10 +495,13 @@
     },
     "存放_第2页是加号": {
         "attach": {
-            "description": "第 2 页页签对上加号模板，说明这一页还锁着"
+            "description": "第 2 页页签对上加号（选中或未选中），说明这一页还锁着，可以解锁"
         },
         "recognition": "TemplateMatch",
-        "template": "storage/页签加号.png",
+        "template": [
+            "storage/页签加号.png",
+            "storage/页签加号_未选中.png"
+        ],
         "roi": [
             567,
             68,
@@ -515,10 +521,13 @@
     },
     "存放_第3页是加号": {
         "attach": {
-            "description": "第 3 页页签对上加号模板，说明这一页还锁着"
+            "description": "第 3 页页签对上加号（选中或未选中），说明这一页还锁着，可以解锁"
         },
         "recognition": "TemplateMatch",
-        "template": "storage/页签加号.png",
+        "template": [
+            "storage/页签加号.png",
+            "storage/页签加号_未选中.png"
+        ],
         "roi": [
             640,
             68,
@@ -700,7 +709,10 @@
             "description": "解开之后第 1 页如果还是加号，就当没解开"
         },
         "recognition": "TemplateMatch",
-        "template": "storage/页签加号.png",
+        "template": [
+            "storage/页签加号.png",
+            "storage/页签加号_未选中.png"
+        ],
         "roi": [
             504,
             68,
@@ -719,7 +731,10 @@
             "description": "解开之后第 2 页如果还是加号，就当没解开"
         },
         "recognition": "TemplateMatch",
-        "template": "storage/页签加号.png",
+        "template": [
+            "storage/页签加号.png",
+            "storage/页签加号_未选中.png"
+        ],
         "roi": [
             567,
             68,
@@ -738,7 +753,10 @@
             "description": "解开之后第 3 页如果还是加号，就当没解开"
         },
         "recognition": "TemplateMatch",
-        "template": "storage/页签加号.png",
+        "template": [
+            "storage/页签加号.png",
+            "storage/页签加号_未选中.png"
+        ],
         "roi": [
             640,
             68,
@@ -764,7 +782,7 @@
     },
     "存放_第1页": {
         "attach": {
-            "description": "页签已经看过。切到第 1 页，先解开这一页格子上的锁，再存"
+            "description": "点第 1 页。先看是不是加号：是就先解锁再存。是灰色图标就不存，去下一页。否则再解格子上的锁"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -774,15 +792,19 @@
         ],
         "post_delay": 450,
         "anchor": {
-            "存放_下一页": "存放_第2页"
+            "存放_下一页": "存放_第2页",
+            "存放_存前加号": "存放_第1页是加号",
+            "存放_存前灰标": "存放_第1页是灰标",
+            "存放_开锁之后": "存放_存前看灰标",
+            "存放_本页加号还在": "存放_第1页加号还在"
         },
         "next": [
-            "存放_解锁循环"
+            "存放_存前看加号"
         ]
     },
     "存放_第2页": {
         "attach": {
-            "description": "切到仓库第 2 页。页签锁在存之前已经处理，这里只解格子上的锁"
+            "description": "点第 2 页。先看是不是加号：是就先解锁再存。是灰色图标就不存，去下一页。否则再解格子上的锁"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -792,15 +814,19 @@
         ],
         "post_delay": 450,
         "anchor": {
-            "存放_下一页": "存放_第3页"
+            "存放_下一页": "存放_第3页",
+            "存放_存前加号": "存放_第2页是加号",
+            "存放_存前灰标": "存放_第2页是灰标",
+            "存放_开锁之后": "存放_存前看灰标",
+            "存放_本页加号还在": "存放_第2页加号还在"
         },
         "next": [
-            "存放_解锁循环"
+            "存放_存前看加号"
         ]
     },
     "存放_第3页": {
         "attach": {
-            "description": "切到仓库第 3 页。页签锁在存之前已经处理，这里只解格子上的锁"
+            "description": "点第 3 页。先看是不是加号：是就先解锁再存。是灰色图标就不存，去下一页。否则再解格子上的锁"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -810,10 +836,120 @@
         ],
         "post_delay": 450,
         "anchor": {
-            "存放_下一页": "存放_页已尽"
+            "存放_下一页": "存放_页已尽",
+            "存放_存前加号": "存放_第3页是加号",
+            "存放_存前灰标": "存放_第3页是灰标",
+            "存放_开锁之后": "存放_存前看灰标",
+            "存放_本页加号还在": "存放_第3页加号还在"
         },
         "next": [
+            "存放_存前看加号"
+        ]
+    },
+    "存放_存前看加号": {
+        "attach": {
+            "description": "存放前再看这一页是不是加号。对上就先解锁，不对再看灰色图标"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_存前加号",
+                "anchor": true
+            }
+        ],
+        "timeout": 300,
+        "rate_limit": 100,
+        "on_error": [
+            "存放_存前看灰标"
+        ]
+    },
+    "存放_存前看灰标": {
+        "attach": {
+            "description": "不是加号时看灰色图标。对上就不往这一页存。对不上才解格子并存放"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_存前灰标",
+                "anchor": true
+            }
+        ],
+        "timeout": 300,
+        "rate_limit": 100,
+        "on_error": [
             "存放_解锁循环"
+        ]
+    },
+    "存放_第1页是灰标": {
+        "attach": {
+            "description": "第 1 页是还不能解锁的灰色图标。不点解锁，也不往里存"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/页签灰标.png",
+        "roi": [
+            504,
+            68,
+            48,
+            44
+        ],
+        "threshold": 0.75,
+        "order_by": "Score",
+        "action": "DoNothing",
+        "next": [
+            "存放_灰标不存"
+        ]
+    },
+    "存放_第2页是灰标": {
+        "attach": {
+            "description": "第 2 页是还不能解锁的灰色图标。不点解锁，也不往里存"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/页签灰标.png",
+        "roi": [
+            567,
+            68,
+            48,
+            44
+        ],
+        "threshold": 0.75,
+        "order_by": "Score",
+        "action": "DoNothing",
+        "next": [
+            "存放_灰标不存"
+        ]
+    },
+    "存放_第3页是灰标": {
+        "attach": {
+            "description": "第 3 页是还不能解锁的灰色图标。不点解锁，也不往里存"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/页签灰标.png",
+        "roi": [
+            640,
+            68,
+            48,
+            44
+        ],
+        "threshold": 0.75,
+        "order_by": "Score",
+        "action": "DoNothing",
+        "next": [
+            "存放_灰标不存"
+        ]
+    },
+    "存放_灰标不存": {
+        "attach": {
+            "description": "灰色页签跳过。下一页若也是灰标会再跳过，没有下一页就结束"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_下一页",
+                "anchor": true
+            }
         ]
     },
     "存放_页已尽": {
