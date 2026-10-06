@@ -286,7 +286,7 @@
         "action": "DoNothing",
         "anchor": {
             "买药_目标商店": "买药_点击胡牛儿商店",
-            "买药_途径没店": "买药_换卡前关弹窗",
+            "买药_途径没店": "买药_胡牛儿途径上滑",
             "买药_买完返回": "买药_结束",
             "买药_无入口跳过": "买药_胡牛儿跳过_无入口",
             "买药_已买完跳过": "买药_胡牛儿跳过_已买完",
@@ -2039,7 +2039,7 @@
     },
     "买药_点击获取途径": {
         "attach": {
-            "description": "点右侧获取途径。弹窗里暂时没有这家店时走锚点「买药_途径没店」：清河和开封在弹窗里上滑后再认，胡牛儿直接关弹窗换卡。没有获取途径按钮时不会进这个节点"
+            "description": "点右侧获取途径。弹窗当前画面没有这家店时走锚点「买药_途径没店」：在列表内部向下翻，最多 3 次，仍没有才关弹窗。没有获取途径按钮时不会进这个节点"
         },
         "recognition": "OCR",
         "expected": "获取途径",
@@ -2118,7 +2118,7 @@
     },
     "买药_清河途径上滑": {
         "attach": {
-            "description": "弹窗里还没看到清河生活杂物。在弹窗内手指上滑，露出更下面的一行，停稳后再认。每张卡先滑这一次"
+            "description": "当前画面没有清河生活杂物。在弹窗列表内向下翻：手指从 (700, 520) 到 (700, 380)，两点都在列表上，不滑到外面把弹窗关掉。停稳后再认。最多 3 次里的第 1 次"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -2153,7 +2153,42 @@
     },
     "买药_清河途径再滑": {
         "attach": {
-            "description": "上滑一次仍没有清河生活杂物。再滑一次，还没有就关弹窗换下一张"
+            "description": "向下翻一次仍没有清河生活杂物。再在列表内滑一次，停稳后再认"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_点击清河商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_清河途径三滑"
+        ]
+    },
+    "买药_清河途径三滑": {
+        "attach": {
+            "description": "列表内再翻一次仍没有清河生活杂物。这是第 3 次，滑完再认，还没有就关弹窗换下一张"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -2188,7 +2223,7 @@
     },
     "买药_开封途径上滑": {
         "attach": {
-            "description": "弹窗里还没看到开封生活杂物。在弹窗内手指上滑，露出更下面的一行，停稳后再认。和清河分开，次数不共用"
+            "description": "当前画面没有开封生活杂物。在弹窗列表内向下翻，手指从 (700, 520) 到 (700, 380)，不滑出列表。和清河分开。最多 3 次里的第 1 次"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -2223,7 +2258,42 @@
     },
     "买药_开封途径再滑": {
         "attach": {
-            "description": "上滑一次仍没有开封生活杂物。再滑一次，还没有就关弹窗换下一张"
+            "description": "向下翻一次仍没有开封生活杂物。再在列表内滑一次，停稳后再认"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_点击开封商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_开封途径三滑"
+        ]
+    },
+    "买药_开封途径三滑": {
+        "attach": {
+            "description": "列表内再翻一次仍没有开封生活杂物。这是第 3 次，滑完再认，还没有就关弹窗换下一张"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -2278,6 +2348,111 @@
         "timeout": 8000,
         "on_error": [
             "买药_关闭途径弹窗"
+        ]
+    },
+    "买药_胡牛儿途径上滑": {
+        "attach": {
+            "description": "当前画面没有胡牛儿动使杂货。在弹窗列表内向下翻，手指从 (700, 520) 到 (700, 380)，不滑出列表，也不点捕猎或仓库取出。最多 3 次里的第 1 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_点击胡牛儿商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_胡牛儿途径再滑"
+        ]
+    },
+    "买药_胡牛儿途径再滑": {
+        "attach": {
+            "description": "向下翻一次仍没有胡牛儿动使杂货。再在列表内滑一次，停稳后再认"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_点击胡牛儿商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_胡牛儿途径三滑"
+        ]
+    },
+    "买药_胡牛儿途径三滑": {
+        "attach": {
+            "description": "列表内再翻一次仍没有胡牛儿动使杂货。这是第 3 次，滑完再认，还没有就关弹窗换下一张"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_点击胡牛儿商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_换卡前关弹窗"
         ]
     },
     "买药_确认商店": {
@@ -5593,7 +5768,7 @@
         "action": "Click",
         "post_delay": 400,
         "next": [
-            "买药_提交找商店"
+            "买药_提交等商店"
         ],
         "timeout": 2500,
         "on_error": [
@@ -5613,16 +5788,136 @@
         "post_delay": 400,
         "max_hit": 8,
         "next": [
-            "买药_提交找商店"
+            "买药_提交等商店"
         ],
         "timeout": 2500,
         "on_error": [
             "买药_提交关弹窗"
         ]
     },
+    "买药_提交等商店": {
+        "attach": {
+            "description": "先认弹窗当前画面上的商店。没有就在列表内部向下翻，最多 3 次。不点仓库取出、钓鱼或采集"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_提交找商店"
+        ],
+        "timeout": 2000,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_提交途径下滑"
+        ]
+    },
+    "买药_提交途径下滑": {
+        "attach": {
+            "description": "当前画面没有商店条目。在弹窗列表内向下翻，手指从 (700, 520) 到 (700, 380)，两点都在列表上。停稳后再认。第 1 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_提交找商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_提交途径再滑"
+        ]
+    },
+    "买药_提交途径再滑": {
+        "attach": {
+            "description": "向下翻一次仍没有商店。再在列表内滑一次，停稳后再认。不点仓库取出"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_提交找商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_提交途径三滑"
+        ]
+    },
+    "买药_提交途径三滑": {
+        "attach": {
+            "description": "列表内第 3 次向下翻。滑完再认商店，还没有就关弹窗换下一张，不点非商店来源"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_提交找商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_提交关弹窗"
+        ]
+    },
     "买药_提交找商店": {
         "attach": {
-            "description": "获取途径里只点商店：杂货摊、货柜、生活杂物、动使、杂货、杂物。不点仓库取出，也不点钓鱼或采集。没有商店就关弹窗换下一张"
+            "description": "获取途径里只点商店：杂货摊、货柜、生活杂物、动使、杂货、杂物。不点仓库取出，也不点钓鱼或采集。当前画面没有时由前面的下滑节点再找；点到店但没进成才返回"
         },
         "recognition": "OCR",
         "expected": [
