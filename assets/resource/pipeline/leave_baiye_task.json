@@ -10,7 +10,7 @@
         ],
         "timeout": 3000,
         "on_error": [
-            "离百业_点退出坐标"
+            "离开百业_结束失败"
         ]
     },
     "离百业_点退出": {
@@ -34,27 +34,7 @@
         ],
         "timeout": 8000,
         "on_error": [
-            "离百业_点退出坐标"
-        ]
-    },
-    "离百业_点退出坐标": {
-        "attach": {
-            "description": "退出 OCR 失败时点右上 (1120, 36)。点完只等确认弹窗"
-        },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            1120,
-            36
-        ],
-        "post_delay": 600,
-        "max_hit": 2,
-        "next": [
-            "离百业_点确认"
-        ],
-        "timeout": 8000,
-        "on_error": [
-            "离百业_先等加载"
+            "离开百业_结束失败"
         ]
     },
     "离百业_点确认": {
@@ -72,26 +52,6 @@
         "threshold": 0.45,
         "action": "Click",
         "post_delay": 800,
-        "next": [
-            "离百业_先等加载"
-        ],
-        "timeout": 5000,
-        "on_error": [
-            "离百业_点确认坐标"
-        ]
-    },
-    "离百业_点确认坐标": {
-        "attach": {
-            "description": "离开确认 OCR 失败时点金色确认中心 (1082, 475)。点完同样先等加载，再认主菜单"
-        },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            1082,
-            475
-        ],
-        "post_delay": 800,
-        "max_hit": 1,
         "next": [
             "离百业_先等加载"
         ],
@@ -179,7 +139,7 @@
     },
     "离开百业_结束失败": {
         "attach": {
-            "description": "点不了退出或加载超时仍无主菜单。不继续炼药"
+            "description": "没认到退出或确认，或加载超时仍无主菜单。不点固定坐标，不继续炼药"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",

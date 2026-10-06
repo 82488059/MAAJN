@@ -142,7 +142,7 @@
     },
     "回百业_点确定坐标": {
         "attach": {
-            "description": "确定 OCR 未命中时点金色确认中心（与离百业_点确认坐标同）。timeout 120 秒同样留给进驻地加载，等右上退出"
+            "description": "确定 OCR 未命中时点金色确认中心 (1082, 475)。timeout 120 秒同样留给进驻地加载，等右上退出"
         },
         "recognition": "DirectHit",
         "action": "Click",
