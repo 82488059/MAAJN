@@ -1,7 +1,7 @@
 {
     "返回百业": {
         "attach": {
-            "description": "入口。主界面→主菜单→百业→(可能过场)→右下返回驻地→确定→等加载结束（右上出现退出）"
+            "description": "入口。主界面→主菜单→百业→(可能过场)→右下返回驻地→确定→等加载结束（右上出现退出）。结束后走锚点回百业_结束后，未设置则停在门口"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -186,7 +186,25 @@
     },
     "回百业_结束": {
         "attach": {
-            "description": "已回百业驻地（右上已有退出），正常结束"
+            "description": "已回百业驻地门口（右上已有退出）。走锚点回百业_结束后：一条龙寻找温无双；单独返回百业进回百业_收工"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "回百业_结束后",
+                "anchor": true
+            },
+            "回百业_收工"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "回百业_收工"
+        ]
+    },
+    "回百业_收工": {
+        "attach": {
+            "description": "单独返回百业：停在驻地门口，不寻找温无双"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",

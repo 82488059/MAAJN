@@ -1,0 +1,251 @@
+{
+    "找温无双": {
+        "attach": {
+            "description": "入口。返回驻地后人在门口、脸朝正房。朝前走过院子和水渠，门口往右避开门框，进正房，直到右侧出现对话条「温无双」。只走不点。可单独跑"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "找温_直走"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温_直走": {
+        "attach": {
+            "description": "左侧摇杆朝镜头前方。从 (200,420) 滑到 (200,220)，1.5 秒。连走 3 段，过院门、趟水，停在正房门左侧门框前"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            200,
+            420
+        ],
+        "end": [
+            200,
+            220
+        ],
+        "duration": 1500,
+        "post_delay": 600,
+        "max_hit": 3,
+        "next": [
+            "找温_直走",
+            "找温_门口右挪"
+        ],
+        "timeout": 8000,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温_门口右挪": {
+        "attach": {
+            "description": "直走会贴在门左侧。往右滑 0.7 秒，从 (180,400) 到 (360,400)，正对开口"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            180,
+            400
+        ],
+        "end": [
+            360,
+            400
+        ],
+        "duration": 700,
+        "post_delay": 500,
+        "next": [
+            "找温_进门"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温_进门": {
+        "attach": {
+            "description": "朝前 1.2 秒走进正房。水渠可以趟过"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            200,
+            420
+        ],
+        "end": [
+            200,
+            220
+        ],
+        "duration": 1200,
+        "post_delay": 600,
+        "next": [
+            "找温_靠右"
+        ],
+        "timeout": 6000,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温_靠右": {
+        "attach": {
+            "description": "进门后人还偏左。往右滑 0.5 秒，从 (180,400) 到 (340,400)"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            180,
+            400
+        ],
+        "end": [
+            340,
+            400
+        ],
+        "duration": 500,
+        "post_delay": 400,
+        "next": [
+            "找温_靠近"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温_靠近": {
+        "attach": {
+            "description": "再朝前 1 秒，靠近柜台后的温无双"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            200,
+            420
+        ],
+        "end": [
+            200,
+            220
+        ],
+        "duration": 1000,
+        "post_delay": 600,
+        "next": [
+            "找温_看到温无双"
+        ],
+        "timeout": 6000,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温_看到温无双": {
+        "attach": {
+            "description": "右侧对话条「温无双」，与买药要点的是同一条。只认不点。没有就再靠一次"
+        },
+        "recognition": "OCR",
+        "expected": "温无双",
+        "roi": [
+            730,
+            380,
+            220,
+            70
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "post_delay": 300,
+        "next": [
+            "找温无双_结束"
+        ],
+        "timeout": 2000,
+        "rate_limit": 400,
+        "on_error": [
+            "找温_再靠右"
+        ]
+    },
+    "找温_再靠右": {
+        "attach": {
+            "description": "第一次没认到对话条。再往右滑 0.5 秒。只再试这一次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            180,
+            400
+        ],
+        "end": [
+            340,
+            400
+        ],
+        "duration": 500,
+        "post_delay": 400,
+        "max_hit": 1,
+        "next": [
+            "找温_再靠近"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温_再靠近": {
+        "attach": {
+            "description": "再朝前 1 秒"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            200,
+            420
+        ],
+        "end": [
+            200,
+            220
+        ],
+        "duration": 1000,
+        "post_delay": 600,
+        "next": [
+            "找温_再认"
+        ],
+        "timeout": 6000,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温_再认": {
+        "attach": {
+            "description": "再看一次右侧对话条「温无双」。仍没有就失败"
+        },
+        "recognition": "OCR",
+        "expected": "温无双",
+        "roi": [
+            730,
+            380,
+            220,
+            70
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "post_delay": 300,
+        "next": [
+            "找温无双_结束"
+        ],
+        "timeout": 2000,
+        "rate_limit": 400,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温无双_结束": {
+        "attach": {
+            "description": "右侧已有「温无双」对话条。停在这里，不点对话，不点退出"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    },
+    "找温无双_结束失败": {
+        "attach": {
+            "description": "走到正房后仍没有对话条，或摇杆动作失败。停在当前画面"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    }
+}
