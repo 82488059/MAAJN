@@ -231,6 +231,7 @@
         "action": "DoNothing",
         "anchor": {
             "买药_目标商店": "买药_点击清河商店",
+            "买药_途径没店": "买药_清河途径上滑",
             "买药_买完返回": "买药_准备开封",
             "买药_无入口跳过": "买药_清河跳过_无入口",
             "买药_已买完跳过": "买药_清河跳过_已买完",
@@ -258,6 +259,7 @@
         "action": "DoNothing",
         "anchor": {
             "买药_目标商店": "买药_点击开封商店",
+            "买药_途径没店": "买药_开封途径上滑",
             "买药_买完返回": "买药_准备胡牛儿",
             "买药_无入口跳过": "买药_开封跳过_无入口",
             "买药_已买完跳过": "买药_开封跳过_已买完",
@@ -284,6 +286,7 @@
         "action": "DoNothing",
         "anchor": {
             "买药_目标商店": "买药_点击胡牛儿商店",
+            "买药_途径没店": "买药_换卡前关弹窗",
             "买药_买完返回": "买药_结束",
             "买药_无入口跳过": "买药_胡牛儿跳过_无入口",
             "买药_已买完跳过": "买药_胡牛儿跳过_已买完",
@@ -2036,7 +2039,7 @@
     },
     "买药_点击获取途径": {
         "attach": {
-            "description": "点右侧获取途径。没有这个按钮，或弹窗里没有这家店，就关掉弹窗换下一张卡"
+            "description": "点右侧获取途径。弹窗里暂时没有这家店时走锚点「买药_途径没店」：清河和开封在弹窗里上滑后再认，胡牛儿直接关弹窗换卡。没有获取途径按钮时不会进这个节点"
         },
         "recognition": "OCR",
         "expected": "获取途径",
@@ -2058,20 +2061,24 @@
         ],
         "timeout": 2800,
         "on_error": [
+            {
+                "name": "买药_途径没店",
+                "anchor": true
+            },
             "买药_换卡前关弹窗"
         ]
     },
     "买药_点击清河商店": {
         "attach": {
-            "description": "获取途径里点清河生活杂物商店"
+            "description": "获取途径里点清河生活杂物商店。底部一行可能只露出「清河生活杂物」，ROI 收到 y 600"
         },
         "recognition": "OCR",
-        "expected": "清河生活杂物商店",
+        "expected": "清河生活杂物",
         "roi": [
             540,
             330,
             230,
-            210
+            270
         ],
         "threshold": 0.5,
         "action": "Click",
@@ -2087,15 +2094,15 @@
     },
     "买药_点击开封商店": {
         "attach": {
-            "description": "获取途径里点开封生活杂物商店"
+            "description": "获取途径里点开封生活杂物商店。底部一行可能只露出「开封生活杂物」，ROI 收到 y 600"
         },
         "recognition": "OCR",
-        "expected": "开封生活杂物商店",
+        "expected": "开封生活杂物",
         "roi": [
             540,
             330,
             230,
-            210
+            270
         ],
         "threshold": 0.5,
         "action": "Click",
@@ -2107,6 +2114,146 @@
         "timeout": 8000,
         "on_error": [
             "买药_关闭途径弹窗"
+        ]
+    },
+    "买药_清河途径上滑": {
+        "attach": {
+            "description": "弹窗里还没看到清河生活杂物。在弹窗内手指上滑，露出更下面的一行，停稳后再认。每张卡先滑这一次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_点击清河商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_清河途径再滑"
+        ]
+    },
+    "买药_清河途径再滑": {
+        "attach": {
+            "description": "上滑一次仍没有清河生活杂物。再滑一次，还没有就关弹窗换下一张"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_点击清河商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_换卡前关弹窗"
+        ]
+    },
+    "买药_开封途径上滑": {
+        "attach": {
+            "description": "弹窗里还没看到开封生活杂物。在弹窗内手指上滑，露出更下面的一行，停稳后再认。和清河分开，次数不共用"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_点击开封商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_开封途径再滑"
+        ]
+    },
+    "买药_开封途径再滑": {
+        "attach": {
+            "description": "上滑一次仍没有开封生活杂物。再滑一次，还没有就关弹窗换下一张"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            700,
+            520
+        ],
+        "end": [
+            700,
+            380
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                700,
+                450
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_点击开封商店"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_换卡前关弹窗"
         ]
     },
     "买药_点击胡牛儿商店": {
@@ -5543,7 +5690,7 @@
     },
     "买药_提交看价入口": {
         "attach": {
-            "description": "购买前看一眼单价。数量栏上方若读到 5000 或更高就不买"
+            "description": "购买前看一眼价格行的总价。读到 5000 或更高就不买。认不到就照常购买。买满不走这里"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -5558,7 +5705,7 @@
     },
     "买药_提交买入口": {
         "attach": {
-            "description": "单价没到 5000，或没读到价格。等右下角购买，认不到再点坐标"
+            "description": "价格行没到 5000，或没读到价格。等右下角购买，认不到再点坐标"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -5573,17 +5720,17 @@
     },
     "买药_提交看价格": {
         "attach": {
-            "description": "在数量栏上方认单价。5000、5,000 或五位数以上就放弃这张。这块区域是估的，认不到就照常购买"
+            "description": "认价格行的总价，在数量栏下面。5000、5,000 或五位数以上就放弃这张。认不到就照常购买。买满不看这一格"
         },
         "recognition": "OCR",
         "expected": [
             "(?:[5-9]\\d{3}|[5-9][,，]\\d{3}|\\d{5,})"
         ],
         "roi": [
-            1000,
-            400,
-            240,
-            140
+            1090,
+            600,
+            130,
+            32
         ],
         "threshold": 0.35,
         "action": "DoNothing",
