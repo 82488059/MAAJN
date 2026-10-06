@@ -1,7 +1,7 @@
 {
     "存放原料": {
         "attach": {
-            "description": "入口。人在主界面。打开包裹，把原料存进仓库，草药和枯茱萸留在背包"
+            "description": "入口。人可以在主界面，也可以已经打开包裹或仓库。把原料存进仓库，草药和枯茱萸留在背包"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -9,11 +9,63 @@
             "存放_离开后": "存放_结束"
         },
         "next": [
-            "存放_点主菜单"
+            "存放_从屏幕开始"
         ],
         "timeout": 4000,
         "on_error": [
             "存放_直接失败"
+        ]
+    },
+    "存放_从屏幕开始": {
+        "attach": {
+            "description": "已经在包裹或仓库里就接着做，不用再点主菜单。两边都没有才去点菜单"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_屏上有道具",
+            "存放_屏上有仓库"
+        ],
+        "timeout": 1200,
+        "rate_limit": 250,
+        "on_error": [
+            "存放_点主菜单"
+        ]
+    },
+    "存放_屏上有道具": {
+        "attach": {
+            "description": "标题栏有道具，说明包裹已经打开。接着核对筛选是不是原料"
+        },
+        "recognition": "OCR",
+        "expected": "道具",
+        "roi": [
+            780,
+            0,
+            280,
+            78
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "next": [
+            "存放_检查筛选"
+        ]
+    },
+    "存放_屏上有仓库": {
+        "attach": {
+            "description": "左侧标题是仓库。包裹标题没读到时，从这里继续核对筛选"
+        },
+        "recognition": "OCR",
+        "expected": "仓库",
+        "roi": [
+            390,
+            8,
+            230,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "存放_检查筛选"
         ]
     },
     "存放_点主菜单": {
@@ -81,7 +133,7 @@
         ],
         "timeout": 2500,
         "on_error": [
-            "存放_准备失败退出"
+            "存放_失败时"
         ]
     },
     "存放_确认道具": {
@@ -198,7 +250,7 @@
         ],
         "timeout": 2000,
         "on_error": [
-            "存放_准备失败退出"
+            "存放_失败时"
         ]
     },
     "存放_确认原料筛选": {
@@ -241,7 +293,7 @@
     },
     "存放_看到固定容量": {
         "attach": {
-            "description": "左侧有固定容量，说明仓库面板开着"
+            "description": "左侧有固定容量，说明仓库面板开着。先解开锁着的页签，再从第 1 页开始存"
         },
         "recognition": "OCR",
         "expected": "固定容量",
@@ -254,12 +306,12 @@
         "threshold": 0.4,
         "action": "DoNothing",
         "next": [
-            "存放_第1页"
+            "存放_先开页签"
         ]
     },
     "存放_看到仓库标题": {
         "attach": {
-            "description": "左侧标题是仓库。不搜右上角图标旁边的字"
+            "description": "左侧标题是仓库。不搜右上角图标旁边的字。接着先解开锁着的页签"
         },
         "recognition": "OCR",
         "expected": "仓库",
@@ -272,7 +324,7 @@
         "threshold": 0.45,
         "action": "DoNothing",
         "next": [
-            "存放_第1页"
+            "存放_先开页签"
         ]
     },
     "存放_点仓库图标": {
@@ -319,12 +371,454 @@
         ],
         "timeout": 2500,
         "on_error": [
-            "存放_准备失败退出"
+            "存放_失败时"
+        ]
+    },
+    "存放_先开页签": {
+        "attach": {
+            "description": "先把三个页签里锁着的解开，再从第 1 页存。满了才换下一页"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_开锁第1页"
+        ]
+    },
+    "存放_开锁第1页": {
+        "attach": {
+            "description": "存之前先看第 1 页。页签是加号，或中间出现解锁可获得，就先解开这一页。用户已同意消耗玉环"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            528,
+            90
+        ],
+        "post_delay": 450,
+        "anchor": {
+            "存放_开锁之后": "存放_开锁第2页",
+            "存放_本页签数字": "存放_核第1页数字",
+            "存放_页签加号": "存放_第1页是加号"
+        },
+        "next": [
+            "存放_看页签锁"
+        ]
+    },
+    "存放_开锁第2页": {
+        "attach": {
+            "description": "存之前先看第 2 页。页签是加号，或中间出现解锁可获得，就先解开这一页。用户已同意消耗玉环"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            591,
+            90
+        ],
+        "post_delay": 450,
+        "anchor": {
+            "存放_开锁之后": "存放_开锁第3页",
+            "存放_本页签数字": "存放_核第2页数字",
+            "存放_页签加号": "存放_第2页是加号"
+        },
+        "next": [
+            "存放_看页签锁"
+        ]
+    },
+    "存放_开锁第3页": {
+        "attach": {
+            "description": "存之前先看第 3 页。页签是加号，或中间出现解锁可获得，就先解开这一页。用户已同意消耗玉环"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            664,
+            90
+        ],
+        "post_delay": 450,
+        "anchor": {
+            "存放_开锁之后": "存放_第1页",
+            "存放_本页签数字": "存放_核第3页数字",
+            "存放_页签加号": "存放_第3页是加号"
+        },
+        "next": [
+            "存放_看页签锁"
+        ]
+    },
+    "存放_看页签锁": {
+        "attach": {
+            "description": "先认中间的解锁可获得。没有再单独看这一页的页签是不是加号。都没有就换下一页"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_读到解锁可获得"
+        ],
+        "timeout": 900,
+        "rate_limit": 200,
+        "on_error": [
+            "存放_看页签加号"
+        ]
+    },
+    "存放_看页签加号": {
+        "attach": {
+            "description": "解锁句子没出现时，再看当前页签。加号才点解锁，数字就跳过这一页"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_页签加号",
+                "anchor": true
+            }
+        ],
+        "timeout": 700,
+        "rate_limit": 200,
+        "on_error": [
+            {
+                "name": "存放_开锁之后",
+                "anchor": true
+            }
+        ]
+    },
+    "存放_读到解锁可获得": {
+        "attach": {
+            "description": "锁着的页签中间会写解锁可获得，下面有消耗材料。看到就去点解锁"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "解锁可获得",
+            "12格仓库",
+            "12格"
+        ],
+        "roi": [
+            380,
+            250,
+            500,
+            80
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "存放_点页签解锁"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_点页签解锁坐标"
+        ]
+    },
+    "存放_第1页是加号": {
+        "attach": {
+            "description": "第 1 页页签上是加号，说明这一页还锁着"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "\\+",
+            "＋"
+        ],
+        "roi": [
+            504,
+            68,
+            48,
+            44
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "存放_点页签解锁"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_点页签解锁坐标"
+        ]
+    },
+    "存放_第2页是加号": {
+        "attach": {
+            "description": "第 2 页页签上是加号，说明这一页还锁着"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "\\+",
+            "＋"
+        ],
+        "roi": [
+            567,
+            68,
+            48,
+            44
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "存放_点页签解锁"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_点页签解锁坐标"
+        ]
+    },
+    "存放_第3页是加号": {
+        "attach": {
+            "description": "第 3 页页签上是加号，说明这一页还锁着"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "\\+",
+            "＋"
+        ],
+        "roi": [
+            640,
+            68,
+            48,
+            44
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "存放_点页签解锁"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_点页签解锁坐标"
+        ]
+    },
+    "存放_点页签解锁": {
+        "attach": {
+            "description": "点中间底部的解锁。实机点下去会直接解开，不先出确认框。最多 4 次"
+        },
+        "recognition": "OCR",
+        "expected": "解锁",
+        "roi": [
+            430,
+            595,
+            330,
+            50
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_wait_freezes": 500,
+        "post_delay": 300,
+        "max_hit": 4,
+        "next": [
+            "存放_等页签确认"
+        ]
+    },
+    "存放_点页签解锁坐标": {
+        "attach": {
+            "description": "解锁两个字没读到时，点按钮中心 (591, 621)。用户已同意消耗玉环"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            591,
+            621
+        ],
+        "post_wait_freezes": 500,
+        "post_delay": 300,
+        "max_hit": 4,
+        "next": [
+            "存放_等页签确认"
+        ],
+        "on_error": [
+            "存放_失败时"
+        ]
+    },
+    "存放_等页签确认": {
+        "attach": {
+            "description": "点完解锁后看有没有确认框。没有就核对页签是不是变成了数字"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_页签看到确认"
+        ],
+        "timeout": 900,
+        "rate_limit": 200,
+        "on_error": [
+            "存放_核本页数字"
+        ]
+    },
+    "存放_页签看到确认": {
+        "attach": {
+            "description": "若弹出确认，正文里必须同时有解锁和仓库才点。对不上就取消"
+        },
+        "recognition": "OCR",
+        "expected": "确认",
+        "roi": [
+            940,
+            440,
+            280,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "存放_页签弹窗合格"
+        ],
+        "timeout": 1200,
+        "on_error": [
+            "存放_点取消"
+        ]
+    },
+    "存放_页签弹窗合格": {
+        "attach": {
+            "description": "页签解锁如果多出一个确认框，正文同时有解锁和仓库才点确认"
+        },
+        "recognition": "And",
+        "all_of": [
+            "存放_文案有解锁",
+            "存放_文案有仓库"
+        ],
+        "action": "DoNothing",
+            "next": [
+                "存放_点页签确认"
+            ],
+            "timeout": 1200,
+            "on_error": [
+                "存放_点页签确认坐标"
+            ]
+    },
+    "存放_点页签确认": {
+        "attach": {
+            "description": "点页签解锁确认框右侧的确认。不点格子解锁以外的确认"
+        },
+        "recognition": "OCR",
+        "expected": "确认",
+        "roi": [
+            940,
+            440,
+            280,
+            70
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "存放_核本页数字"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "存放_点页签确认坐标"
+        ]
+    },
+    "存放_点页签确认坐标": {
+        "attach": {
+            "description": "确认两个字没读到时，点 (1082, 475)。这一步最多 3 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1082,
+            475
+        ],
+        "post_delay": 500,
+        "max_hit": 3,
+        "next": [
+            "存放_核本页数字"
+        ],
+        "on_error": [
+            "存放_失败时"
+        ]
+    },
+    "存放_核本页数字": {
+        "attach": {
+            "description": "解开之后，当前页签上要能读到数字。读不到就按失败选项处理"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_本页签数字",
+                "anchor": true
+            }
+        ],
+        "timeout": 2000,
+        "rate_limit": 200,
+        "on_error": [
+            "存放_页签解锁失败"
+        ]
+    },
+    "存放_核第1页数字": {
+        "attach": {
+            "description": "第 1 页页签上出现数字，才算这一页已经解开"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "[0-9０-９]"
+        ],
+        "roi": [
+            504,
+            68,
+            48,
+            44
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_开锁之后",
+                "anchor": true
+            }
+        ]
+    },
+    "存放_核第2页数字": {
+        "attach": {
+            "description": "第 2 页页签上出现数字，才算这一页已经解开"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "[0-9０-９]"
+        ],
+        "roi": [
+            567,
+            68,
+            48,
+            44
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_开锁之后",
+                "anchor": true
+            }
+        ]
+    },
+    "存放_核第3页数字": {
+        "attach": {
+            "description": "第 3 页页签上出现数字，才算这一页已经解开"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "[0-9０-９]"
+        ],
+        "roi": [
+            640,
+            68,
+            48,
+            44
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_开锁之后",
+                "anchor": true
+            }
+        ]
+    },
+    "存放_页签解锁失败": {
+        "attach": {
+            "description": "页签点了解锁，仍没有变成数字。不继续存"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_失败时"
         ]
     },
     "存放_第1页": {
         "attach": {
-            "description": "切到仓库第 1 页，先解锁再存"
+            "description": "页签已经看过。切到第 1 页，先解开这一页格子上的锁，再存"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -342,7 +836,7 @@
     },
     "存放_第2页": {
         "attach": {
-            "description": "切到仓库第 2 页，先解锁再存"
+            "description": "切到仓库第 2 页。页签锁在存之前已经处理，这里只解格子上的锁"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -360,7 +854,7 @@
     },
     "存放_第3页": {
         "attach": {
-            "description": "切到仓库第 3 页，先解锁再存"
+            "description": "切到仓库第 3 页。页签锁在存之前已经处理，这里只解格子上的锁"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -543,7 +1037,7 @@
         "action": "Click",
         "post_delay": 300,
         "next": [
-            "存放_准备失败退出"
+            "存放_失败时"
         ]
     },
     "存放_点取消坐标": {
@@ -559,7 +1053,7 @@
         "post_delay": 300,
         "max_hit": 3,
         "next": [
-            "存放_准备失败退出"
+            "存放_失败时"
         ]
     },
     "存放_看是否已满": {
@@ -615,7 +1109,7 @@
         "rate_limit": 300,
         "on_error": [
             "存放_补开仓库",
-            "存放_准备失败退出"
+            "存放_失败时"
         ]
     },
     "存放_点批量存入": {
@@ -664,7 +1158,7 @@
         ],
         "timeout": 1500,
         "on_error": [
-            "存放_准备失败退出"
+            "存放_失败时"
         ]
     },
     "存放_点全选": {
@@ -705,7 +1199,7 @@
     },
     "存放_取消草药": {
         "attach": {
-            "description": "草药如果带着红标就点掉。没选中就直接看枯茱萸"
+            "description": "等最多 800 毫秒找带着红标的草药。这一帧没对上就再等，背包里没有就看枯茱萸"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -713,15 +1207,17 @@
             "存放_关详情后": "存放_取消枯茱萸"
         },
         "next": [
-            "存放_点选中草药",
-            "存放_取消枯茱萸"
+            "存放_点选中草药"
         ],
         "timeout": 800,
-        "rate_limit": 200
+        "rate_limit": 200,
+        "on_error": [
+            "存放_取消枯茱萸"
+        ]
     },
     "存放_点选中草药": {
         "attach": {
-            "description": "只点还带着红标的草药。点一下会弹出详情"
+            "description": "只点还带着红标的草药。模板裁掉了底部叠放数字，点击阈值 0.75。点一下会弹出详情"
         },
         "recognition": "TemplateMatch",
         "template": "storage/草药_选中.png",
@@ -731,7 +1227,7 @@
             470,
             530
         ],
-        "threshold": 0.72,
+        "threshold": 0.75,
         "order_by": "Score",
         "action": "Click",
         "post_delay": 300,
@@ -742,7 +1238,7 @@
     },
     "存放_取消枯茱萸": {
         "attach": {
-            "description": "再取消枯茱萸的红标"
+            "description": "等最多 800 毫秒找带着红标的枯茱萸。没有就去复核，不在同一帧里跳过"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -750,15 +1246,17 @@
             "存放_关详情后": "存放_复核"
         },
         "next": [
-            "存放_点选中枯茱萸",
-            "存放_复核"
+            "存放_点选中枯茱萸"
         ],
         "timeout": 800,
-        "rate_limit": 200
+        "rate_limit": 200,
+        "on_error": [
+            "存放_复核"
+        ]
     },
     "存放_点选中枯茱萸": {
         "attach": {
-            "description": "只点还带着红标的枯茱萸。清掉红标后的图标长得不一样，不会用那张图来点"
+            "description": "只点还带着红标的枯茱萸。模板只要图标上半，不含叠放数字，点击阈值 0.75"
         },
         "recognition": "TemplateMatch",
         "template": "storage/枯茱萸_选中.png",
@@ -768,7 +1266,7 @@
             470,
             530
         ],
-        "threshold": 0.78,
+        "threshold": 0.75,
         "order_by": "Score",
         "action": "Click",
         "post_delay": 300,
@@ -812,7 +1310,7 @@
     },
     "存放_草药仍选中": {
         "attach": {
-            "description": "草药还有红标。阈值比点选时更低，宁可拦住也不许点确认存入"
+            "description": "草药还有红标。阈值 0.65，比点选的 0.75 低，宁可拦住也不许点确认存入"
         },
         "recognition": "TemplateMatch",
         "template": "storage/草药_选中.png",
@@ -822,7 +1320,7 @@
             470,
             530
         ],
-        "threshold": 0.62,
+        "threshold": 0.65,
         "order_by": "Score",
         "action": "DoNothing",
         "next": [
@@ -831,7 +1329,7 @@
     },
     "存放_枯茱萸仍选中": {
         "attach": {
-            "description": "枯茱萸还有红标。阈值比点选时更低，宁可拦住也不许点确认存入"
+            "description": "枯茱萸还有红标。阈值 0.65，比点选的 0.75 低，宁可拦住也不许点确认存入"
         },
         "recognition": "TemplateMatch",
         "template": "storage/枯茱萸_选中.png",
@@ -841,7 +1339,7 @@
             470,
             530
         ],
-        "threshold": 0.7,
+        "threshold": 0.65,
         "order_by": "Score",
         "action": "DoNothing",
         "next": [
@@ -867,7 +1365,7 @@
         ],
         "timeout": 1500,
         "on_error": [
-            "存放_准备失败退出"
+            "存放_失败时"
         ]
     },
     "存放_点确认存入": {
@@ -948,7 +1446,7 @@
     },
     "存放_选择不对": {
         "attach": {
-            "description": "草药或枯茱萸仍被选中。点恢复，再退出并让任务失败"
+            "description": "草药或枯茱萸仍被选中。点恢复清掉选择，再按失败选项处理。默认回主界面"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -976,7 +1474,7 @@
         "action": "Click",
         "post_delay": 300,
         "next": [
-            "存放_准备失败退出"
+            "存放_失败时"
         ]
     },
     "存放_点恢复坐标": {
@@ -992,7 +1490,7 @@
         "post_delay": 300,
         "max_hit": 2,
         "next": [
-            "存放_准备失败退出"
+            "存放_失败时"
         ]
     },
     "存放_补开仓库": {
@@ -1010,9 +1508,30 @@
             "存放_点仓库坐标"
         ]
     },
+    "存放_失败时": {
+        "attach": {
+            "description": "失败后的去向。默认回主界面再报失败。界面选项停在原地会把 next 改成存放_停在原地"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_准备失败退出"
+        ]
+    },
+    "存放_停在原地": {
+        "attach": {
+            "description": "测试用。不点返回，不跑退出循环，人留在当前画面，然后让任务失败"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_失败哨兵"
+        ],
+        "timeout": 400
+    },
     "存放_准备失败退出": {
         "attach": {
-            "description": "先回到主界面，再让任务失败。返回途中不点确认存入"
+            "description": "默认失败处理：先回到主界面，再让任务报失败。返回途中不点确认存入。界面选了停在原地时不会进这个节点"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
