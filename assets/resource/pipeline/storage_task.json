@@ -6,7 +6,9 @@
         "recognition": "DirectHit",
         "action": "DoNothing",
         "anchor": {
-            "存放_离开后": "存放_结束"
+            "存放_离开后": "存放_结束",
+            "存放_草药入口": "存放_取消草药",
+            "存放_草药复核": "存放_复核"
         },
         "next": [
             "存放_从屏幕开始"
@@ -386,7 +388,7 @@
     },
     "存放_开锁第1页": {
         "attach": {
-            "description": "存之前先看第 1 页。页签是加号，或中间出现解锁可获得，就先解开这一页。用户已同意消耗玉环"
+            "description": "存之前先点第 1 页。页签上是加号就先解开，不是加号就当已经解开。用户已同意消耗玉环"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -397,16 +399,16 @@
         "post_delay": 450,
         "anchor": {
             "存放_开锁之后": "存放_开锁第2页",
-            "存放_本页签数字": "存放_核第1页数字",
-            "存放_页签加号": "存放_第1页是加号"
+            "存放_本页加号": "存放_第1页是加号",
+            "存放_本页加号还在": "存放_第1页加号还在"
         },
         "next": [
-            "存放_先看本页数字"
+            "存放_看本页加号"
         ]
     },
     "存放_开锁第2页": {
         "attach": {
-            "description": "存之前先看第 2 页。页签是加号，或中间出现解锁可获得，就先解开这一页。用户已同意消耗玉环"
+            "description": "存之前先点第 2 页。页签上是加号就先解开，不是加号就当已经解开。用户已同意消耗玉环"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -417,16 +419,16 @@
         "post_delay": 450,
         "anchor": {
             "存放_开锁之后": "存放_开锁第3页",
-            "存放_本页签数字": "存放_核第2页数字",
-            "存放_页签加号": "存放_第2页是加号"
+            "存放_本页加号": "存放_第2页是加号",
+            "存放_本页加号还在": "存放_第2页加号还在"
         },
         "next": [
-            "存放_先看本页数字"
+            "存放_看本页加号"
         ]
     },
     "存放_开锁第3页": {
         "attach": {
-            "description": "存之前先看第 3 页。页签是加号，或中间出现解锁可获得，就先解开这一页。用户已同意消耗玉环"
+            "description": "存之前先点第 3 页。页签上是加号就先解开，不是加号就当已经解开。用户已同意消耗玉环"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -437,60 +439,27 @@
         "post_delay": 450,
         "anchor": {
             "存放_开锁之后": "存放_第1页",
-            "存放_本页签数字": "存放_核第3页数字",
-            "存放_页签加号": "存放_第3页是加号"
+            "存放_本页加号": "存放_第3页是加号",
+            "存放_本页加号还在": "存放_第3页加号还在"
         },
         "next": [
-            "存放_先看本页数字"
+            "存放_看本页加号"
         ]
     },
-    "存放_先看本页数字": {
+    "存放_看本页加号": {
         "attach": {
-            "description": "先看页签是不是已经是数字。是的话直接下一页，不再对已解开的页签空认解锁可获得"
+            "description": "用加号模板看当前页签。对上就去解锁。对不上立刻当已解开，不再认数字，也不再空等解锁可获得"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
             {
-                "name": "存放_本页签数字",
+                "name": "存放_本页加号",
                 "anchor": true
             }
         ],
-        "timeout": 600,
-        "rate_limit": 200,
-        "on_error": [
-            "存放_看页签锁"
-        ]
-    },
-    "存放_看页签锁": {
-        "attach": {
-            "description": "页签上不是数字时，再认中间的解锁可获得。没有再单独看是不是加号"
-        },
-        "recognition": "DirectHit",
-        "action": "DoNothing",
-        "next": [
-            "存放_读到解锁可获得"
-        ],
-        "timeout": 900,
-        "rate_limit": 200,
-        "on_error": [
-            "存放_看页签加号"
-        ]
-    },
-    "存放_看页签加号": {
-        "attach": {
-            "description": "解锁句子没出现时，再看当前页签。加号才点解锁，数字就跳过这一页"
-        },
-        "recognition": "DirectHit",
-        "action": "DoNothing",
-        "next": [
-            {
-                "name": "存放_页签加号",
-                "anchor": true
-            }
-        ],
-        "timeout": 700,
-        "rate_limit": 200,
+        "timeout": 300,
+        "rate_limit": 100,
         "on_error": [
             {
                 "name": "存放_开锁之后",
@@ -498,48 +467,20 @@
             }
         ]
     },
-    "存放_读到解锁可获得": {
-        "attach": {
-            "description": "锁着的页签中间会写解锁可获得，下面有消耗材料。看到就去点解锁"
-        },
-        "recognition": "OCR",
-        "expected": [
-            "解锁可获得",
-            "12格仓库",
-            "12格"
-        ],
-        "roi": [
-            380,
-            250,
-            500,
-            80
-        ],
-        "threshold": 0.4,
-        "action": "DoNothing",
-        "next": [
-            "存放_点页签解锁"
-        ],
-        "timeout": 1500,
-        "on_error": [
-            "存放_点页签解锁坐标"
-        ]
-    },
     "存放_第1页是加号": {
         "attach": {
-            "description": "第 1 页页签上是加号，说明这一页还锁着"
+            "description": "第 1 页页签对上加号模板，说明这一页还锁着"
         },
-        "recognition": "OCR",
-        "expected": [
-            "\\+",
-            "＋"
-        ],
+        "recognition": "TemplateMatch",
+        "template": "storage/页签加号.png",
         "roi": [
             504,
             68,
             48,
             44
         ],
-        "threshold": 0.35,
+        "threshold": 0.75,
+        "order_by": "Score",
         "action": "DoNothing",
         "next": [
             "存放_点页签解锁"
@@ -551,20 +492,18 @@
     },
     "存放_第2页是加号": {
         "attach": {
-            "description": "第 2 页页签上是加号，说明这一页还锁着"
+            "description": "第 2 页页签对上加号模板，说明这一页还锁着"
         },
-        "recognition": "OCR",
-        "expected": [
-            "\\+",
-            "＋"
-        ],
+        "recognition": "TemplateMatch",
+        "template": "storage/页签加号.png",
         "roi": [
             567,
             68,
             48,
             44
         ],
-        "threshold": 0.35,
+        "threshold": 0.75,
+        "order_by": "Score",
         "action": "DoNothing",
         "next": [
             "存放_点页签解锁"
@@ -576,20 +515,18 @@
     },
     "存放_第3页是加号": {
         "attach": {
-            "description": "第 3 页页签上是加号，说明这一页还锁着"
+            "description": "第 3 页页签对上加号模板，说明这一页还锁着"
         },
-        "recognition": "OCR",
-        "expected": [
-            "\\+",
-            "＋"
-        ],
+        "recognition": "TemplateMatch",
+        "template": "storage/页签加号.png",
         "roi": [
             640,
             68,
             48,
             44
         ],
-        "threshold": 0.35,
+        "threshold": 0.75,
+        "order_by": "Score",
         "action": "DoNothing",
         "next": [
             "存放_点页签解锁"
@@ -642,7 +579,7 @@
     },
     "存放_等页签确认": {
         "attach": {
-            "description": "点完解锁后看有没有确认框。没有就核对页签是不是变成了数字"
+            "description": "点完解锁后看有没有确认框。没有就核对页签是不是已经没有加号"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -687,13 +624,13 @@
             "存放_文案有仓库"
         ],
         "action": "DoNothing",
-            "next": [
-                "存放_点页签确认"
-            ],
-            "timeout": 1200,
-            "on_error": [
-                "存放_点页签确认坐标"
-            ]
+        "next": [
+            "存放_点页签确认"
+        ],
+        "timeout": 1200,
+        "on_error": [
+            "存放_点页签确认坐标"
+        ]
     },
     "存放_点页签确认": {
         "attach": {
@@ -739,89 +676,80 @@
     },
     "存放_核本页数字": {
         "attach": {
-            "description": "解开之后，当前页签上要能读到数字。读不到就按失败选项处理"
+            "description": "解开之后当前页签不能再对上加号。对不上就去下一页"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
             {
-                "name": "存放_本页签数字",
+                "name": "存放_本页加号还在",
                 "anchor": true
             }
         ],
-        "timeout": 2000,
-        "rate_limit": 200,
+        "timeout": 400,
+        "rate_limit": 100,
         "on_error": [
-            "存放_页签解锁失败"
+            {
+                "name": "存放_开锁之后",
+                "anchor": true
+            }
         ]
     },
-    "存放_核第1页数字": {
+    "存放_第1页加号还在": {
         "attach": {
-            "description": "第 1 页页签上出现数字，才算这一页已经解开"
+            "description": "解开之后第 1 页如果还是加号，就当没解开"
         },
-        "recognition": "OCR",
-        "expected": [
-            "[0-9０-９]"
-        ],
+        "recognition": "TemplateMatch",
+        "template": "storage/页签加号.png",
         "roi": [
             504,
             68,
             48,
             44
         ],
-        "threshold": 0.35,
+        "threshold": 0.75,
+        "order_by": "Score",
         "action": "DoNothing",
         "next": [
-            {
-                "name": "存放_开锁之后",
-                "anchor": true
-            }
+            "存放_页签解锁失败"
         ]
     },
-    "存放_核第2页数字": {
+    "存放_第2页加号还在": {
         "attach": {
-            "description": "第 2 页页签上出现数字，才算这一页已经解开"
+            "description": "解开之后第 2 页如果还是加号，就当没解开"
         },
-        "recognition": "OCR",
-        "expected": [
-            "[0-9０-９]"
-        ],
+        "recognition": "TemplateMatch",
+        "template": "storage/页签加号.png",
         "roi": [
             567,
             68,
             48,
             44
         ],
-        "threshold": 0.35,
+        "threshold": 0.75,
+        "order_by": "Score",
         "action": "DoNothing",
         "next": [
-            {
-                "name": "存放_开锁之后",
-                "anchor": true
-            }
+            "存放_页签解锁失败"
         ]
     },
-    "存放_核第3页数字": {
+    "存放_第3页加号还在": {
         "attach": {
-            "description": "第 3 页页签上出现数字，才算这一页已经解开"
+            "description": "解开之后第 3 页如果还是加号，就当没解开"
         },
-        "recognition": "OCR",
-        "expected": [
-            "[0-9０-９]"
-        ],
+        "recognition": "TemplateMatch",
+        "template": "storage/页签加号.png",
         "roi": [
             640,
             68,
             48,
             44
         ],
-        "threshold": 0.35,
+        "threshold": 0.75,
+        "order_by": "Score",
         "action": "DoNothing",
         "next": [
-            {
-                "name": "存放_开锁之后",
-                "anchor": true
-            }
+            "存放_页签解锁失败"
         ]
     },
     "存放_页签解锁失败": {
@@ -1196,7 +1124,10 @@
         "post_delay": 450,
         "max_hit": 24,
         "next": [
-            "存放_取消草药"
+            {
+                "name": "存放_草药入口",
+                "anchor": true
+            }
         ]
     },
     "存放_点全选坐标": {
@@ -1212,12 +1143,15 @@
         "post_delay": 450,
         "max_hit": 8,
         "next": [
-            "存放_取消草药"
+            {
+                "name": "存放_草药入口",
+                "anchor": true
+            }
         ]
     },
     "存放_取消草药": {
         "attach": {
-            "description": "等最多 800 毫秒找带着红标的草药。这一帧没对上就再等，背包里没有就看枯茱萸"
+            "description": "这一轮第一次找带着红标的草药，最多等 800 毫秒。没有就把后面几轮的草药检查跳过"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -1230,6 +1164,20 @@
         "timeout": 800,
         "rate_limit": 200,
         "on_error": [
+            "存放_记下没有草药"
+        ]
+    },
+    "存放_记下没有草药": {
+        "attach": {
+            "description": "第一次全选没找到草药。后面几轮不再等草药，复核也不再查草药"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "anchor": {
+            "存放_草药入口": "存放_取消枯茱萸",
+            "存放_草药复核": "存放_复核无草药"
+        },
+        "next": [
             "存放_取消枯茱萸"
         ]
     },
@@ -1261,7 +1209,7 @@
         "recognition": "DirectHit",
         "action": "DoNothing",
         "anchor": {
-            "存放_关详情后": "存放_复核"
+            "存放_关详情后": "存放_去复核"
         },
         "next": [
             "存放_点选中枯茱萸"
@@ -1269,7 +1217,20 @@
         "timeout": 800,
         "rate_limit": 200,
         "on_error": [
-            "存放_复核"
+            "存放_去复核"
+        ]
+    },
+    "存放_去复核": {
+        "attach": {
+            "description": "枯茱萸处理完。有草药就先复核草药，第一次没找到就跳过草药复核"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "存放_草药复核",
+                "anchor": true
+            }
         ]
     },
     "存放_点选中枯茱萸": {
@@ -1319,6 +1280,20 @@
         "action": "DoNothing",
         "next": [
             "存放_草药仍选中",
+            "存放_枯茱萸仍选中",
+            "存放_还有别的原料",
+            "存放_本页无需再存"
+        ],
+        "timeout": 1200,
+        "rate_limit": 200
+    },
+    "存放_复核无草药": {
+        "attach": {
+            "description": "这一轮已经确认背包里没有草药。只复核枯茱萸，再看还有没有别的红标"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
             "存放_枯茱萸仍选中",
             "存放_还有别的原料",
             "存放_本页无需再存"
