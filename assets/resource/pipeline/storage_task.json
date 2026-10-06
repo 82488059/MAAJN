@@ -954,13 +954,10 @@
     },
     "存放_页已尽": {
         "attach": {
-            "description": "三页都试过。正常回主界面"
+            "description": "三页都试过。回到主界面后走锚点「存放_离开后」。单独跑存放时是结束；买药叫过来时是存完再去买。这里不再改写这个锚点"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
-        "anchor": {
-            "存放_离开后": "存放_结束"
-        },
         "next": [
             "存放_退出循环"
         ]
