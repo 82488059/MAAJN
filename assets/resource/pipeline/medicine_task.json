@@ -182,7 +182,13 @@
             "买药_目标商店": "买药_点击清河商店",
             "买药_买完返回": "买药_准备开封",
             "买药_无入口跳过": "买药_清河跳过_无入口",
-            "买药_已买完跳过": "买药_清河跳过_已买完"
+            "买药_已买完跳过": "买药_清河跳过_已买完",
+            "买药_本店找货": "买药_清河_等货架",
+            "买药_本店点货": "买药_清河_点货",
+            "买药_本店保1": "买药_清河_确保数量为1",
+            "买药_本店输入": "买药_清河_输入数量1",
+            "买药_本店买满": "买药_清河_点击最大",
+            "买药_本店买满确认": "买药_清河_确认买满"
         },
         "next": [
             "买药_生活杂物候选0"
@@ -202,7 +208,13 @@
             "买药_目标商店": "买药_点击开封商店",
             "买药_买完返回": "买药_准备胡牛儿",
             "买药_无入口跳过": "买药_开封跳过_无入口",
-            "买药_已买完跳过": "买药_开封跳过_已买完"
+            "买药_已买完跳过": "买药_开封跳过_已买完",
+            "买药_本店找货": "买药_开封_等货架",
+            "买药_本店点货": "买药_开封_点货",
+            "买药_本店保1": "买药_开封_确保数量为1",
+            "买药_本店输入": "买药_开封_输入数量1",
+            "买药_本店买满": "买药_开封_点击最大",
+            "买药_本店买满确认": "买药_开封_确认买满"
         },
         "next": [
             "买药_生活杂物候选0"
@@ -222,7 +234,13 @@
             "买药_目标商店": "买药_点击胡牛儿商店",
             "买药_买完返回": "买药_结束",
             "买药_无入口跳过": "买药_胡牛儿跳过_无入口",
-            "买药_已买完跳过": "买药_胡牛儿跳过_已买完"
+            "买药_已买完跳过": "买药_胡牛儿跳过_已买完",
+            "买药_本店找货": "买药_胡牛儿_等货架",
+            "买药_本店点货": "买药_胡牛儿_点货",
+            "买药_本店保1": "买药_胡牛儿_确保数量为1",
+            "买药_本店输入": "买药_胡牛儿_输入数量1",
+            "买药_本店买满": "买药_胡牛儿_点击最大",
+            "买药_本店买满确认": "买药_胡牛儿_确认买满"
         },
         "next": [
             "买药_胡牛儿候选0"
@@ -2058,7 +2076,7 @@
     },
     "买药_确认商店": {
         "attach": {
-            "description": "确认进入生活杂物商店。接着按当前画面找草药，不先把列表拉到顶"
+            "description": "确认进入生活杂物商店。货架停稳后按这家店的锚点找草药，先看当前画面"
         },
         "recognition": "OCR",
         "expected": "生活杂物",
@@ -2070,106 +2088,131 @@
         ],
         "threshold": 0.45,
         "action": "DoNothing",
-        "post_delay": 200,
+        "post_delay": 100,
         "next": [
-            "买药_寻找草药"
+            {
+                "name": "买药_本店找货",
+                "anchor": true
+            }
         ],
         "timeout": 1500,
         "on_error": [
             "买药_关闭途径弹窗"
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                300,
+                400
+            ],
+            "threshold": 0.95
+        }
+    },
+    "买药_横幅还在": {
+        "attach": {
+            "description": "顶部或货架上的「百业派对已开启」会挡住商品格子。只识别，不点击"
+        },
+        "recognition": "OCR",
+        "expected": "百业派对已开启",
+        "roi": [
+            60,
+            30,
+            1100,
+            380
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "买药_等横幅走"
         ]
     },
-    "买药_寻找草药": {
+    "买药_等横幅走": {
         "attach": {
-            "description": "先看当前画面有没有草药。售罄会沉到列表底部，没有就往下翻，不先拉回顶部"
+            "description": "等横幅自己消失。最多 5 秒，到点就继续找货，避免点进派对界面"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
-            "买药_点击草药",
-            "买药_草药向下翻"
+            "买药_横幅已走"
         ],
-        "timeout": 1200,
+        "timeout": 5000,
+        "rate_limit": 400,
         "on_error": [
-            "买药_草药改向上翻"
+            {
+                "name": "买药_本店点货",
+                "anchor": true
+            }
         ]
     },
-    "买药_草药向下翻": {
+    "买药_横幅已走": {
         "attach": {
-            "description": "手指上滑，露出更下面的商品。最多 8 次"
+            "description": "画面上已经没有「百业派对已开启」，开始找商品"
         },
-        "recognition": "DirectHit",
-        "action": "Swipe",
-        "begin": [
-            300,
-            520
+        "recognition": "OCR",
+        "expected": "百业派对已开启",
+        "roi": [
+            60,
+            30,
+            1100,
+            380
         ],
-        "end": [
-            300,
-            260
-        ],
-        "duration": 400,
-        "end_hold": 80,
-        "post_delay": 450,
-        "max_hit": 8,
+        "threshold": 0.45,
+        "inverse": true,
+        "action": "DoNothing",
         "next": [
-            "买药_寻找草药"
+            {
+                "name": "买药_本店点货",
+                "anchor": true
+            }
         ],
-        "timeout": 3000,
+        "timeout": 1500,
         "on_error": [
-            "买药_草药改向上翻"
+            {
+                "name": "买药_本店点货",
+                "anchor": true
+            }
         ]
     },
-    "买药_草药改向上翻": {
+    "买药_清河_等货架": {
         "attach": {
-            "description": "往下翻到头仍没有草药时改往回翻。还是没有就当本店已买完"
+            "description": "清河先看有没有「百业派对已开启」挡住货架。没有就点草药"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
-            "买药_点击草药",
-            "买药_草药向上翻"
+            "买药_横幅还在"
+        ],
+        "timeout": 250,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_清河_点货"
+        ]
+    },
+    "买药_清河_点货": {
+        "attach": {
+            "description": "先认当前画面上的草药。这一轮只有这一个识别，认不到才翻页，避免同帧直接滑走"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_清河_点击草药"
         ],
         "timeout": 1200,
+        "rate_limit": 200,
         "on_error": [
+            "买药_清河_向下翻",
+            "买药_清河_向上翻",
             {
                 "name": "买药_已买完跳过",
                 "anchor": true
             }
         ]
     },
-    "买药_草药向上翻": {
+    "买药_清河_点击草药": {
         "attach": {
-            "description": "手指下滑，把更上面的商品拉回来。最多 8 次"
-        },
-        "recognition": "DirectHit",
-        "action": "Swipe",
-        "begin": [
-            300,
-            260
-        ],
-        "end": [
-            300,
-            520
-        ],
-        "duration": 400,
-        "end_hold": 80,
-        "post_delay": 450,
-        "max_hit": 8,
-        "next": [
-            "买药_草药改向上翻"
-        ],
-        "timeout": 3000,
-        "on_error": [
-            {
-                "name": "买药_已买完跳过",
-                "anchor": true
-            }
-        ]
-    },
-    "买药_点击草药": {
-        "attach": {
-            "description": "点左侧货架上的草药。售罄后名字变灰并沉到列表底部，阈值放低，不认角标「库存不足」"
+            "description": "点左侧货架上的草药。滑动停稳之后才重新识别再点，售罄名字变灰也认"
         },
         "recognition": "OCR",
         "expected": "草药",
@@ -2182,14 +2225,242 @@
         "threshold": 0.35,
         "order_by": "Vertical",
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                900,
+                110
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
         "next": [
             "买药_校验草药标题"
         ],
         "timeout": 3000,
         "on_error": [
             "买药_放弃本店"
+        ]
+    },
+    "买药_清河_向下翻": {
+        "attach": {
+            "description": "手指上滑，露出更下面的商品。停稳后再认。本店单独计数，最多 8 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            300,
+            520
+        ],
+        "end": [
+            300,
+            260
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                300,
+                400
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 8,
+        "next": [
+            "买药_清河_等货架"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_清河_向上翻"
+        ]
+    },
+    "买药_清河_向上翻": {
+        "attach": {
+            "description": "手指下滑，把更上面的商品拉回来。停稳后再认。本店单独计数，最多 8 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            300,
+            260
+        ],
+        "end": [
+            300,
+            520
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                300,
+                400
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 8,
+        "next": [
+            "买药_清河_等货架"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            {
+                "name": "买药_已买完跳过",
+                "anchor": true
+            }
+        ]
+    },
+    "买药_开封_等货架": {
+        "attach": {
+            "description": "开封先看有没有「百业派对已开启」挡住货架。没有就点草药"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_横幅还在"
+        ],
+        "timeout": 250,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_开封_点货"
+        ]
+    },
+    "买药_开封_点货": {
+        "attach": {
+            "description": "先认当前画面上的草药。这一轮只有这一个识别，认不到才翻页，避免同帧直接滑走"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_开封_点击草药"
+        ],
+        "timeout": 1200,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_开封_向下翻",
+            "买药_开封_向上翻",
+            {
+                "name": "买药_已买完跳过",
+                "anchor": true
+            }
+        ]
+    },
+    "买药_开封_点击草药": {
+        "attach": {
+            "description": "点左侧货架上的草药。滑动停稳之后才重新识别再点，售罄名字变灰也认"
+        },
+        "recognition": "OCR",
+        "expected": "草药",
+        "roi": [
+            40,
+            150,
+            700,
+            480
+        ],
+        "threshold": 0.35,
+        "order_by": "Vertical",
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                900,
+                110
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_校验草药标题"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_开封_向下翻": {
+        "attach": {
+            "description": "手指上滑，露出更下面的商品。停稳后再认。本店单独计数，最多 8 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            300,
+            520
+        ],
+        "end": [
+            300,
+            260
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                300,
+                400
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 8,
+        "next": [
+            "买药_开封_等货架"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_开封_向上翻"
+        ]
+    },
+    "买药_开封_向上翻": {
+        "attach": {
+            "description": "手指下滑，把更上面的商品拉回来。停稳后再认。本店单独计数，最多 8 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            300,
+            260
+        ],
+        "end": [
+            300,
+            520
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                300,
+                400
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 8,
+        "next": [
+            "买药_开封_等货架"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            {
+                "name": "买药_已买完跳过",
+                "anchor": true
+            }
         ]
     },
     "买药_校验草药标题": {
@@ -2216,7 +2487,7 @@
     },
     "买药_确认胡牛儿": {
         "attach": {
-            "description": "确认进入胡牛儿动使杂货"
+            "description": "确认进入胡牛儿动使杂货。货架停稳后按这家店的锚点找枯茱萸，先看当前画面"
         },
         "recognition": "OCR",
         "expected": "胡牛儿动使杂货",
@@ -2228,106 +2499,66 @@
         ],
         "threshold": 0.4,
         "action": "DoNothing",
-        "post_delay": 200,
+        "post_delay": 100,
         "next": [
-            "买药_寻找枯茱萸"
+            {
+                "name": "买药_本店找货",
+                "anchor": true
+            }
         ],
         "timeout": 2000,
         "on_error": [
             "买药_关闭途径弹窗"
-        ]
+        ],
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                300,
+                400
+            ],
+            "threshold": 0.95
+        }
     },
-    "买药_寻找枯茱萸": {
+    "买药_胡牛儿_等货架": {
         "attach": {
-            "description": "先看当前画面有没有枯茱萸。没有就往下翻，不先拉回顶部"
+            "description": "胡牛儿先看有没有「百业派对已开启」挡住货架。没有就点枯茱萸"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
-            "买药_点击枯茱萸",
-            "买药_枯茱萸向下翻"
+            "买药_横幅还在"
         ],
-        "timeout": 1200,
+        "timeout": 250,
+        "rate_limit": 200,
         "on_error": [
-            "买药_枯茱萸改向上翻"
+            "买药_胡牛儿_点货"
         ]
     },
-    "买药_枯茱萸向下翻": {
+    "买药_胡牛儿_点货": {
         "attach": {
-            "description": "手指上滑，露出更下面的商品。售罄物品会沉到列表底部，最多 8 次"
-        },
-        "recognition": "DirectHit",
-        "action": "Swipe",
-        "begin": [
-            300,
-            520
-        ],
-        "end": [
-            300,
-            260
-        ],
-        "duration": 400,
-        "end_hold": 80,
-        "post_delay": 450,
-        "max_hit": 8,
-        "next": [
-            "买药_寻找枯茱萸"
-        ],
-        "timeout": 3000,
-        "on_error": [
-            "买药_枯茱萸改向上翻"
-        ]
-    },
-    "买药_枯茱萸改向上翻": {
-        "attach": {
-            "description": "往下翻到头仍没有枯茱萸时改往回翻。还是没有就当本店已买完"
+            "description": "先认当前画面上的枯茱萸。这一轮只有这一个识别，认不到才翻页，避免同帧直接滑走"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
-            "买药_点击枯茱萸",
-            "买药_枯茱萸向上翻"
+            "买药_胡牛儿_点击枯茱萸"
         ],
         "timeout": 1200,
+        "rate_limit": 200,
         "on_error": [
+            "买药_胡牛儿_向下翻",
+            "买药_胡牛儿_向上翻",
             {
                 "name": "买药_已买完跳过",
                 "anchor": true
             }
         ]
     },
-    "买药_枯茱萸向上翻": {
+    "买药_胡牛儿_点击枯茱萸": {
         "attach": {
-            "description": "手指下滑，把更上面的商品拉回来。最多 8 次"
-        },
-        "recognition": "DirectHit",
-        "action": "Swipe",
-        "begin": [
-            300,
-            260
-        ],
-        "end": [
-            300,
-            520
-        ],
-        "duration": 400,
-        "end_hold": 80,
-        "post_delay": 450,
-        "max_hit": 8,
-        "next": [
-            "买药_枯茱萸改向上翻"
-        ],
-        "timeout": 3000,
-        "on_error": [
-            {
-                "name": "买药_已买完跳过",
-                "anchor": true
-            }
-        ]
-    },
-    "买药_点击枯茱萸": {
-        "attach": {
-            "description": "点左侧货架上的枯茱萸。售罄后名字变灰并沉到底部，阈值放低，不认角标「库存不足」"
+            "description": "点左侧货架上的枯茱萸。滑动停稳之后才重新识别再点，售罄名字变灰也认"
         },
         "recognition": "OCR",
         "expected": "枯茱萸",
@@ -2340,14 +2571,98 @@
         "threshold": 0.35,
         "order_by": "Vertical",
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": {
+            "time": 300,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                900,
+                110
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
         "next": [
             "买药_校验枯茱萸标题"
         ],
         "timeout": 3000,
         "on_error": [
             "买药_放弃本店"
+        ]
+    },
+    "买药_胡牛儿_向下翻": {
+        "attach": {
+            "description": "手指上滑，露出更下面的商品。停稳后再认。本店单独计数，最多 8 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            300,
+            520
+        ],
+        "end": [
+            300,
+            260
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                300,
+                400
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 8,
+        "next": [
+            "买药_胡牛儿_等货架"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_胡牛儿_向上翻"
+        ]
+    },
+    "买药_胡牛儿_向上翻": {
+        "attach": {
+            "description": "手指下滑，把更上面的商品拉回来。停稳后再认。本店单独计数，最多 8 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            300,
+            260
+        ],
+        "end": [
+            300,
+            520
+        ],
+        "duration": 400,
+        "end_hold": 80,
+        "post_wait_freezes": {
+            "time": 400,
+            "timeout": 1200,
+            "rate_limit": 100,
+            "target": [
+                300,
+                400
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 8,
+        "next": [
+            "买药_胡牛儿_等货架"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            {
+                "name": "买药_已买完跳过",
+                "anchor": true
+            }
         ]
     },
     "买药_校验枯茱萸标题": {
@@ -2511,29 +2826,9 @@
             "买药_放弃本店"
         ]
     },
-    "买药_确保数量为1": {
-        "attach": {
-            "description": "先再认一次售罄按钮和补货条。命中就跳过，绝不点减号"
-        },
-        "recognition": "DirectHit",
-        "action": "DoNothing",
-        "next": [
-            "买药_按钮是库存不足",
-            "买药_看到补货",
-            "买药_数量已是1",
-            "买药_点击减号",
-            "买药_点击减号坐标"
-        ],
-        "timeout": 1500,
-        "rate_limit": 300,
-        "on_error": [
-            "买药_输入数量1",
-            "买药_放弃本店"
-        ]
-    },
     "买药_数量已是1": {
         "attach": {
-            "description": "数量栏识别为 1"
+            "description": "只识别数量栏这一小块，不走文字检测。整块文字是 1 才去购买"
         },
         "recognition": "OCR",
         "expected": "^\\s*1\\s*$",
@@ -2544,6 +2839,7 @@
             54
         ],
         "threshold": 0.4,
+        "only_rec": true,
         "action": "DoNothing",
         "next": [
             "买药_点击购买"
@@ -2553,9 +2849,186 @@
             "买药_放弃本店"
         ]
     },
-    "买药_点击减号": {
+    "买药_数量大于1": {
         "attach": {
-            "description": "点数量栏左侧减号"
+            "description": "数量栏大于 1（2 到 9，或 10 以上）。没有灰色最大按钮模板，用数字确认点到了"
+        },
+        "recognition": "OCR",
+        "expected": "^\\s*(?:[2-9]|[1-9]\\d+)\\s*$",
+        "roi": [
+            1044,
+            548,
+            86,
+            54
+        ],
+        "threshold": 0.4,
+        "only_rec": true,
+        "action": "DoNothing",
+        "next": [
+            "买药_点击购买"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_数量仍是1": {
+        "attach": {
+            "description": "两次点最大之后，数量栏仍然只是 1"
+        },
+        "recognition": "OCR",
+        "expected": "^\\s*1\\s*$",
+        "roi": [
+            1044,
+            548,
+            86,
+            54
+        ],
+        "threshold": 0.4,
+        "only_rec": true,
+        "action": "DoNothing",
+        "next": [
+            "买药_买满仍是1"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_买满仍是1": {
+        "attach": {
+            "description": "最大已点两次，数量仍是 1。按余额只买 1 个，继续点购买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_点击购买"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_确保数量为1": {
+        "attach": {
+            "description": "买 1 个的入口。转到这家店自己的数量节点。界面覆盖仍指向这个名字"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "买药_本店保1",
+                "anchor": true
+            }
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_输入数量1",
+            "买药_放弃本店"
+        ]
+    },
+    "买药_输入数量1": {
+        "attach": {
+            "description": "输入 1 的入口。转到这家店自己的输入节点，次数不和另外两家共用"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "买药_本店输入",
+                "anchor": true
+            }
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_点击最大": {
+        "attach": {
+            "description": "买满的入口。转到这家店自己的最大按钮。界面覆盖仍指向这个名字"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "买药_本店买满",
+                "anchor": true
+            }
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_点击最大坐标"
+        ]
+    },
+    "买药_点击最大坐标": {
+        "attach": {
+            "description": "买满入口失败时点最大按钮中心，再进入这家店的数量核对。三家合计最多 3 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1184,
+            578
+        ],
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 3,
+        "next": [
+            {
+                "name": "买药_本店买满确认",
+                "anchor": true
+            }
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_清河_确保数量为1": {
+        "attach": {
+            "description": "清河只认数量是不是 1。售罄已经在确认可购买里看过，这里不再和数字做同一次识别"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量已是1"
+        ],
+        "timeout": 1000,
+        "rate_limit": 250,
+        "on_error": [
+            "买药_清河_去点减号"
+        ]
+    },
+    "买药_清河_去点减号": {
+        "attach": {
+            "description": "先等减号模板。对不上再点坐标，仍不是 1 才去输入"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_清河_点击减号"
+        ],
+        "timeout": 400,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_清河_点击减号坐标",
+            "买药_清河_输入数量1",
+            "买药_放弃本店"
+        ]
+    },
+    "买药_清河_点击减号": {
+        "attach": {
+            "description": "清河点数量栏左侧减号。本店最多 20 次"
         },
         "recognition": "TemplateMatch",
         "template": "medicine/减号.png",
@@ -2570,12 +3043,12 @@
         "post_delay": 220,
         "max_hit": 20,
         "next": [
-            "买药_确保数量为1"
+            "买药_清河_确保数量为1"
         ]
     },
-    "买药_点击减号坐标": {
+    "买药_清河_点击减号坐标": {
         "attach": {
-            "description": "模板未命中时点减号中心"
+            "description": "清河模板未命中时点减号中心。本店最多 20 次"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -2586,12 +3059,12 @@
         "post_delay": 220,
         "max_hit": 20,
         "next": [
-            "买药_确保数量为1"
+            "买药_清河_确保数量为1"
         ]
     },
-    "买药_输入数量1": {
+    "买药_清河_输入数量1": {
         "attach": {
-            "description": "减号调不到 1 时，点数量栏再输入 1"
+            "description": "清河点数量栏，准备输入 1。本店最多 2 次"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -2602,39 +3075,54 @@
         "post_delay": 300,
         "max_hit": 2,
         "next": [
-            "买药_输入文本1"
+            "买药_清河_输入文本1"
         ],
         "timeout": 2000,
         "on_error": [
             "买药_放弃本店"
         ]
     },
-    "买药_输入文本1": {
+    "买药_清河_输入文本1": {
         "attach": {
-            "description": "向数量栏输入 1。自定义数字键盘可能不吃输入法，需实机确认"
+            "description": "向数量栏输入 1。接下来只等键盘收起，不再同帧跳过确定"
         },
         "recognition": "DirectHit",
         "action": "InputText",
         "input_text": "1",
-        "post_delay": 400,
+        "post_delay": 300,
         "next": [
-            "买药_数量键盘确定",
-            "买药_确保数量为1"
+            "买药_清河_等键盘"
         ],
-        "timeout": 2500,
+        "timeout": 2000,
         "on_error": [
             "买药_放弃本店"
         ]
     },
-    "买药_数量键盘确定": {
+    "买药_清河_等键盘": {
         "attach": {
-            "description": "如果弹出数字键盘，点确定"
+            "description": "等数字键盘上的确定或关闭。等不到就点标题栏把键盘收起来"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_清河_键盘确定"
+        ],
+        "timeout": 1600,
+        "rate_limit": 300,
+        "on_error": [
+            "买药_清河_关键盘"
+        ]
+    },
+    "买药_清河_键盘确定": {
+        "attach": {
+            "description": "清河点数字键盘上的确定、确认、完成或关闭"
         },
         "recognition": "OCR",
         "expected": [
             "确定",
             "确认",
-            "完成"
+            "完成",
+            "关闭"
         ],
         "roi": [
             240,
@@ -2642,21 +3130,41 @@
             800,
             340
         ],
-        "threshold": 0.5,
+        "threshold": 0.45,
         "action": "Click",
-        "post_delay": 300,
-        "max_hit": 1,
+        "post_delay": 350,
+        "max_hit": 2,
         "next": [
-            "买药_确保数量为1"
+            "买药_清河_确保数量为1"
         ],
-        "timeout": 3000,
+        "timeout": 2000,
+        "on_error": [
+            "买药_清河_关键盘"
+        ]
+    },
+    "买药_清河_关键盘": {
+        "attach": {
+            "description": "键盘确定没认出时，点左上标题栏收起键盘。不点货架，也不点购买"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            180,
+            36
+        ],
+        "post_delay": 350,
+        "max_hit": 2,
+        "next": [
+            "买药_清河_确保数量为1"
+        ],
+        "timeout": 2000,
         "on_error": [
             "买药_放弃本店"
         ]
     },
-    "买药_点击最大": {
+    "买药_清河_点击最大": {
         "attach": {
-            "description": "买满模式：点数量栏右侧最大按钮"
+            "description": "清河买满：点数量栏右侧最大按钮，然后核对数量是不是已经大于 1"
         },
         "recognition": "TemplateMatch",
         "template": "medicine/最大.png",
@@ -2668,18 +3176,29 @@
         ],
         "threshold": 0.65,
         "action": "Click",
-        "post_delay": 300,
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
         "next": [
-            "买药_点击购买"
+            "买药_清河_确认买满"
         ],
-        "timeout": 3000,
+        "timeout": 2000,
         "on_error": [
-            "买药_点击最大坐标"
+            "买药_清河_点击最大坐标"
         ]
     },
-    "买药_点击最大坐标": {
+    "买药_清河_点击最大坐标": {
         "attach": {
-            "description": "模板未命中时点最大按钮中心（1480,723 ×0.8）"
+            "description": "清河模板未命中时点最大按钮中心，然后同样核对数量"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -2687,12 +3206,813 @@
             1184,
             578
         ],
-        "post_delay": 300,
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
         "max_hit": 1,
         "next": [
-            "买药_点击购买"
+            "买药_清河_确认买满"
         ],
-        "timeout": 3000,
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_清河_确认买满": {
+        "attach": {
+            "description": "最大按钮点过之后，数量应大于 1。还是 1 就再点一次"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量大于1"
+        ],
+        "timeout": 1200,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_清河_再点最大"
+        ]
+    },
+    "买药_清河_再点最大": {
+        "attach": {
+            "description": "清河数量仍不是大于 1，再点一次最大按钮"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/最大.png",
+        "roi": [
+            1140,
+            530,
+            100,
+            90
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_清河_确认买满二次"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_清河_再点最大坐标"
+        ]
+    },
+    "买药_清河_再点最大坐标": {
+        "attach": {
+            "description": "清河第二次改点最大按钮中心"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1184,
+            578
+        ],
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_清河_确认买满二次"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_清河_看仍是1"
+        ]
+    },
+    "买药_清河_确认买满二次": {
+        "attach": {
+            "description": "第二次点最大之后再读数量。大于 1 就购买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量大于1"
+        ],
+        "timeout": 1200,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_清河_看仍是1"
+        ]
+    },
+    "买药_清河_看仍是1": {
+        "attach": {
+            "description": "两次之后若数量仍是 1，按余额上限买 1 个。读不出数字就放弃"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量仍是1"
+        ],
+        "timeout": 800,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_开封_确保数量为1": {
+        "attach": {
+            "description": "开封只认数量是不是 1。售罄已经在确认可购买里看过，这里不再和数字做同一次识别"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量已是1"
+        ],
+        "timeout": 1000,
+        "rate_limit": 250,
+        "on_error": [
+            "买药_开封_去点减号"
+        ]
+    },
+    "买药_开封_去点减号": {
+        "attach": {
+            "description": "先等减号模板。对不上再点坐标，仍不是 1 才去输入"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_开封_点击减号"
+        ],
+        "timeout": 400,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_开封_点击减号坐标",
+            "买药_开封_输入数量1",
+            "买药_放弃本店"
+        ]
+    },
+    "买药_开封_点击减号": {
+        "attach": {
+            "description": "开封点数量栏左侧减号。本店最多 20 次"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/减号.png",
+        "roi": [
+            980,
+            530,
+            90,
+            90
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_delay": 220,
+        "max_hit": 20,
+        "next": [
+            "买药_开封_确保数量为1"
+        ]
+    },
+    "买药_开封_点击减号坐标": {
+        "attach": {
+            "description": "开封模板未命中时点减号中心。本店最多 20 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1021,
+            578
+        ],
+        "post_delay": 220,
+        "max_hit": 20,
+        "next": [
+            "买药_开封_确保数量为1"
+        ]
+    },
+    "买药_开封_输入数量1": {
+        "attach": {
+            "description": "开封点数量栏，准备输入 1。本店最多 2 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1084,
+            578
+        ],
+        "post_delay": 300,
+        "max_hit": 2,
+        "next": [
+            "买药_开封_输入文本1"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_开封_输入文本1": {
+        "attach": {
+            "description": "向数量栏输入 1。接下来只等键盘收起，不再同帧跳过确定"
+        },
+        "recognition": "DirectHit",
+        "action": "InputText",
+        "input_text": "1",
+        "post_delay": 300,
+        "next": [
+            "买药_开封_等键盘"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_开封_等键盘": {
+        "attach": {
+            "description": "等数字键盘上的确定或关闭。等不到就点标题栏把键盘收起来"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_开封_键盘确定"
+        ],
+        "timeout": 1600,
+        "rate_limit": 300,
+        "on_error": [
+            "买药_开封_关键盘"
+        ]
+    },
+    "买药_开封_键盘确定": {
+        "attach": {
+            "description": "开封点数字键盘上的确定、确认、完成或关闭"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "确定",
+            "确认",
+            "完成",
+            "关闭"
+        ],
+        "roi": [
+            240,
+            360,
+            800,
+            340
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 350,
+        "max_hit": 2,
+        "next": [
+            "买药_开封_确保数量为1"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_开封_关键盘"
+        ]
+    },
+    "买药_开封_关键盘": {
+        "attach": {
+            "description": "键盘确定没认出时，点左上标题栏收起键盘。不点货架，也不点购买"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            180,
+            36
+        ],
+        "post_delay": 350,
+        "max_hit": 2,
+        "next": [
+            "买药_开封_确保数量为1"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_开封_点击最大": {
+        "attach": {
+            "description": "开封买满：点数量栏右侧最大按钮，然后核对数量是不是已经大于 1"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/最大.png",
+        "roi": [
+            1140,
+            530,
+            100,
+            90
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_开封_确认买满"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_开封_点击最大坐标"
+        ]
+    },
+    "买药_开封_点击最大坐标": {
+        "attach": {
+            "description": "开封模板未命中时点最大按钮中心，然后同样核对数量"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1184,
+            578
+        ],
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_开封_确认买满"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_开封_确认买满": {
+        "attach": {
+            "description": "最大按钮点过之后，数量应大于 1。还是 1 就再点一次"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量大于1"
+        ],
+        "timeout": 1200,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_开封_再点最大"
+        ]
+    },
+    "买药_开封_再点最大": {
+        "attach": {
+            "description": "开封数量仍不是大于 1，再点一次最大按钮"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/最大.png",
+        "roi": [
+            1140,
+            530,
+            100,
+            90
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_开封_确认买满二次"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_开封_再点最大坐标"
+        ]
+    },
+    "买药_开封_再点最大坐标": {
+        "attach": {
+            "description": "开封第二次改点最大按钮中心"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1184,
+            578
+        ],
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_开封_确认买满二次"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_开封_看仍是1"
+        ]
+    },
+    "买药_开封_确认买满二次": {
+        "attach": {
+            "description": "第二次点最大之后再读数量。大于 1 就购买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量大于1"
+        ],
+        "timeout": 1200,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_开封_看仍是1"
+        ]
+    },
+    "买药_开封_看仍是1": {
+        "attach": {
+            "description": "两次之后若数量仍是 1，按余额上限买 1 个。读不出数字就放弃"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量仍是1"
+        ],
+        "timeout": 800,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_胡牛儿_确保数量为1": {
+        "attach": {
+            "description": "胡牛儿只认数量是不是 1。售罄已经在确认可购买里看过，这里不再和数字做同一次识别"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量已是1"
+        ],
+        "timeout": 1000,
+        "rate_limit": 250,
+        "on_error": [
+            "买药_胡牛儿_去点减号"
+        ]
+    },
+    "买药_胡牛儿_去点减号": {
+        "attach": {
+            "description": "先等减号模板。对不上再点坐标，仍不是 1 才去输入"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_胡牛儿_点击减号"
+        ],
+        "timeout": 400,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_胡牛儿_点击减号坐标",
+            "买药_胡牛儿_输入数量1",
+            "买药_放弃本店"
+        ]
+    },
+    "买药_胡牛儿_点击减号": {
+        "attach": {
+            "description": "胡牛儿点数量栏左侧减号。本店最多 20 次"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/减号.png",
+        "roi": [
+            980,
+            530,
+            90,
+            90
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_delay": 220,
+        "max_hit": 20,
+        "next": [
+            "买药_胡牛儿_确保数量为1"
+        ]
+    },
+    "买药_胡牛儿_点击减号坐标": {
+        "attach": {
+            "description": "胡牛儿模板未命中时点减号中心。本店最多 20 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1021,
+            578
+        ],
+        "post_delay": 220,
+        "max_hit": 20,
+        "next": [
+            "买药_胡牛儿_确保数量为1"
+        ]
+    },
+    "买药_胡牛儿_输入数量1": {
+        "attach": {
+            "description": "胡牛儿点数量栏，准备输入 1。本店最多 2 次"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1084,
+            578
+        ],
+        "post_delay": 300,
+        "max_hit": 2,
+        "next": [
+            "买药_胡牛儿_输入文本1"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_胡牛儿_输入文本1": {
+        "attach": {
+            "description": "向数量栏输入 1。接下来只等键盘收起，不再同帧跳过确定"
+        },
+        "recognition": "DirectHit",
+        "action": "InputText",
+        "input_text": "1",
+        "post_delay": 300,
+        "next": [
+            "买药_胡牛儿_等键盘"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_胡牛儿_等键盘": {
+        "attach": {
+            "description": "等数字键盘上的确定或关闭。等不到就点标题栏把键盘收起来"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_胡牛儿_键盘确定"
+        ],
+        "timeout": 1600,
+        "rate_limit": 300,
+        "on_error": [
+            "买药_胡牛儿_关键盘"
+        ]
+    },
+    "买药_胡牛儿_键盘确定": {
+        "attach": {
+            "description": "胡牛儿点数字键盘上的确定、确认、完成或关闭"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "确定",
+            "确认",
+            "完成",
+            "关闭"
+        ],
+        "roi": [
+            240,
+            360,
+            800,
+            340
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 350,
+        "max_hit": 2,
+        "next": [
+            "买药_胡牛儿_确保数量为1"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_胡牛儿_关键盘"
+        ]
+    },
+    "买药_胡牛儿_关键盘": {
+        "attach": {
+            "description": "键盘确定没认出时，点左上标题栏收起键盘。不点货架，也不点购买"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            180,
+            36
+        ],
+        "post_delay": 350,
+        "max_hit": 2,
+        "next": [
+            "买药_胡牛儿_确保数量为1"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_胡牛儿_点击最大": {
+        "attach": {
+            "description": "胡牛儿买满：点数量栏右侧最大按钮，然后核对数量是不是已经大于 1"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/最大.png",
+        "roi": [
+            1140,
+            530,
+            100,
+            90
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_胡牛儿_确认买满"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_胡牛儿_点击最大坐标"
+        ]
+    },
+    "买药_胡牛儿_点击最大坐标": {
+        "attach": {
+            "description": "胡牛儿模板未命中时点最大按钮中心，然后同样核对数量"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1184,
+            578
+        ],
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_胡牛儿_确认买满"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_放弃本店"
+        ]
+    },
+    "买药_胡牛儿_确认买满": {
+        "attach": {
+            "description": "最大按钮点过之后，数量应大于 1。还是 1 就再点一次"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量大于1"
+        ],
+        "timeout": 1200,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_胡牛儿_再点最大"
+        ]
+    },
+    "买药_胡牛儿_再点最大": {
+        "attach": {
+            "description": "胡牛儿数量仍不是大于 1，再点一次最大按钮"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/最大.png",
+        "roi": [
+            1140,
+            530,
+            100,
+            90
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_胡牛儿_确认买满二次"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_胡牛儿_再点最大坐标"
+        ]
+    },
+    "买药_胡牛儿_再点最大坐标": {
+        "attach": {
+            "description": "胡牛儿第二次改点最大按钮中心"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1184,
+            578
+        ],
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 100,
+        "max_hit": 1,
+        "next": [
+            "买药_胡牛儿_确认买满二次"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "买药_胡牛儿_看仍是1"
+        ]
+    },
+    "买药_胡牛儿_确认买满二次": {
+        "attach": {
+            "description": "第二次点最大之后再读数量。大于 1 就购买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量大于1"
+        ],
+        "timeout": 1200,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_胡牛儿_看仍是1"
+        ]
+    },
+    "买药_胡牛儿_看仍是1": {
+        "attach": {
+            "description": "两次之后若数量仍是 1，按余额上限买 1 个。读不出数字就放弃"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_数量仍是1"
+        ],
+        "timeout": 800,
+        "rate_limit": 200,
         "on_error": [
             "买药_放弃本店"
         ]
