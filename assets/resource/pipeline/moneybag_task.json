@@ -1,0 +1,762 @@
+{
+    "买钱袋": {
+        "attach": {
+            "description": "入口。主界面→不肝商店→体力≥200买金丝否则跳过→赛季追赶物资栏一贯通宝最大购买→回主界面。代币不够视为成功。需 Agent"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "钱袋_已开功能菜单",
+            "钱袋_点主菜单"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "钱袋_结束失败"
+        ]
+    },
+    "钱袋_已开功能菜单": {
+        "attach": {
+            "description": "功能菜单已打开（能看到不肝）：不再点主菜单，避免开关抖动"
+        },
+        "recognition": "OCR",
+        "expected": "不肝",
+        "roi": [
+            780,
+            150,
+            480,
+            450
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "post_delay": 300,
+        "next": [
+            "钱袋_点不肝"
+        ],
+        "timeout": 1200,
+        "rate_limit": 300,
+        "on_error": [
+            "钱袋_点主菜单"
+        ]
+    },
+    "钱袋_点主菜单": {
+        "attach": {
+            "description": "点右上角主菜单，等菜单动画结束"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/主菜单.png",
+        "roi": [
+            1080,
+            0,
+            200,
+            90
+        ],
+        "threshold": 0.85,
+        "action": "Click",
+        "post_delay": 1200,
+        "next": [
+            "钱袋_点不肝"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "钱袋_结束失败"
+        ]
+    },
+    "钱袋_点不肝": {
+        "attach": {
+            "description": "功能菜单点「不肝」。只点一次，等界面打开后再点商店"
+        },
+        "recognition": "OCR",
+        "expected": "不肝",
+        "roi": [
+            780,
+            150,
+            480,
+            450
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 1500,
+        "max_hit": 1,
+        "next": [
+            "钱袋_等不肝顶栏"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_等不肝顶栏": {
+        "attach": {
+            "description": "等到不肝顶栏出现「商店」再点，避免菜单未开完就连点"
+        },
+        "recognition": "OCR",
+        "expected": "商店",
+        "roi": [
+            0,
+            0,
+            500,
+            100
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "post_delay": 400,
+        "next": [
+            "钱袋_点商店"
+        ],
+        "timeout": 5000,
+        "rate_limit": 400,
+        "on_error": [
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_点商店": {
+        "attach": {
+            "description": "不肝顶栏点「商店」。只点一次，等物资栏出来再判定体力"
+        },
+        "recognition": "OCR",
+        "expected": "商店",
+        "roi": [
+            0,
+            0,
+            500,
+            100
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 1500,
+        "max_hit": 1,
+        "next": [
+            "钱袋_等商店就绪"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_等商店就绪": {
+        "attach": {
+            "description": "等到商店物资区出现「战斗养成」或钱袋类商品，再读体力"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "战斗养成",
+            "金丝宋元钱袋",
+            "赛季追赶"
+        ],
+        "roi": [
+            0,
+            70,
+            900,
+            560
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "post_delay": 500,
+        "next": [
+            "钱袋_判定是否买金丝"
+        ],
+        "timeout": 6000,
+        "rate_limit": 400,
+        "on_error": [
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_读体力": {
+        "attach": {
+            "description": "仅供自定义动作。商店顶栏体力 当前/上限（可含千分位逗号，如 10/2,500）"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "\\d[\\d,，]*\\s*[/／]\\s*\\d[\\d,，]*"
+        ],
+        "roi": [
+            850,
+            0,
+            400,
+            70
+        ],
+        "threshold": 0.3
+    },
+    "钱袋_判定是否买金丝": {
+        "attach": {
+            "description": "Custom：体力≥200买金丝，否则跳过直去赛季追赶。读不到体力也只买通宝。需 Agent"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "钱袋_判定是否买金丝",
+        "custom_action_param": {
+            "min_stamina": 200
+        },
+        "post_delay": 200,
+        "next": [
+            "钱袋_滑侧栏找赛季"
+        ],
+        "timeout": 8000,
+        "on_error": [
+            "钱袋_滑侧栏找赛季"
+        ]
+    },
+    "钱袋_选金丝钱袋": {
+        "attach": {
+            "description": "物资栏选金丝宋元钱袋（点名称上方图标）"
+        },
+        "recognition": "OCR",
+        "expected": "金丝宋元钱袋",
+        "roi": [
+            180,
+            100,
+            700,
+            520
+        ],
+        "threshold": 0.35,
+        "action": "Click",
+        "target": true,
+        "target_offset": [
+            0,
+            -35,
+            0,
+            0
+        ],
+        "post_delay": 600,
+        "max_hit": 3,
+        "next": [
+            "钱袋_金丝点最大"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "钱袋_滑侧栏找赛季"
+        ]
+    },
+    "钱袋_金丝点最大": {
+        "attach": {
+            "description": "金丝数量点最大箭头。模板与买药相同 medicine/最大.png，点识别框中心（须点在方框内）"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/最大.png",
+        "roi": [
+            1140,
+            530,
+            100,
+            90
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "max_hit": 1,
+        "next": [
+            "钱袋_认代币不够金丝",
+            "钱袋_点购买金丝"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_金丝点最大坐标"
+        ]
+    },
+    "钱袋_金丝点最大坐标": {
+        "attach": {
+            "description": "金丝最大模板未命中时点按钮中心，与买药_点击最大坐标相同 (1184, 578)"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1184,
+            578
+        ],
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "max_hit": 1,
+        "next": [
+            "钱袋_认代币不够金丝",
+            "钱袋_点购买金丝"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_点购买金丝"
+        ]
+    },
+    "钱袋_认代币不够金丝": {
+        "attach": {
+            "description": "体力/代币不够买金丝：视为成功，改去赛季追赶（仍可买通宝）"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "代币不足",
+            "货币不足",
+            "余额不足",
+            "条件不足",
+            "不足"
+        ],
+        "roi": [
+            900,
+            400,
+            380,
+            300
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "钱袋_滑侧栏找赛季"
+        ],
+        "timeout": 1000,
+        "rate_limit": 300,
+        "on_error": [
+            "钱袋_点购买金丝"
+        ]
+    },
+    "钱袋_点购买金丝": {
+        "attach": {
+            "description": "购买金丝宋元钱袋，随后去赛季追赶"
+        },
+        "recognition": "OCR",
+        "expected": "购买",
+        "roi": [
+            980,
+            600,
+            280,
+            100
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 700,
+        "max_hit": 2,
+        "next": [
+            "钱袋_滑侧栏找赛季"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "钱袋_认代币不够金丝",
+            "钱袋_滑侧栏找赛季"
+        ]
+    },
+    "钱袋_滑侧栏找赛季": {
+        "attach": {
+            "description": "左侧分类列下滑露出赛季追赶。只滑一次，避免连滑点错"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            90,
+            480
+        ],
+        "end": [
+            90,
+            200
+        ],
+        "duration": 500,
+        "post_delay": 800,
+        "max_hit": 1,
+        "next": [
+            "钱袋_点赛季追赶"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_点赛季追赶"
+        ]
+    },
+    "钱袋_点赛季追赶": {
+        "attach": {
+            "description": "OCR 赛季追赶后点文字上方图标。只点一次，等物资栏加载完再选通宝"
+        },
+        "recognition": "OCR",
+        "expected": "赛季追赶",
+        "roi": [
+            0,
+            80,
+            200,
+            560
+        ],
+        "threshold": 0.35,
+        "action": "Click",
+        "target": true,
+        "target_offset": [
+            0,
+            -40,
+            0,
+            0
+        ],
+        "post_delay": 1500,
+        "max_hit": 1,
+        "next": [
+            "钱袋_滑物资栏"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_滑物资栏": {
+        "attach": {
+            "description": "赛季追赶首屏常没有通宝：物资栏下滑一页再选。只滑一次"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            500,
+            520
+        ],
+        "end": [
+            500,
+            220
+        ],
+        "duration": 550,
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "钱袋_选一贯通宝"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_选一贯通宝"
+        ]
+    },
+    "钱袋_选一贯通宝": {
+        "attach": {
+            "description": "物资栏选一贯宋元通宝。OCR 常读成「贯宋元通宝」（缺一字），故多写几种 expected"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "一贯宋元通宝",
+            "贯宋元通宝",
+            "宋元通宝"
+        ],
+        "roi": [
+            180,
+            100,
+            750,
+            520
+        ],
+        "threshold": 0.28,
+        "action": "Click",
+        "target": true,
+        "target_offset": [
+            0,
+            -35,
+            0,
+            0
+        ],
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "钱袋_通宝点最大"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "钱袋_滑物资栏再滑",
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_滑物资栏再滑": {
+        "attach": {
+            "description": "仍认不到再滑一页；之后只再认一次，避免死循环"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            500,
+            520
+        ],
+        "end": [
+            500,
+            220
+        ],
+        "duration": 550,
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "钱袋_选一贯通宝再试"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_选一贯通宝再试"
+        ]
+    },
+    "钱袋_选一贯通宝再试": {
+        "attach": {
+            "description": "第二页仍选通宝；没有则退出主界面（算成功收场）"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "一贯宋元通宝",
+            "贯宋元通宝",
+            "宋元通宝"
+        ],
+        "roi": [
+            180,
+            100,
+            750,
+            520
+        ],
+        "threshold": 0.25,
+        "action": "Click",
+        "target": true,
+        "target_offset": [
+            0,
+            -35,
+            0,
+            0
+        ],
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "钱袋_通宝点最大"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_通宝点最大": {
+        "attach": {
+            "description": "通宝数量点最大。模板与买药相同 medicine/最大.png，点识别框中心（须点在方框内）；再认代币不够或购买"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/最大.png",
+        "roi": [
+            1140,
+            530,
+            100,
+            90
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "max_hit": 1,
+        "next": [
+            "钱袋_认代币不够",
+            "钱袋_点购买通宝"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_通宝点最大坐标"
+        ]
+    },
+    "钱袋_通宝点最大坐标": {
+        "attach": {
+            "description": "通宝最大模板未命中时点按钮中心 (1184, 578)，与买药相同"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1184,
+            578
+        ],
+        "post_wait_freezes": {
+            "time": 200,
+            "timeout": 800,
+            "rate_limit": 100,
+            "target": [
+                1087,
+                575
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 200,
+        "max_hit": 1,
+        "next": [
+            "钱袋_认代币不够",
+            "钱袋_点购买通宝"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_认代币不够",
+            "钱袋_点购买通宝"
+        ]
+    },
+    "钱袋_认代币不够": {
+        "attach": {
+            "description": "通宝代币/货币不够：视为成功，直接退出回主界面，不点购买"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "代币不足",
+            "货币不足",
+            "余额不足",
+            "条件不足",
+            "不足"
+        ],
+        "roi": [
+            900,
+            400,
+            380,
+            300
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "钱袋_退出回主界面"
+        ],
+        "timeout": 1200,
+        "rate_limit": 300,
+        "on_error": [
+            "钱袋_点购买通宝"
+        ]
+    },
+    "钱袋_点购买通宝": {
+        "attach": {
+            "description": "购买一贯通宝最大数量；买完或点不到购买都走退出主界面（代币不够也算成功）"
+        },
+        "recognition": "OCR",
+        "expected": "购买",
+        "roi": [
+            980,
+            600,
+            280,
+            100
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 700,
+        "max_hit": 2,
+        "next": [
+            "钱袋_退出回主界面"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "钱袋_认代币不够",
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_退出回主界面": {
+        "attach": {
+            "description": "成功收场（含代币不够）：循环点返回直到认出主菜单"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "钱袋_已在主界面",
+            "钱袋_点返回"
+        ],
+        "timeout": 1500,
+        "rate_limit": 350,
+        "on_error": [
+            "钱袋_点返回坐标",
+            "钱袋_结束"
+        ]
+    },
+    "钱袋_已在主界面": {
+        "attach": {
+            "description": "认出主菜单图标，已回主界面"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/主菜单.png",
+        "roi": [
+            1080,
+            0,
+            200,
+            90
+        ],
+        "threshold": 0.85,
+        "action": "DoNothing",
+        "next": [
+            "钱袋_结束"
+        ]
+    },
+    "钱袋_点返回": {
+        "attach": {
+            "description": "点右上返回箭头"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1125,
+            0,
+            145,
+            68
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "post_delay": 450,
+        "max_hit": 6,
+        "next": [
+            "钱袋_退出回主界面"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "钱袋_点返回坐标"
+        ]
+    },
+    "钱袋_点返回坐标": {
+        "attach": {
+            "description": "返回模板未命中时点 (1182, 34)"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1182,
+            34
+        ],
+        "post_delay": 450,
+        "max_hit": 4,
+        "next": [
+            "钱袋_退出回主界面"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_结束"
+        ]
+    },
+    "钱袋_结束": {
+        "attach": {
+            "description": "已回主界面。走锚点钱袋_结束后：一条龙进返回百业；单独买钱袋/炼药进钱袋_收工"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "钱袋_结束后",
+                "anchor": true
+            },
+            "钱袋_收工"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "钱袋_收工"
+        ]
+    },
+    "钱袋_收工": {
+        "attach": {
+            "description": "单独买钱袋或单独炼药后续：买钱完成即停，不返回百业"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    },
+    "钱袋_结束失败": {
+        "attach": {
+            "description": "进不去主菜单等硬失败；不走返回百业"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    }
+}
+

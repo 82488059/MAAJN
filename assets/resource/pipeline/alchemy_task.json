@@ -1,0 +1,380 @@
+{
+    "炼药": {
+        "attach": {
+            "description": "入口。假定已退出百业且有炼药对话。点对话→选逍遥散→循环：算量输入→提交→关结算，直到体力或材料不够再退出界面。需 Agent"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "炼药_点对话"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "炼药_安全退出"
+        ]
+    },
+    "炼药_点对话": {
+        "attach": {
+            "description": "点右侧对话条「炼药」。ROI 待离开百业后实机再收紧"
+        },
+        "recognition": "OCR",
+        "expected": "炼药",
+        "roi": [
+            700,
+            300,
+            450,
+            350
+        ],
+        "threshold": 0.5,
+        "action": "Click",
+        "post_delay": 600,
+        "max_hit": 3,
+        "next": [
+            "炼药_点逍遥散"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "炼药_安全退出"
+        ]
+    },
+    "炼药_点逍遥散": {
+        "attach": {
+            "description": "在药方列表 OCR「逍遥散」并点击"
+        },
+        "recognition": "OCR",
+        "expected": "逍遥散",
+        "roi": [
+            20,
+            80,
+            420,
+            440
+        ],
+        "threshold": 0.5,
+        "action": "Click",
+        "post_delay": 400,
+        "max_hit": 3,
+        "next": [
+            "炼药_算量并输入"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "炼药_点逍遥散坐标",
+            "炼药_安全退出"
+        ]
+    },
+    "炼药_点逍遥散坐标": {
+        "attach": {
+            "description": "OCR 未命中时点列表首格逍遥散实测中心（1280×720）"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            137,
+            209
+        ],
+        "post_delay": 400,
+        "max_hit": 2,
+        "next": [
+            "炼药_算量并输入"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "炼药_安全退出"
+        ]
+    },
+    "炼药_读体力": {
+        "attach": {
+            "description": "仅供自定义动作 run_recognition。改数量前体力行 总体力/需要体力"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "\\d+\\s*[/／]\\s*\\d+"
+        ],
+        "roi": [
+            1000,
+            540,
+            250,
+            70
+        ],
+        "threshold": 0.4
+    },
+    "炼药_读数量": {
+        "attach": {
+            "description": "仅供自定义动作 run_recognition。数量框 当前/上限"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "\\d+\\s*[/／]\\s*\\d+"
+        ],
+        "roi": [
+            1040,
+            485,
+            110,
+            45
+        ],
+        "threshold": 0.4
+    },
+    "炼药_算量并输入": {
+        "attach": {
+            "description": "Custom：OCR 体力与上限，算 min(floor(总÷15),上限)；点数量框、退格、逐键输入、确认。数量为 0 或 OCR 失败走安全退出"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "炼药_算量并输入",
+        "custom_action_param": {
+            "cost": 15
+        },
+        "post_delay": 200,
+        "next": [
+            "炼药_点提交"
+        ],
+        "timeout": 15000,
+        "on_error": [
+            "炼药_安全退出"
+        ]
+    },
+    "炼药_点提交": {
+        "attach": {
+            "description": "点底右「炼药」提交，随后等炼制动画结束"
+        },
+        "recognition": "OCR",
+        "expected": "炼药",
+        "roi": [
+            1000,
+            640,
+            260,
+            80
+        ],
+        "threshold": 0.5,
+        "action": "Click",
+        "post_delay": 800,
+        "max_hit": 2,
+        "next": [
+            "炼药_点完成确定"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "炼药_点提交坐标"
+        ]
+    },
+    "炼药_点提交坐标": {
+        "attach": {
+            "description": "OCR 未命中时点炼药按钮实测中心，随后等炼制动画结束"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1138,
+            678
+        ],
+        "post_delay": 800,
+        "max_hit": 2,
+        "next": [
+            "炼药_点完成确定"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "炼药_安全退出"
+        ]
+    },
+    "炼药_点完成确定": {
+        "attach": {
+            "description": "炼制动画结束后出现「完成」结算，点右下「确定」关掉。等不到则点坐标兜底"
+        },
+        "recognition": "OCR",
+        "expected": "确定",
+        "roi": [
+            1000,
+            620,
+            260,
+            100
+        ],
+        "threshold": 0.5,
+        "action": "Click",
+        "post_delay": 500,
+        "max_hit": 3,
+        "next": [
+            "炼药_耗尽则退出"
+        ],
+        "timeout": 45000,
+        "rate_limit": 500,
+        "on_error": [
+            "炼药_点完成确定坐标"
+        ]
+    },
+    "炼药_点完成确定坐标": {
+        "attach": {
+            "description": "OCR 未命中时点完成界面「确定」实测中心"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1125,
+            665
+        ],
+        "post_delay": 500,
+        "max_hit": 2,
+        "next": [
+            "炼药_耗尽则退出"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "炼药_耗尽则退出"
+        ]
+    },
+    "炼药_耗尽则退出": {
+        "attach": {
+            "description": "Custom：再读体力与数量上限。可炼为 0 则退出界面；仍可炼则回到炼药_算量并输入继续循环"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "炼药_耗尽则退出",
+        "custom_action_param": {
+            "cost": 15
+        },
+        "post_delay": 300,
+        "next": [
+            "炼药_退出界面"
+        ],
+        "timeout": 8000,
+        "on_error": [
+            "炼药_退出界面"
+        ]
+    },
+    "炼药_退出界面": {
+        "attach": {
+            "description": "点右上角返回箭头关掉炼药界面。模板与百业货运/商店相同 medicine/返回.png"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1125,
+            0,
+            145,
+            68
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "post_delay": 500,
+        "max_hit": 2,
+        "next": [
+            "炼药_判定买钱袋"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "炼药_退出界面坐标"
+        ]
+    },
+    "炼药_退出界面坐标": {
+        "attach": {
+            "description": "返回模板未命中时点右上角箭头，与买药返回兜底相同"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1182,
+            34
+        ],
+        "post_delay": 500,
+        "max_hit": 2,
+        "next": [
+            "炼药_判定买钱袋"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "炼药_判定买钱袋"
+        ]
+    },
+    "炼药_读主界面体力": {
+        "attach": {
+            "description": "仅供自定义动作。退出炼药后读顶栏体力 当前/上限（与不肝商店顶栏同类）"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "\\d+\\s*[/／]\\s*\\d+"
+        ],
+        "roi": [
+            900,
+            0,
+            300,
+            70
+        ],
+        "threshold": 0.35
+    },
+    "炼药_判定买钱袋": {
+        "attach": {
+            "description": "Custom：正常退出后进买钱袋；是否买金丝由钱袋侧按体力判定"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "炼药_判定买钱袋",
+        "post_delay": 200,
+        "next": [
+            "买钱袋"
+        ],
+        "timeout": 8000,
+        "on_error": [
+            "买钱袋"
+        ]
+    },
+    "炼药_安全退出": {
+        "attach": {
+            "description": "不点炼药提交。点右上角返回箭头关界面，模板同 medicine/返回.png"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1125,
+            0,
+            145,
+            68
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "post_delay": 400,
+        "max_hit": 3,
+        "next": [
+            "炼药_结束失败"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "炼药_安全退出坐标"
+        ]
+    },
+    "炼药_安全退出坐标": {
+        "attach": {
+            "description": "安全退出时返回模板未命中，点 (1182, 34)"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1182,
+            34
+        ],
+        "post_delay": 400,
+        "max_hit": 2,
+        "next": [
+            "炼药_结束失败"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "炼药_结束失败"
+        ]
+    },
+    "炼药_结束": {
+        "attach": {
+            "description": "体力或材料耗尽并已退出炼药界面，正常结束"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    },
+    "炼药_结束失败": {
+        "attach": {
+            "description": "算量失败或未认出逍遥散等，安全退出后结束（不提交）"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    }
+}

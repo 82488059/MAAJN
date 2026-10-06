@@ -1,0 +1,203 @@
+{
+    "返回百业": {
+        "attach": {
+            "description": "入口。主界面→主菜单→百业→(可能过场)→右下返回驻地→确定→等加载结束（右上出现退出）"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "回百业_已开功能菜单",
+            "回百业_点主菜单"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "回百业_结束失败"
+        ]
+    },
+    "回百业_已开功能菜单": {
+        "attach": {
+            "description": "功能菜单已打开（能看到百业）：不再点主菜单"
+        },
+        "recognition": "OCR",
+        "expected": "百业",
+        "roi": [
+            780,
+            150,
+            480,
+            450
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "post_delay": 300,
+        "next": [
+            "回百业_点百业"
+        ],
+        "timeout": 1200,
+        "rate_limit": 300,
+        "on_error": [
+            "回百业_点主菜单"
+        ]
+    },
+    "回百业_点主菜单": {
+        "attach": {
+            "description": "点右上角主菜单，等菜单打开"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/主菜单.png",
+        "roi": [
+            1080,
+            0,
+            200,
+            90
+        ],
+        "threshold": 0.85,
+        "action": "Click",
+        "post_delay": 1200,
+        "max_hit": 1,
+        "next": [
+            "回百业_点百业"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "回百业_结束失败"
+        ]
+    },
+    "回百业_点百业": {
+        "attach": {
+            "description": "功能菜单点「百业」。只点一次。timeout 留给过场后认「返回驻地」"
+        },
+        "recognition": "OCR",
+        "expected": "百业",
+        "roi": [
+            780,
+            150,
+            480,
+            450
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 800,
+        "max_hit": 1,
+        "next": [
+            "回百业_点返回驻地"
+        ],
+        "timeout": 20000,
+        "rate_limit": 500,
+        "on_error": [
+            "回百业_结束失败"
+        ]
+    },
+    "回百业_点返回驻地": {
+        "attach": {
+            "description": "右下「返回驻地」。出现后点击；timeout 留给确认弹窗"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "返回驻地",
+            "回驻地"
+        ],
+        "roi": [
+            900,
+            520,
+            380,
+            200
+        ],
+        "threshold": 0.4,
+        "action": "Click",
+        "post_delay": 800,
+        "max_hit": 1,
+        "next": [
+            "回百业_点确定"
+        ],
+        "timeout": 5000,
+        "rate_limit": 400,
+        "on_error": [
+            "回百业_点确定坐标"
+        ]
+    },
+    "回百业_点确定": {
+        "attach": {
+            "description": "弹窗金色按钮「确定」。只认确定，勿认确认（正文「是否确认返回…」会误点）。timeout 留给进驻地后认右上退出"
+        },
+        "recognition": "OCR",
+        "expected": "确定",
+        "roi": [
+            990,
+            440,
+            190,
+            70
+        ],
+        "threshold": 0.5,
+        "action": "Click",
+        "post_delay": 800,
+        "max_hit": 2,
+        "next": [
+            "回百业_等退出出现"
+        ],
+        "timeout": 20000,
+        "rate_limit": 500,
+        "on_error": [
+            "回百业_结束失败"
+        ]
+    },
+    "回百业_点确定坐标": {
+        "attach": {
+            "description": "确定 OCR 未命中时点金色确认中心（与买药_点离开确认坐标同）。timeout 同样留给右上退出"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1082,
+            475
+        ],
+        "post_delay": 800,
+        "max_hit": 1,
+        "next": [
+            "回百业_等退出出现"
+        ],
+        "timeout": 20000,
+        "rate_limit": 500,
+        "on_error": [
+            "回百业_结束失败"
+        ]
+    },
+    "回百业_等退出出现": {
+        "attach": {
+            "description": "进驻地加载结束标志：右上「退出」（与买药_点退出同一 ROI）。只认不点"
+        },
+        "recognition": "OCR",
+        "expected": "退出",
+        "roi": [
+            1000,
+            0,
+            280,
+            70
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "post_delay": 400,
+        "next": [
+            "回百业_结束"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "回百业_结束失败"
+        ]
+    },
+    "回百业_结束": {
+        "attach": {
+            "description": "已回百业驻地（右上已有退出），正常结束"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    },
+    "回百业_结束失败": {
+        "attach": {
+            "description": "进不了菜单、过场后无返回驻地，或确定后加载超时无退出"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    }
+}

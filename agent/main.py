@@ -5,6 +5,8 @@ from maa.toolkit import Toolkit
 
 import my_action
 import my_reco
+import alchemy_action
+import moneybag_action
 
 
 def main():

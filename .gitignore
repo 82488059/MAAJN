@@ -468,3 +468,7 @@ debug
 /docs/zh_cn/个性化配置.md
 /docs/en_us
 /docs/static
+
+# Local scratch files（目录保留，内容忽略）
+/_tmp/*
+!/_tmp/.gitkeep
