@@ -1284,12 +1284,12 @@
     },
     "存放_取消草药": {
         "attach": {
-            "description": "这一轮第一次找带着红标的草药，最多等 800 毫秒。没有就把后面几轮的草药检查跳过"
+            "description": "这一轮第一次找带着红标的草药，最多等 800 毫秒。点完先再认一次，红标还在就补点。没有就把后面几轮的草药检查跳过"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "anchor": {
-            "存放_关详情后": "存放_取消枯茱萸"
+            "存放_关详情后": "存放_草药再认"
         },
         "next": [
             "存放_点选中草药"
@@ -1316,7 +1316,7 @@
     },
     "存放_点选中草药": {
         "attach": {
-            "description": "只点还带着红标的草药。现有图是药囊上半，不含红标。点击阈值 0.82。点一下会弹出详情"
+            "description": "点药囊上方的红标来取消。模板是药囊上半，不含红标。点整块中心只会弹出详情，红标还在。点击框收在模板上方的红标上。阈值 0.82"
         },
         "recognition": "TemplateMatch",
         "template": "storage/草药_选中.png",
@@ -1329,7 +1329,13 @@
         "threshold": 0.82,
         "order_by": "Score",
         "action": "Click",
-        "post_delay": 300,
+        "target_offset": [
+            19,
+            -18,
+            -24,
+            -10
+        ],
+        "post_delay": 200,
         "max_hit": 12,
         "next": [
             "存放_关详情"
@@ -1421,6 +1427,98 @@
                 "name": "存放_关详情后",
                 "anchor": true
             }
+        ]
+    },
+    "存放_草药再认": {
+        "attach": {
+            "description": "详情关掉、背包停稳之后，再看草药还有没有红标。没有就去取消枯茱萸。这一等不和直接命中排在一起"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_草药还带红标"
+        ],
+        "timeout": 700,
+        "rate_limit": 150,
+        "on_error": [
+            "存放_取消枯茱萸"
+        ]
+    },
+    "存放_草药还带红标": {
+        "attach": {
+            "description": "第一下没取消掉。阈值 0.82，和点选一样，旁边格子不会因此再被点一次"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/草药_选中.png",
+        "roi": [
+            790,
+            110,
+            470,
+            530
+        ],
+        "threshold": 0.82,
+        "order_by": "Score",
+        "action": "DoNothing",
+        "next": [
+            "存放_再点草药红标"
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "存放_选择不对"
+        ]
+    },
+    "存放_再点草药红标": {
+        "attach": {
+            "description": "再点一次药囊上方的红标。最多 6 次，三页各补两次也不会把次数用完"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/草药_选中.png",
+        "roi": [
+            790,
+            110,
+            470,
+            530
+        ],
+        "threshold": 0.82,
+        "order_by": "Score",
+        "action": "Click",
+        "target_offset": [
+            19,
+            -18,
+            -24,
+            -10
+        ],
+        "post_delay": 200,
+        "max_hit": 6,
+        "next": [
+            "存放_草药再关详情"
+        ]
+    },
+    "存放_草药再关详情": {
+        "attach": {
+            "description": "补点之后再点一次左下空白关掉详情，等背包停稳，然后去取消枯茱萸"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            240,
+            656
+        ],
+        "post_wait_freezes": {
+            "time": 350,
+            "timeout": 1000,
+            "rate_limit": 100,
+            "target": [
+                790,
+                110,
+                470,
+                520
+            ],
+            "threshold": 0.95
+        },
+        "post_delay": 150,
+        "next": [
+            "存放_取消枯茱萸"
         ]
     },
     "存放_枯茱萸再认": {
@@ -1546,7 +1644,7 @@
     },
     "存放_草药仍选中": {
         "attach": {
-            "description": "草药还有红标。阈值 0.72。实机里别的格子最高 0.649，低于这个值才不会误拦"
+            "description": "草药还有红标。阈值 0.82，和点选相同。旁边格子在 0.72 上会误拦；真选中能到点选阈值。没取消干净仍然不许点确认存入"
         },
         "recognition": "TemplateMatch",
         "template": "storage/草药_选中.png",
@@ -1556,7 +1654,7 @@
             470,
             530
         ],
-        "threshold": 0.72,
+        "threshold": 0.82,
         "order_by": "Score",
         "action": "DoNothing",
         "next": [
