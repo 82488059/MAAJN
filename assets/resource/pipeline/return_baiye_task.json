@@ -89,7 +89,7 @@
     },
     "回百业_点返回驻地": {
         "attach": {
-            "description": "右下「返回驻地」。出现后点击；timeout 留给确认弹窗"
+            "description": "右下「返回驻地」。出现后点击；timeout 留给确定弹窗。认不到返回驻地则失败，绝不盲点确定坐标"
         },
         "recognition": "OCR",
         "expected": [
@@ -112,12 +112,12 @@
         "timeout": 5000,
         "rate_limit": 400,
         "on_error": [
-            "回百业_点确定坐标"
+            "回百业_结束失败"
         ]
     },
     "回百业_点确定": {
         "attach": {
-            "description": "弹窗金色按钮「确定」。只认确定，勿认确认（正文「是否确认返回…」会误点）。timeout 120 秒留给进驻地加载，等右上退出；加载有时超过 1 分钟"
+            "description": "弹窗金色按钮「确定」。只认确定，勿认确认（正文「是否确认返回…」会误点）。认不到则失败，不点 (1082, 475)。timeout 120 秒留给进驻地加载，等右上退出"
         },
         "recognition": "OCR",
         "expected": "确定",
@@ -131,27 +131,6 @@
         "action": "Click",
         "post_delay": 800,
         "max_hit": 2,
-        "next": [
-            "回百业_等退出出现"
-        ],
-        "timeout": 120000,
-        "rate_limit": 500,
-        "on_error": [
-            "回百业_结束失败"
-        ]
-    },
-    "回百业_点确定坐标": {
-        "attach": {
-            "description": "确定 OCR 未命中时点金色确认中心 (1082, 475)。timeout 120 秒同样留给进驻地加载，等右上退出"
-        },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            1082,
-            475
-        ],
-        "post_delay": 800,
-        "max_hit": 1,
         "next": [
             "回百业_等退出出现"
         ],
@@ -212,7 +191,7 @@
     },
     "回百业_结束失败": {
         "attach": {
-            "description": "进不了菜单、过场后无返回驻地，或确定后加载超时无退出"
+            "description": "进不了菜单、过场后无返回驻地、认不到确定（不盲点坐标），或确定后加载超时无退出"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
