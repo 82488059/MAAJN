@@ -201,7 +201,25 @@
     },
     "找温无双_结束": {
         "attach": {
-            "description": "右侧已有「温无双」对话条。停在这里，不点对话，不点退出"
+            "description": "右侧已认出「温无双」对话条才到这里。不点对话。一条龙设了找温无双_结束后才进退出游戏（空转）；前序失败或找温失败到不了本节点。未设锚点则找温无双_收工"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "找温无双_结束后",
+                "anchor": true
+            },
+            "找温无双_收工"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "找温无双_收工"
+        ]
+    },
+    "找温无双_收工": {
+        "attach": {
+            "description": "单独找温无双：停在对话条旁，不点对话，不退出游戏"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -209,7 +227,7 @@
     },
     "找温无双_结束失败": {
         "attach": {
-            "description": "走到正房后仍没有对话条，或摇杆动作失败。停在当前画面"
+            "description": "走到正房后仍没有对话条，或摇杆动作失败。停在当前画面，不进退出游戏"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",

@@ -1,0 +1,24 @@
+{
+    "退出游戏": {
+        "attach": {
+            "description": "入口。暂时空转占位：不点主菜单、不点退出、不确认。一条龙仅在买药到找温无双全部成功且已认出对话条后，经找温无双_结束后进入；也可单独跑测。日后在此接真正退出"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "退出游戏_结束"
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "退出游戏_结束"
+        ]
+    },
+    "退出游戏_结束": {
+        "attach": {
+            "description": "空转收工。人仍停在找温无双成功后的画面。真正退出流程未实现"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    }
+}
