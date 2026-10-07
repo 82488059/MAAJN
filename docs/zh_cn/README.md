@@ -1,6 +1,6 @@
-# MaaJNBJ 项目文档
+# MAAJN 项目文档
 
-本目录是 MaaJNBJ 的中文说明。内容根据仓库里的 `assets/interface.json`、`assets/resource/pipeline/`、`agent/`、`tools/` 和 `.github/workflows/` 整理，描述的是当前代码的实际行为。
+本目录是 MAAJN 的中文说明。内容根据仓库里的 `assets/interface.json`、`assets/resource/pipeline/`、`agent/`、`tools/` 和 `.github/workflows/` 整理，描述的是当前代码的实际行为。
 
 `个性化配置.md` 是模板自带的说明，原文保留，没有改动。
 

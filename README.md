@@ -1,6 +1,6 @@
 # MAAJN
 
-**MAAJN**（界面名 **MaaJNBJ**）是面向《燕云十六声》的 MuMu / Adb 自动化项目，基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 构建。
+**MAAJN** 是面向《燕云十六声》的 MuMu / Adb 自动化项目，基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 构建。
 
 仓库地址：<https://github.com/82488059/MAAJN>
 
