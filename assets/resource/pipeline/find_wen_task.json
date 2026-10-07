@@ -1,40 +1,55 @@
 {
     "找温无双": {
         "attach": {
-            "description": "入口。返回驻地后人在门口、脸朝正房。朝前走过院子和水渠，门口往右避开门框，进正房，直到右侧出现对话条「温无双」。只走不点。可单独跑"
+            "description": "入口。返回驻地后人在门口、脸朝正房。先点按唤起左侧摇杆，再朝前按住 10 秒过院子和水渠，往右进正房直到右侧「温无双」。只走不点。可单独跑"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
-            "找温_直走"
+            "找温_唤起摇杆"
         ],
         "timeout": 3000,
         "on_error": [
             "找温无双_结束失败"
         ]
     },
+    "找温_唤起摇杆": {
+        "attach": {
+            "description": "先点按摇杆区，让虚拟摇杆出现。不点直接滑，短滑易被收成点击，人会站着空等再右移"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            200,
+            480
+        ],
+        "post_delay": 250,
+        "next": [
+            "找温_直走"
+        ]
+    },
     "找温_直走": {
         "attach": {
-            "description": "左侧摇杆朝镜头前方。从 (200,420) 滑到 (200,220)，1.5 秒。连走 3 段，过院门、趟水，停在正房门左侧门框前"
+            "description": "摇杆已唤起后：duration≥600 推满朝前（300 会被收成点击），再 end_hold 10000 按住。begin 用摇杆中心偏下 (200,480)→(200,240)"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
             200,
-            420
+            480
         ],
         "end": [
             200,
-            220
+            240
         ],
-        "duration": 1500,
-        "post_delay": 600,
-        "max_hit": 3,
+        "duration": 700,
+        "end_hold": 10000,
+        "post_delay": 400,
+        "max_hit": 1,
         "next": [
-            "找温_直走",
             "找温_门口右挪"
         ],
-        "timeout": 8000,
+        "timeout": 15000,
         "on_error": [
             "找温无双_结束失败"
         ]
@@ -65,7 +80,7 @@
     },
     "找温_进门": {
         "attach": {
-            "description": "朝前 1.2 秒走进正房。水渠可以趟过"
+            "description": "朝前 1.2 秒走进正房。水渠可以趟过。进门后不再二次右移，直接靠近"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -80,40 +95,16 @@
         "duration": 1200,
         "post_delay": 600,
         "next": [
-            "找温_靠右"
+            "找温_靠近"
         ],
         "timeout": 6000,
         "on_error": [
             "找温无双_结束失败"
         ]
     },
-    "找温_靠右": {
-        "attach": {
-            "description": "进门后人还偏左。往右滑 0.5 秒，从 (180,400) 到 (340,400)"
-        },
-        "recognition": "DirectHit",
-        "action": "Swipe",
-        "begin": [
-            180,
-            400
-        ],
-        "end": [
-            340,
-            400
-        ],
-        "duration": 500,
-        "post_delay": 400,
-        "next": [
-            "找温_靠近"
-        ],
-        "timeout": 5000,
-        "on_error": [
-            "找温无双_结束失败"
-        ]
-    },
     "找温_靠近": {
         "attach": {
-            "description": "再朝前 1 秒，靠近柜台后的温无双"
+            "description": "再朝前 1 秒，靠近柜台后的温无双。不做第二次右移"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -137,7 +128,7 @@
     },
     "找温_看到温无双": {
         "attach": {
-            "description": "右侧对话条「温无双」，与买药要点的是同一条。只认不点。没有就再靠一次"
+            "description": "右侧对话条「温无双」，与买药要点的是同一条。只认不点。没有就再朝前靠近一次，不再右移"
         },
         "recognition": "OCR",
         "expected": "温无双",
@@ -156,37 +147,12 @@
         "timeout": 2000,
         "rate_limit": 400,
         "on_error": [
-            "找温_再靠右"
-        ]
-    },
-    "找温_再靠右": {
-        "attach": {
-            "description": "第一次没认到对话条。再往右滑 0.5 秒。只再试这一次"
-        },
-        "recognition": "DirectHit",
-        "action": "Swipe",
-        "begin": [
-            180,
-            400
-        ],
-        "end": [
-            340,
-            400
-        ],
-        "duration": 500,
-        "post_delay": 400,
-        "max_hit": 1,
-        "next": [
             "找温_再靠近"
-        ],
-        "timeout": 5000,
-        "on_error": [
-            "找温无双_结束失败"
         ]
     },
     "找温_再靠近": {
         "attach": {
-            "description": "再朝前 1 秒"
+            "description": "第一次没认到对话条。再朝前 1 秒，不再右移。只再试这一次"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -200,6 +166,7 @@
         ],
         "duration": 1000,
         "post_delay": 600,
+        "max_hit": 1,
         "next": [
             "找温_再认"
         ],

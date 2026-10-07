@@ -1,21 +1,21 @@
 {
     "离开百业": {
         "attach": {
-            "description": "入口。人已在百业驻地主界面（货运已关，右上有退出）。点退出，有确认再点，等加载出右上主菜单。可单独跑；买药关货运后也会进来。结束后走锚点离开百业_结束后，未设置则停"
+            "description": "入口。人已在百业驻地主界面（货运已关，右上有退出）。点退出图标（字上方），有确认再点，等加载出右上主菜单。可单独跑；一条龙关货运后也会进来。timeout 须盖住点退出+等确认+再点。结束后走锚点离开百业_结束后，未设置则停"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
             "离百业_点退出"
         ],
-        "timeout": 3000,
+        "timeout": 20000,
         "on_error": [
             "离开百业_结束失败"
         ]
     },
     "离百业_点退出": {
         "attach": {
-            "description": "驻地主界面右上「退出」（与返回百业等加载同一按钮，这里要点下去）。点完只等确认弹窗，不要立刻认主菜单"
+            "description": "OCR 认右上「退出」文字，点击上移到门形图标（文字正下方点不中）。点完只等确认弹窗，不要立刻认主菜单"
         },
         "recognition": "OCR",
         "expected": "退出",
@@ -27,12 +27,78 @@
         ],
         "threshold": 0.5,
         "action": "Click",
-        "post_delay": 600,
+        "target_offset": [
+            0,
+            -38,
+            0,
+            20
+        ],
+        "post_delay": 800,
         "max_hit": 2,
+        "next": [
+            "离百业_等确认"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "离开百业_结束失败"
+        ]
+    },
+    "离百业_等确认": {
+        "attach": {
+            "description": "点退出后等离开确认出现。弹窗未出则再点一次退出图标，不要立刻失败"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
         "next": [
             "离百业_点确认"
         ],
-        "timeout": 8000,
+        "timeout": 3000,
+        "rate_limit": 250,
+        "on_error": [
+            "离百业_再点退出"
+        ]
+    },
+    "离百业_再点退出": {
+        "attach": {
+            "description": "确认未出现，再点一次退出图标。仍无确认则失败"
+        },
+        "recognition": "OCR",
+        "expected": "退出",
+        "roi": [
+            1000,
+            0,
+            280,
+            70
+        ],
+        "threshold": 0.5,
+        "action": "Click",
+        "target_offset": [
+            0,
+            -38,
+            0,
+            20
+        ],
+        "post_delay": 900,
+        "max_hit": 2,
+        "next": [
+            "离百业_等确认再等"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "离开百业_结束失败"
+        ]
+    },
+    "离百业_等确认再等": {
+        "attach": {
+            "description": "第二次点退出后的确认等待"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "离百业_点确认"
+        ],
+        "timeout": 3500,
+        "rate_limit": 250,
         "on_error": [
             "离开百业_结束失败"
         ]
@@ -44,12 +110,12 @@
         "recognition": "OCR",
         "expected": "确认",
         "roi": [
-            990,
-            440,
-            190,
-            70
+            940,
+            420,
+            260,
+            100
         ],
-        "threshold": 0.45,
+        "threshold": 0.4,
         "action": "Click",
         "post_delay": 800,
         "next": [
@@ -62,13 +128,14 @@
     },
     "离百业_先等加载": {
         "attach": {
-            "description": "退出和确认都点完后先空等 10 秒，再找右上主菜单。过场开头会闪出菜单，立刻认会在加载图上进炼药。timeout 130 秒含这 10 秒，剩下的时间等主菜单；加载有时超过 1 分钟"
+            "description": "退出和确认都点完后先空等 10 秒，再找右上主菜单；期间也可能出活动宣传，见离百业_关活动弹窗。过场开头会闪出菜单，立刻认会在加载图上进炼药。timeout 130 秒含这 10 秒"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "post_delay": 10000,
         "next": [
-            "离百业_等主菜单"
+            "离百业_等主菜单",
+            "离百业_关活动弹窗"
         ],
         "timeout": 130000,
         "rate_limit": 500,
@@ -76,9 +143,42 @@
             "离开百业_结束失败"
         ]
     },
+    "离百业_关活动弹窗": {
+        "attach": {
+            "description": "离开后活动宣传挡住主菜单（OCR「前往」或「活动上新」）。认到后点右上关闭叉 (1182,121)，不要点前往。关完继续等主菜单，可能连出多张"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "前往",
+            "活动上新"
+        ],
+        "roi": [
+            40,
+            150,
+            1200,
+            430
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "target": [
+            1182,
+            121
+        ],
+        "post_delay": 800,
+        "max_hit": 3,
+        "next": [
+            "离百业_等主菜单",
+            "离百业_关活动弹窗"
+        ],
+        "timeout": 8000,
+        "rate_limit": 400,
+        "on_error": [
+            "离百业_等主菜单"
+        ]
+    },
     "离百业_等主菜单": {
         "attach": {
-            "description": "离开加载结束：右上出现主菜单。命中后还要确认已经没有「退出」，退出还在就继续等"
+            "description": "离开加载结束：右上出现主菜单。命中后还要确认已经没有「退出」，退出还在就继续等。等不到时也可能是活动弹窗挡住"
         },
         "recognition": "TemplateMatch",
         "template": "storage/主菜单.png",
@@ -115,7 +215,7 @@
         "threshold": 0.5,
         "inverse": true,
         "action": "DoNothing",
-        "post_delay": 400,
+        "post_delay": 1200,
         "next": [
             {
                 "name": "离开百业_结束后",
@@ -131,7 +231,7 @@
     },
     "离开百业_结束": {
         "attach": {
-            "description": "已到主菜单。单独跑离开百业时停在这里；买药和一条龙改走锚点离开百业_结束后"
+            "description": "已到主菜单。单独跑离开百业或单独自动买药（未设离开百业_结束后）时停在这里；一条龙改走锚点离开百业_结束后→炼药"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",

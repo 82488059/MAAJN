@@ -1,33 +1,27 @@
 {
     "买药炼药一条龙": {
         "attach": {
-            "description": "入口。先自动买药，买齐后回到主菜单（关货运再离开百业），再进炼药、买钱袋，买钱成功后返回百业，再找温无双。已买标记只在此初始化一次。离开百业结束后走炼药，不进买药_结束。返回百业结束后走找温无双"
+            "description": "入口。只写跨任务锚点，再进自动买药。买药内部未买/买齐六项由自动买药初始化。买药_结束后→离开百业→炼药→买钱袋→返回百业→找温无双"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "anchor": {
-            "买药_进货运去哪": "买药_查入口名0",
-            "买药_清河已买": "买药_清河未买",
-            "买药_开封已买": "买药_开封未买",
-            "买药_胡牛儿已买": "买药_胡牛儿未买",
-            "买药_清河买齐": "买药_这家没买",
-            "买药_开封买齐": "买药_这家没买",
-            "买药_胡牛儿买齐": "买药_这家没买",
+            "买药_结束后": "离开百业",
             "离开百业_结束后": "炼药",
             "钱袋_结束后": "返回百业",
             "回百业_结束后": "找温无双"
         },
         "next": [
-            "买药_点击温无双对话条"
+            "自动买药"
         ],
         "timeout": 3000,
         "on_error": [
-            "买药_寻找货运选项"
+            "自动买药"
         ]
     },
     "自动买药": {
         "attach": {
-            "description": "入口。角色已站在温无双旁。先进货运，入口材料已经有了才存放，然后再买草药和枯茱萸。三家都买成后回到主菜单：关货运，再走离开百业。已买标记只在此初始化一次，领奖后不清掉。离开百业结束后走买药_结束"
+            "description": "入口。初始化买药内部未买/买齐六项与进货运去哪。三家买成后关货运，等驻地「退出」后停在买药_结束（返回主界面）。本入口不写买药_结束后；离开百业由一条龙入口锚点调用。领奖后不清已买标记"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -38,8 +32,7 @@
             "买药_胡牛儿已买": "买药_胡牛儿未买",
             "买药_清河买齐": "买药_这家没买",
             "买药_开封买齐": "买药_这家没买",
-            "买药_胡牛儿买齐": "买药_这家没买",
-            "离开百业_结束后": "买药_结束"
+            "买药_胡牛儿买齐": "买药_这家没买"
         },
         "next": [
             "买药_点击温无双对话条"
@@ -1426,16 +1419,16 @@
         "order_by": "Vertical",
         "index": 0,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_生活杂物路由1"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -1515,16 +1508,16 @@
         "order_by": "Vertical",
         "index": 1,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_生活杂物路由2"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -1604,16 +1597,16 @@
         "order_by": "Vertical",
         "index": 2,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_生活杂物路由3"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -1693,16 +1686,16 @@
         "order_by": "Vertical",
         "index": 3,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_生活杂物路由4"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -1782,16 +1775,16 @@
         "order_by": "Vertical",
         "index": 4,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_生活杂物路由5"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -1871,16 +1864,16 @@
         "order_by": "Vertical",
         "index": 5,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_生活杂物路由6"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -1960,16 +1953,16 @@
         "order_by": "Vertical",
         "index": 6,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_生活杂物路由7"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -2049,16 +2042,16 @@
         "order_by": "Vertical",
         "index": 7,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_入口用尽"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -2152,16 +2145,16 @@
         "order_by": "Vertical",
         "index": 0,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_胡牛儿路由1"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -2270,16 +2263,16 @@
         "order_by": "Vertical",
         "index": 1,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_胡牛儿路由2"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -2388,16 +2381,16 @@
         "order_by": "Vertical",
         "index": 2,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_胡牛儿路由3"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -2506,16 +2499,16 @@
         "order_by": "Vertical",
         "index": 3,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_胡牛儿路由4"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -2624,16 +2617,16 @@
         "order_by": "Vertical",
         "index": 4,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_胡牛儿路由5"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -2742,16 +2735,16 @@
         "order_by": "Vertical",
         "index": 5,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_胡牛儿路由6"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -2860,16 +2853,16 @@
         "order_by": "Vertical",
         "index": 6,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_胡牛儿路由7"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -2978,16 +2971,16 @@
         "order_by": "Vertical",
         "index": 7,
         "action": "Click",
-        "post_wait_freezes": 400,
-        "post_delay": 250,
+        "post_wait_freezes": 600,
+        "post_delay": 500,
         "max_hit": 4,
         "anchor": {
             "买药_换下一张": "买药_入口用尽"
         },
         "next": [
-            "买药_点击获取途径"
+            "买药_等获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 4000,
         "on_error": [
             "买药_换卡前关弹窗"
         ]
@@ -3011,9 +3004,17 @@
     },
     "买药_换卡前关弹窗": {
         "attach": {
-            "description": "这张卡没有获取途径，或弹窗里没有目标商店。点左侧空白关掉弹窗，再试下一张"
+            "description": "仍在百业货运时点左侧空白 (400, 300) 关途径弹窗再换卡；已不在货运则不点，直接换下一张"
         },
-        "recognition": "DirectHit",
+        "recognition": "OCR",
+        "expected": "百业货运",
+        "roi": [
+            20,
+            0,
+            400,
+            80
+        ],
+        "threshold": 0.5,
         "action": "Click",
         "target": [
             400,
@@ -3026,24 +3027,24 @@
                 "anchor": true
             }
         ],
-        "timeout": 2000,
+        "timeout": 1500,
         "on_error": [
-            "买药_入口用尽"
+            "买药_换卡无需关弹窗"
         ]
     },
     "买药_点击获取途径": {
         "attach": {
-            "description": "点右侧获取途径。接着只认整行店名，不点击。整行不在当前画面时，下一步只有锚点「买药_途径没店」这条滑动，不能先点弹窗里的条目。没有获取途径按钮时不会进这个节点"
+            "description": "点右侧获取途径（ROI 与提交路径一致）。认不到走坐标。点完只认整行店名；整行不在当前画面时由途径没店滑动，不先点弹窗条目"
         },
         "recognition": "OCR",
         "expected": "获取途径",
         "roi": [
-            790,
-            300,
-            220,
-            80
+            840,
+            280,
+            280,
+            120
         ],
-        "threshold": 0.5,
+        "threshold": 0.45,
         "action": "Click",
         "post_wait_freezes": 500,
         "post_delay": 300,
@@ -3053,12 +3054,9 @@
                 "anchor": true
             }
         ],
-        "timeout": 2800,
+        "timeout": 2500,
         "on_error": [
-            {
-                "name": "买药_途径没店",
-                "anchor": true
-            }
+            "买药_点获取途径坐标"
         ]
     },
     "买药_认清河商店": {
@@ -8021,7 +8019,7 @@
     },
     "买药_回到主菜单": {
         "attach": {
-            "description": "三家都买成。先关货运，再走离开百业，直到右上主菜单出现"
+            "description": "三家都买成。只关货运并等到驻地右上「退出」；是否离开百业由入口锚点买药_结束后决定"
         },
         "recognition": "OCR",
         "expected": "百业货运",
@@ -8043,7 +8041,7 @@
     },
     "买药_点退出": {
         "attach": {
-            "description": "关货运：右上角返回箭头，与存前同一模板。货运顶栏没有「退出」二字。点完等标题关掉再走离开百业"
+            "description": "关货运：右上角返回箭头，与存前同一模板。货运顶栏没有「退出」二字。点完多等一会再认标题，避免驻地顶栏未画出「退出」"
         },
         "recognition": "TemplateMatch",
         "template": "medicine/返回.png",
@@ -8055,7 +8053,7 @@
         ],
         "threshold": 0.8,
         "action": "Click",
-        "post_delay": 500,
+        "post_delay": 800,
         "max_hit": 2,
         "next": [
             "买药_确认已离开"
@@ -8075,7 +8073,7 @@
             1182,
             34
         ],
-        "post_delay": 500,
+        "post_delay": 800,
         "max_hit": 2,
         "next": [
             "买药_确认已离开"
@@ -8087,7 +8085,7 @@
     },
     "买药_确认已离开": {
         "attach": {
-            "description": "货运标题已关，人在百业驻地主界面。接着走离开百业，不要直接炼药。仍在货运则再关一次"
+            "description": "货运标题已关。先等驻地右上「退出」出现，再走买药_结束后锚点。仍在货运则再关一次"
         },
         "recognition": "OCR",
         "expected": "百业货运",
@@ -8101,16 +8099,43 @@
         "inverse": true,
         "action": "DoNothing",
         "next": [
-            "离开百业"
+            "买药_等驻地退出"
         ],
         "timeout": 3000,
         "on_error": [
             "买药_点退出坐标"
         ]
     },
+    "买药_等驻地退出": {
+        "attach": {
+            "description": "关货运后等到认出右上「退出」（已回主界面）。接着走锚点买药_结束后（仅一条龙接离开百业）；未设则买药_结束停在驻地"
+        },
+        "recognition": "OCR",
+        "expected": "退出",
+        "roi": [
+            1000,
+            0,
+            280,
+            70
+        ],
+        "threshold": 0.5,
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "买药_结束后",
+                "anchor": true
+            },
+            "买药_结束"
+        ],
+        "timeout": 8000,
+        "rate_limit": 400,
+        "on_error": [
+            "买药_点退出坐标"
+        ]
+    },
     "买药_结束": {
         "attach": {
-            "description": "单独买药离开后停；或材料提交没凑满 5 份时仍停在货运。任务正常结束"
+            "description": "买药收工：关货运后未设买药_结束后时停在驻地；或材料提交没凑满 5 份时仍停在货运。离开百业成功后的收工也可停在这里"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -8123,5 +8148,64 @@
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": []
+    },
+    "买药_等获取途径": {
+        "attach": {
+            "description": "点卡后等右侧「获取途径」。OCR 认不到就点实测坐标，避免卡在候选 next 超时直接换卡"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_点击获取途径"
+        ],
+        "timeout": 2500,
+        "rate_limit": 200,
+        "on_error": [
+            "买药_点获取途径坐标"
+        ]
+    },
+    "买药_点获取途径坐标": {
+        "attach": {
+            "description": "获取途径 OCR 没命中时，点 1600x900 的 (1250, 425) ×0.8。点完再认目标商店；仍没有则走途径没店滑动"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1000,
+            340
+        ],
+        "post_wait_freezes": 500,
+        "post_delay": 300,
+        "max_hit": 3,
+        "next": [
+            {
+                "name": "买药_目标商店",
+                "anchor": true
+            }
+        ],
+        "timeout": 2800,
+        "on_error": [
+            {
+                "name": "买药_途径没店",
+                "anchor": true
+            }
+        ]
+    },
+    "买药_换卡无需关弹窗": {
+        "attach": {
+            "description": "已不在货运界面，跳过关弹窗点击，直接换下一张入口卡"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "买药_换下一张",
+                "anchor": true
+            }
+        ],
+        "timeout": 1000,
+        "on_error": [
+            "买药_入口用尽"
+        ]
     }
 }

@@ -396,36 +396,37 @@
         "post_delay": 1500,
         "max_hit": 1,
         "next": [
+            "钱袋_选一贯通宝",
             "钱袋_滑物资栏"
         ],
-        "timeout": 4000,
+        "timeout": 5000,
         "on_error": [
-            "钱袋_退出回主界面"
+            "钱袋_滑物资栏"
         ]
     },
     "钱袋_滑物资栏": {
         "attach": {
-            "description": "赛季追赶首屏常没有通宝：物资栏下滑一页再选。只滑一次"
+            "description": "赛季追赶首屏常没有通宝：物资栏向下翻一页再选。timeout 须盖住选通宝 OCR；on_error 不要再写选通宝（与 next 相同会 error handling loop）"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
             500,
-            520
+            580
         ],
         "end": [
             500,
-            220
+            160
         ],
-        "duration": 550,
-        "post_delay": 1000,
+        "duration": 700,
+        "post_delay": 900,
         "max_hit": 1,
         "next": [
             "钱袋_选一贯通宝"
         ],
-        "timeout": 2000,
+        "timeout": 8000,
         "on_error": [
-            "钱袋_选一贯通宝"
+            "钱袋_滑物资栏再滑"
         ]
     },
     "钱袋_选一贯通宝": {
@@ -436,7 +437,8 @@
         "expected": [
             "一贯宋元通宝",
             "贯宋元通宝",
-            "宋元通宝"
+            "宋元通宝",
+            "通宝"
         ],
         "roi": [
             180,
@@ -458,7 +460,7 @@
         "next": [
             "钱袋_通宝点最大"
         ],
-        "timeout": 4000,
+        "timeout": 5000,
         "on_error": [
             "钱袋_滑物资栏再滑",
             "钱袋_退出回主界面"
@@ -466,38 +468,39 @@
     },
     "钱袋_滑物资栏再滑": {
         "attach": {
-            "description": "仍认不到再滑一页；之后只再认一次，避免死循环"
+            "description": "仍认不到再翻一页。on_error 不要写选通宝再试（与 next 相同会 loop）"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
         "begin": [
             500,
-            520
+            580
         ],
         "end": [
             500,
-            220
+            160
         ],
-        "duration": 550,
-        "post_delay": 1000,
+        "duration": 700,
+        "post_delay": 900,
         "max_hit": 1,
         "next": [
             "钱袋_选一贯通宝再试"
         ],
-        "timeout": 2000,
+        "timeout": 8000,
         "on_error": [
-            "钱袋_选一贯通宝再试"
+            "钱袋_滑物资栏三滑"
         ]
     },
     "钱袋_选一贯通宝再试": {
         "attach": {
-            "description": "第二页仍选通宝；没有则退出主界面（算成功收场）"
+            "description": "第二页仍选通宝；没有则再翻一页"
         },
         "recognition": "OCR",
         "expected": [
             "一贯宋元通宝",
             "贯宋元通宝",
-            "宋元通宝"
+            "宋元通宝",
+            "通宝"
         ],
         "roi": [
             180,
@@ -519,7 +522,69 @@
         "next": [
             "钱袋_通宝点最大"
         ],
-        "timeout": 4000,
+        "timeout": 5000,
+        "on_error": [
+            "钱袋_滑物资栏三滑",
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_滑物资栏三滑": {
+        "attach": {
+            "description": "第三页再认通宝；仍没有则退出主界面（算成功收场，不买别的货）"
+        },
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            500,
+            580
+        ],
+        "end": [
+            500,
+            160
+        ],
+        "duration": 700,
+        "post_delay": 900,
+        "max_hit": 1,
+        "next": [
+            "钱袋_选一贯通宝三试"
+        ],
+        "timeout": 8000,
+        "on_error": [
+            "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_选一贯通宝三试": {
+        "attach": {
+            "description": "第三页仍选通宝；没有则退出主界面"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "一贯宋元通宝",
+            "贯宋元通宝",
+            "宋元通宝",
+            "通宝"
+        ],
+        "roi": [
+            180,
+            100,
+            750,
+            520
+        ],
+        "threshold": 0.25,
+        "action": "Click",
+        "target": true,
+        "target_offset": [
+            0,
+            -35,
+            0,
+            0
+        ],
+        "post_delay": 1000,
+        "max_hit": 1,
+        "next": [
+            "钱袋_通宝点最大"
+        ],
+        "timeout": 5000,
         "on_error": [
             "钱袋_退出回主界面"
         ]

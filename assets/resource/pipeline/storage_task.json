@@ -36,20 +36,24 @@
     },
     "存放_屏上有道具": {
         "attach": {
-            "description": "标题栏有道具，说明包裹已经打开。接着核对筛选是不是原料"
+            "description": "包裹已开：旧版标题「道具」，或页签「普通道具」（OCR 常成「普通道」）。ROI 盖到页签行，避开只扫到顶栏引导气泡"
         },
         "recognition": "OCR",
-        "expected": "道具",
+        "expected": [
+            "道具",
+            "普通道",
+            "普通道具"
+        ],
         "roi": [
             780,
             0,
-            280,
-            78
+            420,
+            150
         ],
         "threshold": 0.5,
         "action": "DoNothing",
         "next": [
-            "存放_检查筛选"
+            "存放_看仓库引导"
         ]
     },
     "存放_屏上有仓库": {
@@ -140,24 +144,147 @@
     },
     "存放_确认道具": {
         "attach": {
-            "description": "背包面板标题是道具，才去看筛选"
+            "description": "点包裹后确认背包已开。认「道具」/「普通道」/「普通道具」。ROI 含页签行；顶栏「仓库已开放」引导不当事成功条件"
         },
         "recognition": "OCR",
-        "expected": "道具",
+        "expected": [
+            "道具",
+            "普通道",
+            "普通道具"
+        ],
         "roi": [
             780,
             0,
-            280,
-            78
+            420,
+            150
         ],
         "threshold": 0.5,
         "action": "DoNothing",
+        "next": [
+            "存放_看仓库引导"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "存放_点包裹坐标"
+        ]
+    },
+    "存放_看仓库引导": {
+        "attach": {
+            "description": "顶栏有「仓库已开放」引导才走点仓库→第一格→更多；没有则直接核对筛选"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "存放_有仓库引导"
+        ],
+        "timeout": 800,
+        "rate_limit": 200,
+        "on_error": [
+            "存放_检查筛选"
+        ]
+    },
+    "存放_有仓库引导": {
+        "attach": {
+            "description": "背包顶栏新手气泡「仓库已开放，前往查看吧」。下一步模板未命中时走坐标兜底，勿只写引导点仓库"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "仓库已开放",
+            "前往查看"
+        ],
+        "roi": [
+            700,
+            0,
+            400,
+            100
+        ],
+        "threshold": 0.45,
+        "action": "DoNothing",
+        "next": [
+            "存放_引导点仓库",
+            "存放_引导点仓库坐标"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "存放_引导点仓库坐标"
+        ]
+    },
+    "存放_引导点仓库": {
+        "attach": {
+            "description": "引导第一步：点顶栏仓库图标，打开左侧仓库面板。引导高亮时模板分常约 0.82，阈值勿高于 0.8"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/仓库图标.png",
+        "roi": [
+            980,
+            0,
+            160,
+            70
+        ],
+        "threshold": 0.78,
+        "action": "Click",
+        "post_wait_freezes": 400,
+        "post_delay": 400,
+        "next": [
+            "存放_引导点第一格"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "存放_引导点仓库坐标"
+        ]
+    },
+    "存放_引导点仓库坐标": {
+        "attach": {
+            "description": "仓库图标模板未命中时点图标中心，与存放_点仓库坐标同点"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1058,
+            34
+        ],
+        "post_wait_freezes": 400,
+        "post_delay": 400,
+        "next": [
+            "存放_引导点第一格"
+        ]
+    },
+    "存放_引导点第一格": {
+        "attach": {
+            "description": "引导第二步：点仓库固定容量左上第一格（1280×720 实测约 425,175）"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            425,
+            175
+        ],
+        "post_delay": 500,
+        "next": [
+            "存放_引导点更多"
+        ]
+    },
+    "存放_引导点更多": {
+        "attach": {
+            "description": "引导第三步：点「更多」结束仓库引导。认不到说明引导已过，继续筛选，不失败"
+        },
+        "recognition": "OCR",
+        "expected": "更多",
+        "roi": [
+            300,
+            150,
+            700,
+            450
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 500,
         "next": [
             "存放_检查筛选"
         ],
         "timeout": 3000,
         "on_error": [
-            "存放_点包裹坐标"
+            "存放_检查筛选"
         ]
     },
     "存放_检查筛选": {
