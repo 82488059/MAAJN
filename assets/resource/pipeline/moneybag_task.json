@@ -374,7 +374,7 @@
     },
     "钱袋_点赛季追赶": {
         "attach": {
-            "description": "OCR 赛季追赶后点文字上方图标。只点一次，等物资栏加载完再选通宝"
+            "description": "OCR 赛季追赶后点文字上方图标。只点一次，等切页后再验是否离开战斗养成"
         },
         "recognition": "OCR",
         "expected": "赛季追赶",
@@ -396,12 +396,104 @@
         "post_delay": 1500,
         "max_hit": 1,
         "next": [
-            "钱袋_选一贯通宝",
-            "钱袋_滑物资栏"
+            "钱袋_等赛季切好"
         ],
         "timeout": 5000,
         "on_error": [
+            "钱袋_等赛季切好"
+        ]
+    },
+    "钱袋_等赛季切好": {
+        "attach": {
+            "description": "点完赛季追赶后确认已选中：侧栏图标白底高亮（模板）优先；仍见金丝宋元钱袋则还在默认战斗养成。战斗养成里也有一贯通宝，未确认选中不买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "钱袋_认赛季已选中",
+            "钱袋_切赛季后仍见金丝"
+        ],
+        "timeout": 2500,
+        "rate_limit": 300,
+        "on_error": [
+            "钱袋_再点赛季追赶"
+        ]
+    },
+    "钱袋_认赛季已选中": {
+        "attach": {
+            "description": "侧栏赛季追赶图标白底高亮（moneybag/赛季追赶_选中.png）。认到才选通宝"
+        },
+        "recognition": "TemplateMatch",
+        "template": "moneybag/赛季追赶_选中.png",
+        "roi": [
+            0,
+            80,
+            200,
+            560
+        ],
+        "threshold": 0.7,
+        "action": "DoNothing",
+        "next": [
+            "钱袋_选一贯通宝",
             "钱袋_滑物资栏"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_再点赛季追赶"
+        ]
+    },
+    "钱袋_切赛季后仍见金丝": {
+        "attach": {
+            "description": "切页后物资区还有金丝宋元钱袋：仍在战斗养成，再点赛季追赶"
+        },
+        "recognition": "OCR",
+        "expected": "金丝宋元钱袋",
+        "roi": [
+            180,
+            100,
+            750,
+            520
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "钱袋_再点赛季追赶"
+        ],
+        "timeout": 800,
+        "max_hit": 4,
+        "on_error": [
+            "钱袋_再点赛季追赶"
+        ]
+    },
+    "钱袋_再点赛季追赶": {
+        "attach": {
+            "description": "未切到赛季追赶时再点侧栏图标。最多 4 次，仍失败则退出主界面"
+        },
+        "recognition": "OCR",
+        "expected": "赛季追赶",
+        "roi": [
+            0,
+            80,
+            200,
+            560
+        ],
+        "threshold": 0.35,
+        "action": "Click",
+        "target": true,
+        "target_offset": [
+            0,
+            -40,
+            0,
+            0
+        ],
+        "post_delay": 1500,
+        "max_hit": 4,
+        "next": [
+            "钱袋_等赛季切好"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "钱袋_退出回主界面"
         ]
     },
     "钱袋_滑物资栏": {
@@ -458,7 +550,7 @@
         "post_delay": 1000,
         "max_hit": 1,
         "next": [
-            "钱袋_通宝点最大"
+            "钱袋_买前确认赛季"
         ],
         "timeout": 5000,
         "on_error": [
@@ -520,7 +612,7 @@
         "post_delay": 1000,
         "max_hit": 1,
         "next": [
-            "钱袋_通宝点最大"
+            "钱袋_买前确认赛季"
         ],
         "timeout": 5000,
         "on_error": [
@@ -582,11 +674,72 @@
         "post_delay": 1000,
         "max_hit": 1,
         "next": [
-            "钱袋_通宝点最大"
+            "钱袋_买前确认赛季"
         ],
         "timeout": 5000,
         "on_error": [
             "钱袋_退出回主界面"
+        ]
+    },
+    "钱袋_买前确认赛季": {
+        "attach": {
+            "description": "通宝点最大/购买前确认已选赛季追赶。物资区仍见金丝=还在战斗养成；侧栏须模板命中白底选中图标。未确认不买"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "钱袋_买前仍见金丝",
+            "钱袋_买前认赛季已选"
+        ],
+        "timeout": 1500,
+        "rate_limit": 300,
+        "on_error": [
+            "钱袋_再点赛季追赶"
+        ]
+    },
+    "钱袋_买前仍见金丝": {
+        "attach": {
+            "description": "买通宝前物资区仍有金丝宋元钱袋：分类还在战斗养成，再切赛季追赶后重选通宝"
+        },
+        "recognition": "OCR",
+        "expected": "金丝宋元钱袋",
+        "roi": [
+            180,
+            100,
+            750,
+            520
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "钱袋_再点赛季追赶"
+        ],
+        "timeout": 800,
+        "max_hit": 4,
+        "on_error": [
+            "钱袋_再点赛季追赶"
+        ]
+    },
+    "钱袋_买前认赛季已选": {
+        "attach": {
+            "description": "买前再认侧栏赛季追赶白底选中图标；命中才点通宝最大"
+        },
+        "recognition": "TemplateMatch",
+        "template": "moneybag/赛季追赶_选中.png",
+        "roi": [
+            0,
+            80,
+            200,
+            560
+        ],
+        "threshold": 0.7,
+        "action": "DoNothing",
+        "next": [
+            "钱袋_通宝点最大"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "钱袋_再点赛季追赶"
         ]
     },
     "钱袋_通宝点最大": {
