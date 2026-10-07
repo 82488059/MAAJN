@@ -191,7 +191,7 @@
     },
     "炼药_点提交": {
         "attach": {
-            "description": "点底右「炼药」提交，随后等炼制动画结束。timeout 须盖住等「确定」（动画常几十秒）；过短会误走 on_error 并 error loop"
+            "description": "点底右「炼药」提交，随后等提交结果（缺材料弹窗或完成确定）。timeout 须盖住动画；过短会误走 on_error 并 error loop"
         },
         "recognition": "OCR",
         "expected": "炼药",
@@ -206,7 +206,7 @@
         "post_delay": 800,
         "max_hit": 2,
         "next": [
-            "炼药_点完成确定"
+            "炼药_等提交结果"
         ],
         "timeout": 50000,
         "rate_limit": 500,
@@ -216,7 +216,7 @@
     },
     "炼药_点提交坐标": {
         "attach": {
-            "description": "OCR 未命中时点炼药按钮中心。timeout 同样须盖住等「确定」"
+            "description": "OCR 未命中时点炼药按钮中心。随后同样等提交结果"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -227,7 +227,7 @@
         "post_delay": 800,
         "max_hit": 1,
         "next": [
-            "炼药_点完成确定"
+            "炼药_等提交结果"
         ],
         "timeout": 50000,
         "rate_limit": 500,
@@ -235,9 +235,91 @@
             "炼药_结束失败"
         ]
     },
+    "炼药_等提交结果": {
+        "attach": {
+            "description": "提交后轮询：先认缺少材料弹窗（点取消退出）；没有再等完成结算「确定」。timeout 盖住炼制动画"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "炼药_缺材料弹窗",
+            "炼药_点完成确定"
+        ],
+        "timeout": 50000,
+        "rate_limit": 500,
+        "on_error": [
+            "炼药_点完成确定坐标"
+        ]
+    },
+    "炼药_缺材料弹窗": {
+        "attach": {
+            "description": "算量偏大时可能弹出缺少材料。只认正文，不点确认；接着点取消并退出界面"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "缺少材料",
+            "材料不足"
+        ],
+        "roi": [
+            280,
+            200,
+            720,
+            280
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "炼药_缺材料点取消"
+        ],
+        "timeout": 1500
+    },
+    "炼药_缺材料点取消": {
+        "attach": {
+            "description": "缺材料弹窗点左侧「取消」，不点确认；关掉后按材料耗尽退出炼药界面"
+        },
+        "recognition": "OCR",
+        "expected": "取消",
+        "roi": [
+            60,
+            400,
+            220,
+            120
+        ],
+        "threshold": 0.4,
+        "action": "Click",
+        "post_delay": 400,
+        "max_hit": 2,
+        "next": [
+            "炼药_退出界面"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "炼药_缺材料点取消坐标"
+        ]
+    },
+    "炼药_缺材料点取消坐标": {
+        "attach": {
+            "description": "取消 OCR 未命中时点左下取消实测中心 (140, 475)，与买药/存放弹窗取消同点"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            140,
+            475
+        ],
+        "post_delay": 400,
+        "max_hit": 2,
+        "next": [
+            "炼药_退出界面"
+        ],
+        "timeout": 2000,
+        "on_error": [
+            "炼药_退出界面"
+        ]
+    },
     "炼药_点完成确定": {
         "attach": {
-            "description": "炼制动画结束后出现「完成」结算，点右下「确定」关掉。等不到则点坐标兜底"
+            "description": "炼制动画结束后出现「完成」结算，点右下「确定」关掉。等不到则再认缺材料，再坐标兜底"
         },
         "recognition": "OCR",
         "expected": "确定",
@@ -257,6 +339,7 @@
         "timeout": 45000,
         "rate_limit": 500,
         "on_error": [
+            "炼药_缺材料弹窗",
             "炼药_点完成确定坐标"
         ]
     },
