@@ -472,3 +472,6 @@ debug
 # Local scratch files（目录保留，内容忽略）
 /_tmp/*
 !/_tmp/.gitkeep
+
+# 本机 MFAAvalonia 发布目录与 Agent 虚拟环境（勿入库）
+/MFAAvalonia/
