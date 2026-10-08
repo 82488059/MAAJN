@@ -1,8 +1,8 @@
-# MAAJN
+# MAAYY
 
-**MAAJN** 是面向《燕云十六声》的 MuMu / Adb 自动化项目，基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 构建。
+**MAAYY** 是面向《燕云十六声》的 MuMu / Adb 自动化项目，基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 构建。
 
-仓库地址：<https://github.com/82488059/MAAJN>
+仓库地址：<https://github.com/82488059/MAAYY>
 
 > **MaaFramework** 是基于图像识别的自动化框架，详见其仓库说明。
 
@@ -17,7 +17,7 @@
 1. 克隆本仓库：
 
     ```bash
-    git clone https://github.com/82488059/MAAJN.git
+    git clone https://github.com/82488059/MAAYY.git
     ```
 
 2. 从 [MaaFramework Releases](https://github.com/MaaXYZ/MaaFramework/releases) 下载并解压到 `deps/`。
