@@ -1,7 +1,7 @@
 {
     "炼药": {
         "attach": {
-            "description": "入口。假定已退出百业且有炼药对话。timeout 15 秒盖住离开后对话晚出。认不到对话走结束失败（勿经安全退出模板，主界面无返回箭头会 error loop）。需 Agent"
+            "description": "入口。假定已退出百业且有炼药对话。timeout 15 秒盖住离开后对话晚出。认不到对话走结束失败并停在当前界面。需 Agent"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -35,13 +35,12 @@
         ],
         "timeout": 8000,
         "on_error": [
-            "炼药_安全退出",
             "炼药_结束失败"
         ]
     },
     "炼药_点逍遥散": {
         "attach": {
-            "description": "优先 OCR「逍遥散」并点击；认不到再翻列表，翻尽安全退出（不盲点其它药方）"
+            "description": "优先 OCR「逍遥散」并点击；认不到再翻列表，翻尽结束失败并停在当前界面（不盲点其它药方、不点返回）"
         },
         "recognition": "OCR",
         "expected": "逍遥散",
@@ -62,7 +61,7 @@
         "on_error": [
             "炼药_列表向下翻",
             "炼药_列表向上翻",
-            "炼药_安全退出"
+            "炼药_结束失败"
         ]
     },
     "炼药_列表向下翻": {
@@ -103,7 +102,7 @@
     },
     "炼药_列表向上翻": {
         "attach": {
-            "description": "药方列表手指下滑拉回上方项；停稳后回 OCR。最多 5 次，耗尽则安全退出"
+            "description": "药方列表手指下滑拉回上方项；停稳后回 OCR。最多 5 次，耗尽则结束失败并停在当前界面"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -134,7 +133,7 @@
         ],
         "timeout": 2000,
         "on_error": [
-            "炼药_安全退出"
+            "炼药_结束失败"
         ]
     },
     "炼药_读体力": {
@@ -171,7 +170,7 @@
     },
     "炼药_算量并输入": {
         "attach": {
-            "description": "Custom：OCR 体力与上限，算 min(floor(总÷15),上限)。可炼≥2 才输入并提交；可炼=1 按材料耗尽走退出界面；OCR 失败走安全退出点返回，勿与 next 提交互相 error loop"
+            "description": "Custom：OCR 体力与上限，算 min(floor(总÷15),上限)。可炼≥2 才输入并提交；可炼≤1 按耗尽走退出回主界面；OCR/输入失败走结束失败并停在当前界面，勿与 next 提交互相 error loop"
         },
         "recognition": "DirectHit",
         "action": "Custom",
@@ -185,7 +184,6 @@
         ],
         "timeout": 8000,
         "on_error": [
-            "炼药_安全退出点返回",
             "炼药_结束失败"
         ]
     },
@@ -365,7 +363,7 @@
     },
     "炼药_耗尽则退出": {
         "attach": {
-            "description": "Custom：再读体力与数量上限。可炼≤1（含 1/1）则退出界面；可炼≥2 则回到炼药_算量并输入继续循环"
+            "description": "Custom：再读体力与数量上限。可炼≤1（含 1/1）则退出回主界面；OCR 失败结束失败停当前；可炼≥2 则继续循环"
         },
         "recognition": "DirectHit",
         "action": "Custom",
@@ -379,7 +377,7 @@
         ],
         "timeout": 8000,
         "on_error": [
-            "炼药_退出界面"
+            "炼药_结束失败"
         ]
     },
     "炼药_退出界面": {
@@ -399,7 +397,7 @@
         "post_delay": 500,
         "max_hit": 2,
         "next": [
-            "炼药_判定买钱袋"
+            "炼药_回主界面"
         ],
         "timeout": 3000,
         "on_error": [
@@ -419,48 +417,33 @@
         "post_delay": 500,
         "max_hit": 2,
         "next": [
-            "炼药_判定买钱袋"
+            "炼药_回主界面"
         ],
         "timeout": 2000,
         "on_error": [
-            "炼药_判定买钱袋"
+            "炼药_回主界面"
         ]
     },
-    "炼药_读主界面体力": {
+    "炼药_回主界面": {
         "attach": {
-            "description": "仅供自定义动作。退出炼药后读顶栏体力 当前/上限（与不肝商店顶栏同类）"
-        },
-        "recognition": "OCR",
-        "expected": [
-            "\\d+\\s*[/／]\\s*\\d+"
-        ],
-        "roi": [
-            900,
-            0,
-            300,
-            70
-        ],
-        "threshold": 0.35
-    },
-    "炼药_判定买钱袋": {
-        "attach": {
-            "description": "Custom：正常退出后进买钱袋；是否买金丝由钱袋侧按体力判定"
+            "description": "关炼药界面后等到主菜单；仍有返回箭头则再点，直到回到主界面"
         },
         "recognition": "DirectHit",
-        "action": "Custom",
-        "custom_action": "炼药_判定买钱袋",
-        "post_delay": 200,
+        "action": "DoNothing",
         "next": [
-            "买钱袋"
+            "炼药_已在主界面",
+            "炼药_回主界面点返回"
         ],
-        "timeout": 8000,
+        "timeout": 1500,
+        "rate_limit": 350,
         "on_error": [
-            "买钱袋"
+            "炼药_回主界面点返回坐标",
+            "炼药_结束失败"
         ]
     },
-    "炼药_安全退出": {
+    "炼药_已在主界面": {
         "attach": {
-            "description": "不点炼药提交。已在主界面（有主菜单）则直接结束失败；否则点返回箭头关界面"
+            "description": "认出主菜单图标，已回主界面，再走炼药_结束"
         },
         "recognition": "TemplateMatch",
         "template": "storage/主菜单.png",
@@ -473,17 +456,12 @@
         "threshold": 0.85,
         "action": "DoNothing",
         "next": [
-            "炼药_结束失败"
-        ],
-        "timeout": 1500,
-        "on_error": [
-            "炼药_安全退出点返回",
-            "炼药_结束失败"
+            "炼药_结束"
         ]
     },
-    "炼药_安全退出点返回": {
+    "炼药_回主界面点返回": {
         "attach": {
-            "description": "炼药界面内：点右上角返回箭头，模板同 medicine/返回.png"
+            "description": "尚未回主界面：再点右上返回箭头"
         },
         "recognition": "TemplateMatch",
         "template": "medicine/返回.png",
@@ -495,19 +473,19 @@
         ],
         "threshold": 0.8,
         "action": "Click",
-        "post_delay": 400,
-        "max_hit": 3,
+        "post_delay": 450,
+        "max_hit": 6,
         "next": [
-            "炼药_结束失败"
+            "炼药_回主界面"
         ],
-        "timeout": 3000,
+        "timeout": 2500,
         "on_error": [
-            "炼药_安全退出坐标"
+            "炼药_回主界面点返回坐标"
         ]
     },
-    "炼药_安全退出坐标": {
+    "炼药_回主界面点返回坐标": {
         "attach": {
-            "description": "安全退出时返回模板未命中，点 (1182, 34)"
+            "description": "返回模板未命中时点 (1182, 34)，再认主菜单"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -515,10 +493,10 @@
             1182,
             34
         ],
-        "post_delay": 400,
-        "max_hit": 2,
+        "post_delay": 450,
+        "max_hit": 4,
         "next": [
-            "炼药_结束失败"
+            "炼药_回主界面"
         ],
         "timeout": 2000,
         "on_error": [
@@ -527,7 +505,25 @@
     },
     "炼药_结束": {
         "attach": {
-            "description": "体力或材料耗尽并已退出炼药界面，正常结束"
+            "description": "已回主界面（有主菜单）。走锚点炼药_结束后：一条龙进返回百业；单独炼药进炼药_收工。不买钱袋"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            {
+                "name": "炼药_结束后",
+                "anchor": true
+            },
+            "炼药_收工"
+        ],
+        "timeout": 1500,
+        "on_error": [
+            "炼药_收工"
+        ]
+    },
+    "炼药_收工": {
+        "attach": {
+            "description": "单独炼药：已回主界面即停，不买钱袋、不返回百业"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -535,7 +531,7 @@
     },
     "炼药_结束失败": {
         "attach": {
-            "description": "算量失败或未认出逍遥散等，安全退出后结束（不提交）"
+            "description": "算量失败、未认出逍遥散、回不了主界面等。停在当前界面，不点返回、不提交、不走炼药_结束后"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",

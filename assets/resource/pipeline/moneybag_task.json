@@ -951,7 +951,7 @@
     },
     "钱袋_结束": {
         "attach": {
-            "description": "已回主界面。走锚点钱袋_结束后：一条龙进返回百业；单独买钱袋/炼药进钱袋_收工"
+            "description": "已回主界面。走锚点钱袋_结束后（若入口设置）；单独买钱袋进钱袋_收工。炼药/一条龙已不再接本任务"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -969,7 +969,7 @@
     },
     "钱袋_收工": {
         "attach": {
-            "description": "单独买钱袋或单独炼药后续：买钱完成即停，不返回百业"
+            "description": "单独买钱袋：买钱完成即停，不返回百业"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",

@@ -142,23 +142,26 @@
     },
     "回百业_等退出出现": {
         "attach": {
-            "description": "进驻地加载结束标志：右上「退出」（与离百业_点退出同一 ROI）。只认不点"
+            "description": "进驻地加载结束标志：右上「退出」/「退」（与离百业_点退出同一放宽 ROI）。只认不点"
         },
         "recognition": "OCR",
-        "expected": "退出",
-        "roi": [
-            1000,
-            0,
-            280,
-            70
+        "expected": [
+            "退出",
+            "退"
         ],
-        "threshold": 0.5,
+        "roi": [
+            900,
+            0,
+            380,
+            110
+        ],
+        "threshold": 0.35,
         "action": "DoNothing",
         "post_delay": 400,
         "next": [
             "回百业_结束"
         ],
-        "timeout": 1500,
+        "timeout": 3000,
         "on_error": [
             "回百业_结束失败"
         ]

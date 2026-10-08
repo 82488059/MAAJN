@@ -87,18 +87,19 @@ class AlchemyCalcAndInput(CustomAction):
         param = _parse_param(argv.custom_action_param)
         cost = int(param.get("cost", 15))
         if cost <= 0:
-            context.override_next(argv.node_name, ["炼药_安全退出"])
+            print("[炼药_算量并输入] cost<=0 -> 结束失败，停在当前界面")
+            context.override_next(argv.node_name, ["炼药_结束失败"])
             return True
 
         craft_qty, detail = _craftable(context, cost)
         print(f"[炼药_算量并输入] {detail} -> qty={craft_qty}")
-        if craft_qty is None or craft_qty <= 0:
-            # 已在炼药界面时「安全退出」先认主菜单会失败并 timeout；直接点返回
-            context.override_next(argv.node_name, ["炼药_安全退出点返回"])
+        if craft_qty is None:
+            print("[炼药_算量并输入] OCR失败 -> 结束失败，停在当前界面")
+            context.override_next(argv.node_name, ["炼药_结束失败"])
             return True
-        # 可炼仅 1 份：数量框常见 1/1，提交会弹缺材料；按材料耗尽成功退出，不点提交
+        # 可炼≤1（含 0、1/1）：提交会弹缺材料；按耗尽成功退出回主界面，不点提交
         if craft_qty <= 1:
-            print("[炼药_算量并输入] qty<=1 视为材料耗尽，放弃炼药")
+            print("[炼药_算量并输入] qty<=1 视为耗尽，退出回主界面")
             context.override_next(argv.node_name, ["炼药_退出界面"])
             return True
 
@@ -113,7 +114,8 @@ class AlchemyCalcAndInput(CustomAction):
         for ch in str(craft_qty):
             pt = _KEYPAD.get(ch)
             if pt is None:
-                context.override_next(argv.node_name, ["炼药_安全退出"])
+                print(f"[炼药_算量并输入] 非法数字 {ch!r} -> 结束失败，停在当前界面")
+                context.override_next(argv.node_name, ["炼药_结束失败"])
                 return True
             ctrl.post_click(*pt).wait()
             time.sleep(0.12)
@@ -127,7 +129,7 @@ class AlchemyCalcAndInput(CustomAction):
 
 @AgentServer.custom_action("炼药_耗尽则退出")
 class AlchemyExitIfDepleted(CustomAction):
-    """结算关掉后复查体力/数量上限；可炼≤1 则退出界面，否则继续算量输入（循环）。"""
+    """结算关掉后复查体力/数量上限；可炼≤1 则退出回主界面；OCR 失败停当前界面；否则继续循环。"""
 
     def run(
         self,
@@ -138,23 +140,13 @@ class AlchemyExitIfDepleted(CustomAction):
         cost = int(param.get("cost", 15))
         craft_qty, detail = _craftable(context, cost)
         print(f"[炼药_耗尽则退出] {detail} -> qty={craft_qty}")
-        # OCR 失败或可炼≤1（含 1/1）都退出，避免空转或再提交触发缺材料弹窗
-        if craft_qty is None or craft_qty <= 1:
+        if craft_qty is None:
+            print("[炼药_耗尽则退出] OCR失败 -> 结束失败，停在当前界面")
+            context.override_next(argv.node_name, ["炼药_结束失败"])
+        elif craft_qty <= 1:
+            # 可炼≤1（含 1/1）退出回主界面，避免再提交触发缺材料弹窗
             context.override_next(argv.node_name, ["炼药_退出界面"])
         else:
             context.override_next(argv.node_name, ["炼药_算量并输入"])
         return True
 
-
-@AgentServer.custom_action("炼药_判定买钱袋")
-class AlchemyMaybeBuyMoneybag(CustomAction):
-    """退出炼药界面后进买钱袋；是否买金丝由钱袋_判定是否买金丝按体力决定。"""
-
-    def run(
-        self,
-        context: Context,
-        argv: CustomAction.RunArg,
-    ) -> bool:
-        print("[炼药_判定买钱袋] -> 买钱袋")
-        context.override_next(argv.node_name, ["买钱袋"])
-        return True

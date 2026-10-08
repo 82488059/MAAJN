@@ -1,14 +1,14 @@
 {
     "买药炼药一条龙": {
         "attach": {
-            "description": "入口。只写跨任务锚点，再进自动买药。买药内部未买/买齐六项由自动买药初始化。买药_结束后→离开百业→炼药→买钱袋→返回百业→找温无双；仅全成功并认出对话条才找温无双_结束后→退出游戏（暂空转）"
+            "description": "入口。只写跨任务锚点，再进自动买药。买药内部未买/买齐六项由自动买药初始化。买药_结束后→离开百业→炼药→返回百业→找温无双；仅全成功并认出对话条才找温无双_结束后→退出游戏（暂空转）。炼药后不买钱袋"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "anchor": {
             "买药_结束后": "离开百业",
             "离开百业_结束后": "炼药",
-            "钱袋_结束后": "返回百业",
+            "炼药_结束后": "返回百业",
             "回百业_结束后": "找温无双",
             "找温无双_结束后": "退出游戏"
         },
@@ -1107,7 +1107,7 @@
     },
     "买药_存前标题已关": {
         "attach": {
-            "description": "左上角不再是百业货运，才打开包裹存放。标题还在就再点一次返回"
+            "description": "左上角不再是百业货运，才打开包裹存放。标题还在就再点一次返回。关完多等一会再点主菜单，避免驻地顶栏未稳时模板分偏低"
         },
         "recognition": "OCR",
         "expected": "百业货运",
@@ -1120,10 +1120,11 @@
         "threshold": 0.5,
         "inverse": true,
         "action": "DoNothing",
+        "post_delay": 800,
         "next": [
             "存放_从屏幕开始"
         ],
-        "timeout": 1500,
+        "timeout": 2500,
         "on_error": [
             "买药_存前点返回坐标"
         ]
@@ -8495,7 +8496,7 @@
     },
     "买药_点退出": {
         "attach": {
-            "description": "关货运：右上角返回箭头，与存前同一模板。货运顶栏没有「退出」二字。点完多等一会再认标题，避免驻地顶栏未画出「退出」"
+            "description": "关货运：右上角返回箭头，与存前同一模板。货运顶栏没有「退出」二字。点完多等一会再认标题，避免动画期误判已离开"
         },
         "recognition": "TemplateMatch",
         "template": "medicine/返回.png",
@@ -8507,8 +8508,8 @@
         ],
         "threshold": 0.8,
         "action": "Click",
-        "post_delay": 800,
-        "max_hit": 2,
+        "post_delay": 1500,
+        "max_hit": 3,
         "next": [
             "买药_确认已离开"
         ],
@@ -8519,7 +8520,7 @@
     },
     "买药_点退出坐标": {
         "attach": {
-            "description": "关货运：返回模板没命中时点 (1182, 34)。仅核齐后可用"
+            "description": "关货运：返回模板没命中时点 (1182, 34)。仅确认仍在货运时可用；已回驻地禁止再点（会误触退出图标）"
         },
         "recognition": "DirectHit",
         "action": "Click",
@@ -8527,19 +8528,19 @@
             1182,
             34
         ],
-        "post_delay": 800,
-        "max_hit": 2,
+        "post_delay": 1500,
+        "max_hit": 3,
         "next": [
             "买药_确认已离开"
         ],
         "timeout": 3000,
         "on_error": [
-            "买药_强制结束"
+            "买药_结束"
         ]
     },
     "买药_确认已离开": {
         "attach": {
-            "description": "货运标题已关。先等驻地右上「退出」出现，再走买药_结束后锚点。仍在货运则再关一次"
+            "description": "左上已无「百业货运」。再确认右上返回箭头模板也消失。仍在货运才再关；关不掉则停原地，不再盲点"
         },
         "recognition": "OCR",
         "expected": "百业货运",
@@ -8553,26 +8554,55 @@
         "inverse": true,
         "action": "DoNothing",
         "next": [
+            "买药_确认返回箭头消失"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "买药_点退出坐标",
+            "买药_结束"
+        ]
+    },
+    "买药_确认返回箭头消失": {
+        "attach": {
+            "description": "取反模板 medicine/返回.png。箭头还在说明仍在货运，再关；箭头没了再等驻地「退出」。timeout 须盖住下一节点等退出，否则会误走 on_error 去点关货运"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1125,
+            0,
+            145,
+            68
+        ],
+        "threshold": 0.75,
+        "inverse": true,
+        "action": "DoNothing",
+        "next": [
             "买药_等驻地退出"
         ],
-        "timeout": 3000,
+        "timeout": 25000,
+        "rate_limit": 300,
         "on_error": [
-            "买药_点退出坐标"
+            "买药_点退出",
+            "买药_结束"
         ]
     },
     "买药_等驻地退出": {
         "attach": {
-            "description": "关货运后等到认出右上「退出」（已回主界面）。接着走锚点买药_结束后（仅一条龙接离开百业）；未设则买药_结束停在驻地"
+            "description": "关货运且返回箭头已消失后，等到右上「退出」。认到则走买药_结束后；认不出则停原地（买药_结束），不再点任何坐标"
         },
         "recognition": "OCR",
-        "expected": "退出",
-        "roi": [
-            1000,
-            0,
-            280,
-            70
+        "expected": [
+            "退出",
+            "退"
         ],
-        "threshold": 0.5,
+        "roi": [
+            900,
+            0,
+            380,
+            110
+        ],
+        "threshold": 0.35,
         "action": "DoNothing",
         "next": [
             {
@@ -8581,15 +8611,15 @@
             },
             "买药_结束"
         ],
-        "timeout": 8000,
+        "timeout": 12000,
         "rate_limit": 400,
         "on_error": [
-            "买药_点退出坐标"
+            "买药_结束"
         ]
     },
     "买药_结束": {
         "attach": {
-            "description": "买药收工：关货运后未设买药_结束后时停在驻地；或材料提交没凑满 5 份时仍停在货运。离开百业成功后的收工也可停在这里"
+            "description": "买药收工停原地：关货运后未设买药_结束后、认不出驻地退出、或关货运失败时都停这里，不再盲点。单独自动买药也停这里"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -8597,7 +8627,7 @@
     },
     "买药_强制结束": {
         "attach": {
-            "description": "无法继续时结束任务，避免卡死"
+            "description": "无法继续时停原地结束任务，避免卡死或误点"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
