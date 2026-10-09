@@ -158,7 +158,7 @@
     },
     "炼药_算量并输入": {
         "attach": {
-            "description": "Custom：OCR 体力与上限，算 min(floor(总÷15),上限)。可炼≥2 才输入并提交；可炼≤1 按耗尽走退出回主界面；OCR/输入失败走结束失败并停在当前界面，勿与 next 提交互相 error loop"
+            "description": "Custom：OCR 体力与上限，算 min(floor(总÷15),上限)。可炼≥2 才输入并提交；可炼≤1 按材料/体力不够成功退出回主界面；体力/数量 OCR 失败或非法数字走结束失败"
         },
         "recognition": "DirectHit",
         "action": "Custom",
@@ -351,7 +351,7 @@
     },
     "炼药_耗尽则退出": {
         "attach": {
-            "description": "Custom：再读体力与数量上限。可炼≤1（含 1/1）则退出回主界面；OCR 失败结束失败停当前；可炼≥2 则继续循环"
+            "description": "Custom：再读体力与数量上限。可炼≤1（含 0、1/1）按材料/体力不够成功退出回主界面；OCR 失败结束失败；可炼≥2 则继续循环"
         },
         "recognition": "DirectHit",
         "action": "Custom",

@@ -77,7 +77,7 @@ def _craftable(context: Context, cost: int):
 
 @AgentServer.custom_action("炼药_算量并输入")
 class AlchemyCalcAndInput(CustomAction):
-    """读改数量前体力与数量上限，算 min(floor(总÷需), 上限)，小键盘输入后点确认。"""
+    """读改数量前体力与数量上限，算 min(floor(总÷需), 上限)；可炼≥2 才输入提交，不够按成功退出，OCR 失败结束失败。"""
 
     def run(
         self,
@@ -97,9 +97,9 @@ class AlchemyCalcAndInput(CustomAction):
             print("[炼药_算量并输入] OCR失败 -> 结束失败，停在当前界面")
             context.override_next(argv.node_name, ["炼药_结束失败"])
             return True
-        # 可炼≤1（含 0、1/1）：提交会弹缺材料；按耗尽成功退出回主界面，不点提交
+        # 可炼≤1（含 0、1/1）：材料或体力不够两份；按成功退出回主界面，不点提交
         if craft_qty <= 1:
-            print("[炼药_算量并输入] qty<=1 视为耗尽，退出回主界面")
+            print("[炼药_算量并输入] qty<=1 材料/体力不够，按成功退出")
             context.override_next(argv.node_name, ["炼药_退出界面"])
             return True
 
@@ -129,7 +129,7 @@ class AlchemyCalcAndInput(CustomAction):
 
 @AgentServer.custom_action("炼药_耗尽则退出")
 class AlchemyExitIfDepleted(CustomAction):
-    """结算关掉后复查体力/数量上限；可炼≤1 则退出回主界面；OCR 失败停当前界面；否则继续循环。"""
+    """结算关掉后复查体力/数量上限；可炼≤1 按成功退出；OCR 失败结束失败；可炼≥2 继续循环。"""
 
     def run(
         self,
@@ -144,7 +144,8 @@ class AlchemyExitIfDepleted(CustomAction):
             print("[炼药_耗尽则退出] OCR失败 -> 结束失败，停在当前界面")
             context.override_next(argv.node_name, ["炼药_结束失败"])
         elif craft_qty <= 1:
-            # 可炼≤1（含 1/1）退出回主界面，避免再提交触发缺材料弹窗
+            # 可炼≤1（含 0、1/1）：材料或体力不够，按成功退出，避免再提交弹缺材料
+            print("[炼药_耗尽则退出] qty<=1 材料/体力不够，按成功退出")
             context.override_next(argv.node_name, ["炼药_退出界面"])
         else:
             context.override_next(argv.node_name, ["炼药_算量并输入"])
