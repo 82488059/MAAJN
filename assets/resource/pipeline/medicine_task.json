@@ -1,14 +1,15 @@
 {
-    "买药炼药一条龙": {
+    "一条龙": {
         "attach": {
-            "description": "入口。只写跨任务锚点，再进自动买药。买药内部未买/买齐六项由自动买药初始化。买药_结束后→离开百业→炼药→返回百业→找温无双；仅全成功并认出对话条才找温无双_结束后→退出游戏（暂空转）。炼药后不买钱袋"
+            "description": "入口。只写跨任务锚点，再进自动买药。买药内部未买/买齐六项由自动买药初始化。买药_结束后→离开百业→自动炼药→自动买钱→返回百业→找温无双；仅全成功并认出对话条才找温无双_结束后→退出游戏（暂空转）"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "anchor": {
             "买药_结束后": "离开百业",
-            "离开百业_结束后": "炼药",
-            "炼药_结束后": "返回百业",
+            "离开百业_结束后": "自动炼药",
+            "炼药_结束后": "自动买钱",
+            "钱袋_结束后": "返回百业",
             "回百业_结束后": "找温无双",
             "找温无双_结束后": "退出游戏"
         },
@@ -45,87 +46,86 @@
     },
     "买药_点击温无双对话条": {
         "attach": {
-            "description": "点屏幕右侧中部的温无双对话条。大世界画面不会静止，只等一小段延迟"
+            "description": "只点柜台右侧交互/对话条「温无双」（含菜单里「温无双」项）。勿点头顶名牌；名牌在画面中部，本 ROI 偏右"
         },
         "recognition": "OCR",
         "expected": "温无双",
         "roi": [
-            730,
-            380,
-            220,
-            70
+            700,
+            300,
+            300,
+            220
         ],
-        "threshold": 0.5,
+        "threshold": 0.35,
         "action": "Click",
-        "post_delay": 400,
+        "post_delay": 800,
         "next": [
             "买药_寻找货运选项"
         ],
-        "timeout": 2000,
+        "timeout": 8000,
         "on_error": [
-            "买药_点击温无双坐标"
-        ]
+            "买药_寻找货运选项"
+        ],
+        "max_hit": 8
     },
     "买药_点击温无双坐标": {
         "attach": {
-            "description": "OCR 未命中时，点对话条实测中心（1600x900 的 1031,516 ×0.8）。领奖回到大世界后还要再进货运，这里最多 4 次"
+            "description": "已禁用盲点坐标：直接结束，改走 OCR/模板"
         },
         "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            809,
-            413
-        ],
-        "post_delay": 400,
-        "max_hit": 4,
+        "action": "DoNothing",
         "next": [
-            "买药_寻找货运选项"
+            "买药_结束"
         ],
-        "timeout": 2500,
+        "timeout": 500,
         "on_error": [
-            "买药_点击百业货运坐标"
+            "买药_结束"
         ]
     },
     "买药_寻找货运选项": {
         "attach": {
-            "description": "优先点百业货运；没有选项时点对话正文再试"
+            "description": "优先点右侧「百业货运」；没有则点底部对话正文展开；仍没有则再点右侧「温无双」对话条"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
             "买药_点击百业货运",
-            "买药_点对话展开选项"
+            "买药_点对话展开选项",
+            "买药_点击温无双对话条"
         ],
-        "timeout": 2500,
+        "timeout": 6000,
         "rate_limit": 400,
         "on_error": [
-            "买药_点击温无双坐标",
-            "买药_点击百业货运坐标"
+            "买药_点对话展开选项",
+            "买药_点击温无双对话条",
+            "买药_结束"
         ]
     },
     "买药_点击百业货运": {
         "attach": {
-            "description": "点右侧选项百业货运"
+            "description": "点右侧选项「百业货运」。ROI 盖住对话条展开后的选项列，不与头顶名牌重叠"
         },
         "recognition": "OCR",
         "expected": "百业货运",
         "roi": [
-            840,
-            470,
-            180,
-            55
+            700,
+            350,
+            320,
+            200
         ],
-        "threshold": 0.55,
+        "threshold": 0.45,
         "action": "Click",
         "post_wait_freezes": 700,
         "post_delay": 300,
-        "max_hit": 6,
+        "max_hit": 8,
         "next": [
             "买药_确认货运界面"
         ],
-        "timeout": 8000,
+        "timeout": 10000,
         "on_error": [
-            "买药_点击百业货运坐标"
+            "买药_点对话展开选项",
+            "买药_点击温无双对话条",
+            "买药_结束"
         ]
     },
     "买药_点对话展开选项": {
@@ -155,33 +155,27 @@
         ],
         "timeout": 2000,
         "on_error": [
-            "买药_点击百业货运坐标"
+            "买药_寻找货运选项",
+            "买药_结束"
         ]
     },
     "买药_点击百业货运坐标": {
         "attach": {
-            "description": "OCR 未点到选项时，点百业货运实测中心（1156,620 ×0.8）。领奖后还要再进，这里最多 3 次"
+            "description": "已禁用盲点坐标：直接结束，改走 OCR/模板"
         },
         "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            924,
-            498
-        ],
-        "post_wait_freezes": 700,
-        "post_delay": 300,
-        "max_hit": 3,
+        "action": "DoNothing",
         "next": [
-            "买药_确认货运界面"
+            "买药_结束"
         ],
-        "timeout": 8000,
+        "timeout": 500,
         "on_error": [
-            "买药_强制结束"
+            "买药_结束"
         ]
     },
     "买药_确认货运界面": {
         "attach": {
-            "description": "确认已进入百业货运界面。接着先处理派对横幅"
+            "description": "确认已进入百业货运界面。接着先处理派对横幅。认不到时先关控制器弹窗再认，勿直接强制结束"
         },
         "recognition": "OCR",
         "expected": "百业货运",
@@ -197,14 +191,64 @@
         "next": [
             "买药_进货运看横幅"
         ],
-        "timeout": 1500,
+        "timeout": 2500,
+        "on_error": [
+            "买药_确认货运_先关控制器",
+            "买药_强制结束"
+        ]
+    },
+    "买药_确认货运_先关控制器": {
+        "attach": {
+            "description": "确认货运标题被「控制器已连接」挡住时：关掉再重新确认货运。最多 2 次，避免弹窗反复出现时 error handling loop"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "控制器已连接",
+            "控制设备切换为控制器"
+        ],
+        "roi": [
+            160,
+            180,
+            960,
+            360
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "买药_确认货运_点控制器确认"
+        ],
+        "timeout": 2000,
+        "max_hit": 2,
+        "on_error": []
+    },
+    "买药_确认货运_点控制器确认": {
+        "attach": {
+            "description": "点控制器弹窗确认，然后重新认百业货运标题"
+        },
+        "recognition": "OCR",
+        "expected": "确认",
+        "roi": [
+            400,
+            360,
+            480,
+            200
+        ],
+        "threshold": 0.35,
+        "action": "Click",
+        "post_wait_freezes": 500,
+        "post_delay": 600,
+        "max_hit": 2,
+        "next": [
+            "买药_确认货运界面"
+        ],
+        "timeout": 2500,
         "on_error": [
             "买药_强制结束"
         ]
     },
     "买药_进货运看横幅": {
         "attach": {
-            "description": "刚进百业货运。先认派对横幅，没有就看货运卡上的入口材料要不要先存"
+            "description": "刚进百业货运。先关控制器弹窗，再认派对横幅，没有就看货运卡上的入口材料要不要先存"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -213,6 +257,7 @@
             "买药_横幅之后": "买药_进货运之后"
         },
         "next": [
+            "[JumpBack]买药_关控制器弹窗",
             "买药_横幅还在"
         ],
         "timeout": 400,
@@ -255,11 +300,12 @@
     },
     "买药_进货运之后": {
         "attach": {
-            "description": "横幅处理完。第一次进货运去查入口材料；存放之后再进来就直接买"
+            "description": "横幅处理完。先关控制器弹窗；第一次进货运去查入口材料；存放之后再进来就直接买"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
+            "[JumpBack]买药_关控制器弹窗",
             {
                 "name": "买药_进货运去哪",
                 "anchor": true
@@ -321,12 +367,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 0,
         "action": "DoNothing",
@@ -334,7 +380,7 @@
             "买药_查入口数0",
             "买药_查入口名1"
         ],
-        "timeout": 1200,
+        "timeout": 2500,
         "rate_limit": 200,
         "on_error": [
             "买药_准备清河"
@@ -418,12 +464,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 1,
         "action": "DoNothing",
@@ -431,7 +477,7 @@
             "买药_查入口数1",
             "买药_查入口名2"
         ],
-        "timeout": 1200,
+        "timeout": 2500,
         "rate_limit": 200,
         "on_error": [
             "买药_准备清河"
@@ -515,12 +561,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 2,
         "action": "DoNothing",
@@ -528,7 +574,7 @@
             "买药_查入口数2",
             "买药_查入口名3"
         ],
-        "timeout": 1200,
+        "timeout": 2500,
         "rate_limit": 200,
         "on_error": [
             "买药_准备清河"
@@ -612,12 +658,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 3,
         "action": "DoNothing",
@@ -625,7 +671,7 @@
             "买药_查入口数3",
             "买药_查入口名4"
         ],
-        "timeout": 1200,
+        "timeout": 2500,
         "rate_limit": 200,
         "on_error": [
             "买药_准备清河"
@@ -709,12 +755,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 4,
         "action": "DoNothing",
@@ -722,7 +768,7 @@
             "买药_查入口数4",
             "买药_查入口名5"
         ],
-        "timeout": 1200,
+        "timeout": 2500,
         "rate_limit": 200,
         "on_error": [
             "买药_准备清河"
@@ -806,12 +852,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 5,
         "action": "DoNothing",
@@ -819,7 +865,7 @@
             "买药_查入口数5",
             "买药_查入口名6"
         ],
-        "timeout": 1200,
+        "timeout": 2500,
         "rate_limit": 200,
         "on_error": [
             "买药_准备清河"
@@ -903,12 +949,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 6,
         "action": "DoNothing",
@@ -916,7 +962,7 @@
             "买药_查入口数6",
             "买药_查入口名7"
         ],
-        "timeout": 1200,
+        "timeout": 2500,
         "rate_limit": 200,
         "on_error": [
             "买药_准备清河"
@@ -1000,19 +1046,19 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 7,
         "action": "DoNothing",
         "next": [
             "买药_查入口数7"
         ],
-        "timeout": 1200,
+        "timeout": 2500,
         "rate_limit": 200,
         "on_error": [
             "买药_准备清河"
@@ -1087,22 +1133,16 @@
     },
     "买药_存前点返回坐标": {
         "attach": {
-            "description": "返回模板没命中时点 (1182, 34)。还关不掉就按存放失败选项处理，不接着买"
+            "description": "已禁用盲点坐标：直接结束，改走 OCR/模板"
         },
         "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            1182,
-            34
-        ],
-        "post_delay": 400,
-        "max_hit": 2,
+        "action": "DoNothing",
         "next": [
-            "买药_存前标题已关"
+            "买药_结束"
         ],
-        "timeout": 2000,
+        "timeout": 500,
         "on_error": [
-            "存放_失败时"
+            "买药_结束"
         ]
     },
     "买药_存前标题已关": {
@@ -1164,7 +1204,7 @@
         "action": "DoNothing",
         "anchor": {
             "买药_目标商店": "买药_认清河商店",
-            "买药_途径没店": "买药_清河途径上滑",
+            "买药_途径没店": "买药_清河途径没店",
             "买药_买完返回": "买药_准备开封",
             "买药_无入口跳过": "买药_清河跳过_无入口",
             "买药_已买完跳过": "买药_清河跳过_已买完",
@@ -1219,7 +1259,7 @@
         "action": "DoNothing",
         "anchor": {
             "买药_目标商店": "买药_认开封商店",
-            "买药_途径没店": "买药_开封途径上滑",
+            "买药_途径没店": "买药_开封途径没店",
             "买药_买完返回": "买药_准备胡牛儿",
             "买药_无入口跳过": "买药_开封跳过_无入口",
             "买药_已买完跳过": "买药_开封跳过_已买完",
@@ -1274,7 +1314,7 @@
         "action": "DoNothing",
         "anchor": {
             "买药_目标商店": "买药_认胡牛儿商店",
-            "买药_途径没店": "买药_胡牛儿途径上滑",
+            "买药_途径没店": "买药_胡牛儿途径没店",
             "买药_买完返回": "买药_核三家都买了",
             "买药_无入口跳过": "买药_胡牛儿跳过_无入口",
             "买药_已买完跳过": "买药_胡牛儿跳过_已买完",
@@ -1306,27 +1346,35 @@
     },
     "买药_清河跳过_无入口": {
         "attach": {
-            "description": "清河没有可用入口。还在百业货运，不点返回，直接去开封"
+            "description": "清河本周货运卡获取途径里没有本店入口。记为已处理并继续下一家/核三家，避免第三轮卡死；不点坐标。"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
             "买药_准备开封"
-        ]
+        ],
+        "anchor": {
+            "买药_清河已买": "买药_清河已买成",
+            "买药_清河买齐": "买药_核开封买齐"
+        }
     },
     "买药_开封跳过_无入口": {
         "attach": {
-            "description": "开封没有可用入口。还在百业货运，不点返回，直接去胡牛儿"
+            "description": "开封本周货运卡获取途径里没有本店入口。记为已处理并继续下一家/核三家，避免第三轮卡死；不点坐标。"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
             "买药_准备胡牛儿"
-        ]
+        ],
+        "anchor": {
+            "买药_开封已买": "买药_开封已买成",
+            "买药_开封买齐": "买药_核胡牛儿买齐"
+        }
     },
     "买药_胡牛儿跳过_无入口": {
         "attach": {
-            "description": "胡牛儿没有可用入口。去核三家是否都买成：都买成则回到主菜单，否则看轮次"
+            "description": "胡牛儿本周货运卡获取途径里没有本店入口。记为已处理并继续下一家/核三家，避免第三轮卡死；不点坐标。"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -1336,7 +1384,11 @@
         "timeout": 1500,
         "on_error": [
             "买药_核三家都买了"
-        ]
+        ],
+        "anchor": {
+            "买药_胡牛儿已买": "买药_胡牛儿已买成",
+            "买药_胡牛儿买齐": "买药_回到主菜单"
+        }
     },
     "买药_清河跳过_已买完": {
         "attach": {
@@ -1419,12 +1471,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 0,
         "action": "Click",
@@ -1508,12 +1560,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 1,
         "action": "Click",
@@ -1597,12 +1649,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 2,
         "action": "Click",
@@ -1686,12 +1738,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 3,
         "action": "Click",
@@ -1775,12 +1827,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 4,
         "action": "Click",
@@ -1864,12 +1916,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 5,
         "action": "Click",
@@ -1953,12 +2005,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 6,
         "action": "Click",
@@ -2042,12 +2094,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 7,
         "action": "Click",
@@ -2145,12 +2197,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 0,
         "action": "Click",
@@ -2263,12 +2315,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 1,
         "action": "Click",
@@ -2381,12 +2433,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 2,
         "action": "Click",
@@ -2499,12 +2551,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 3,
         "action": "Click",
@@ -2617,12 +2669,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 4,
         "action": "Click",
@@ -2735,12 +2787,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 5,
         "action": "Click",
@@ -2853,12 +2905,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 6,
         "action": "Click",
@@ -2971,12 +3023,12 @@
             ]
         ],
         "roi": [
+            180,
             200,
-            350,
-            560,
-            270
+            620,
+            420
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "order_by": "Vertical",
         "index": 7,
         "action": "Click",
@@ -3013,6 +3065,21 @@
     },
     "买药_换卡前关弹窗": {
         "attach": {
+            "description": "换卡前先关控制器弹窗；仍在百业货运时再点左侧空白关途径弹窗；已不在货运则不点，直接换下一张"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "[JumpBack]买药_关控制器弹窗",
+            "买药_换卡前关弹窗_点空白"
+        ],
+        "timeout": 800,
+        "on_error": [
+            "买药_换卡无需关弹窗"
+        ]
+    },
+    "买药_换卡前关弹窗_点空白": {
+        "attach": {
             "description": "仍在百业货运时点左侧空白 (400, 300) 关途径弹窗再换卡；已不在货运则不点，直接换下一张"
         },
         "recognition": "OCR",
@@ -3023,7 +3090,7 @@
             400,
             80
         ],
-        "threshold": 0.5,
+        "threshold": 0.45,
         "action": "Click",
         "target": [
             400,
@@ -3036,133 +3103,291 @@
                 "anchor": true
             }
         ],
-        "timeout": 1500,
+        "timeout": 2000,
         "on_error": [
             "买药_换卡无需关弹窗"
         ]
     },
+    "买药_关控制器弹窗": {
+        "attach": {
+            "description": "模拟器切入控制器时游戏会弹「控制器已连接」。先认文案再点「确认」，否则挡着货运标题、获取途径和进店"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "控制器已连接",
+            "控制设备切换为控制器"
+        ],
+        "roi": [
+            160,
+            180,
+            960,
+            360
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "买药_点控制器确认"
+        ],
+        "timeout": 2000,
+        "on_error": []
+    },
+    "买药_点控制器确认": {
+        "attach": {
+            "description": "控制器弹窗上的「确认」按钮。ROI 盖住弹窗下半，避免点偏"
+        },
+        "recognition": "OCR",
+        "expected": "确认",
+        "roi": [
+            400,
+            360,
+            480,
+            200
+        ],
+        "threshold": 0.35,
+        "action": "Click",
+        "post_wait_freezes": 400,
+        "post_delay": 400,
+        "max_hit": 3,
+        "next": [],
+        "timeout": 2500,
+        "on_error": []
+    },
     "买药_点击获取途径": {
         "attach": {
-            "description": "点右侧获取途径（ROI 与提交路径一致）。框要盖住「获」到「径」整行，左缘低于旧的 x=840，下缘过 y=400。认不到走坐标。点完只认整行店名；整行不在当前画面时由途径没店滑动，不先点弹窗条目"
+            "description": "点右侧获取途径（ROI 与提交路径一致）。框要盖住「获」到「径」整行。点完只认整行店名；首屏没有整行时走途径没店滑动，勿再盲点获取途径坐标（会误点支援箱）"
         },
         "recognition": "OCR",
         "expected": "获取途径",
         "roi": [
             800,
-            300,
+            280,
             380,
-            140
+            180
         ],
-        "threshold": 0.45,
+        "threshold": 0.4,
         "action": "Click",
         "post_wait_freezes": 500,
-        "post_delay": 300,
+        "post_delay": 900,
         "next": [
+            "[JumpBack]买药_关控制器弹窗",
             {
                 "name": "买药_目标商店",
                 "anchor": true
             }
         ],
-        "timeout": 2500,
+        "timeout": 3500,
         "on_error": [
-            "买药_点获取途径坐标"
+            {
+                "name": "买药_途径没店",
+                "anchor": true
+            }
         ]
+    },
+    "买药_清河途径没店": {
+        "attach": {
+            "description": "清河目标店未认出。若途径里已是胡牛儿（清河入口不可能出胡牛儿），直接换卡；否则最多滑一次再认，仍没有就换卡，勿连滑"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_清河途径见胡牛儿",
+            "买药_清河途径上滑"
+        ],
+        "timeout": 800,
+        "on_error": [
+            "买药_换卡前关弹窗"
+        ]
+    },
+    "买药_清河途径见胡牛儿": {
+        "attach": {
+            "description": "途径列表已出现胡牛儿：这张不是清河入口，关弹窗换下一张，不要下滑找清河"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "胡牛儿动使杂货",
+            "胡牛儿"
+        ],
+        "roi": [
+            200,
+            120,
+            780,
+            520
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "买药_换卡前关弹窗"
+        ],
+        "timeout": 1500,
+        "on_error": []
+    },
+    "买药_开封途径没店": {
+        "attach": {
+            "description": "开封目标店未认出。若途径里已是胡牛儿（开封入口不可能出胡牛儿），直接换卡；否则最多滑一次再认，仍没有就换卡"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_开封途径见胡牛儿",
+            "买药_开封途径上滑"
+        ],
+        "timeout": 800,
+        "on_error": [
+            "买药_换卡前关弹窗"
+        ]
+    },
+    "买药_开封途径见胡牛儿": {
+        "attach": {
+            "description": "途径列表已出现胡牛儿：这张不是开封入口，关弹窗换下一张，不要下滑找开封"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "胡牛儿动使杂货",
+            "胡牛儿"
+        ],
+        "roi": [
+            200,
+            120,
+            780,
+            520
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "买药_换卡前关弹窗"
+        ],
+        "timeout": 1500,
+        "on_error": []
+    },
+    "买药_胡牛儿途径没店": {
+        "attach": {
+            "description": "胡牛儿目标店未认出。先放宽 ROI 再认一次短名；仍没有才滑一次，勿连滑把已出现的胡牛儿滑走"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "买药_认胡牛儿商店宽",
+            "买药_胡牛儿途径上滑"
+        ],
+        "timeout": 800,
+        "on_error": [
+            "买药_换卡前关弹窗"
+        ]
+    },
+    "买药_认胡牛儿商店宽": {
+        "attach": {
+            "description": "途径弹窗内放宽 ROI 认胡牛儿（整行或短名），认到就点"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "胡牛儿动使杂货",
+            "胡牛儿"
+        ],
+        "roi": [
+            200,
+            120,
+            780,
+            520
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "买药_点击胡牛儿商店"
+        ],
+        "timeout": 2000,
+        "on_error": []
     },
     "买药_认清河商店": {
         "attach": {
-            "description": "只认整行「清河生活杂物商店」，不点击。当前画面没有这一整行时，父节点的下一步只有列表内下滑"
+            "description": "清河阶段只认整行「清河生活杂物商店」，不点击，更不点胡牛儿。未命中由父节点途径没店：先见胡牛儿换卡，否则最多滑一次"
         },
         "recognition": "OCR",
-        "expected": "^\\s*清河生活杂物商店\\s*$",
+        "expected": "清河生活杂物商店",
         "roi": [
-            540,
-            330,
-            230,
-            270
+            400,
+            180,
+            560,
+            460
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "action": "DoNothing",
         "next": [
             "买药_点击清河商店"
         ],
-        "timeout": 2000,
-        "on_error": [
-            "买药_换卡前关弹窗"
-        ]
+        "timeout": 2500,
+        "on_error": []
     },
     "买药_点击清河商店": {
         "attach": {
-            "description": "整行店名已经认出之后才点「清河生活杂物商店」。点的是这一整行，不是支援箱或捕猎"
+            "description": "整行店名已经认出之后才点「清河生活杂物商店」。点的是这一整行，不是支援箱或捕猎。点飘了换下一张卡再试，勿直接买完返回跳过整家店"
         },
         "recognition": "OCR",
-        "expected": "^\\s*清河生活杂物商店\\s*$",
+        "expected": "清河生活杂物商店",
         "roi": [
-            540,
-            330,
-            230,
-            270
+            400,
+            180,
+            560,
+            460
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "action": "Click",
         "post_wait_freezes": 700,
-        "post_delay": 300,
+        "post_delay": 500,
         "next": [
             "买药_确认商店"
         ],
         "timeout": 8000,
         "on_error": [
-            "买药_关闭途径弹窗"
+            "买药_换卡前关弹窗"
         ]
     },
     "买药_认开封商店": {
         "attach": {
-            "description": "只认整行「开封生活杂物商店」，不点击。当前画面没有这一整行时，父节点的下一步只有列表内下滑"
+            "description": "开封阶段只认整行「开封生活杂物商店」，不点击，更不点胡牛儿。未命中由父节点途径没店：先见胡牛儿换卡，否则最多滑一次"
         },
         "recognition": "OCR",
-        "expected": "^\\s*开封生活杂物商店\\s*$",
+        "expected": "开封生活杂物商店",
         "roi": [
-            540,
-            330,
-            230,
-            270
+            400,
+            180,
+            560,
+            460
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "action": "DoNothing",
         "next": [
             "买药_点击开封商店"
         ],
-        "timeout": 2000,
-        "on_error": [
-            "买药_换卡前关弹窗"
-        ]
+        "timeout": 2500,
+        "on_error": []
     },
     "买药_点击开封商店": {
         "attach": {
-            "description": "整行店名已经认出之后才点「开封生活杂物商店」。点的是这一整行，不是支援箱或捕猎"
+            "description": "整行店名已经认出之后才点「开封生活杂物商店」。点飘了换下一张卡再试，勿直接买完返回跳过整家店"
         },
         "recognition": "OCR",
-        "expected": "^\\s*开封生活杂物商店\\s*$",
+        "expected": "开封生活杂物商店",
         "roi": [
-            540,
-            330,
-            230,
-            270
+            400,
+            180,
+            560,
+            460
         ],
-        "threshold": 0.5,
+        "threshold": 0.4,
         "action": "Click",
         "post_wait_freezes": 700,
-        "post_delay": 300,
+        "post_delay": 500,
         "next": [
             "买药_确认商店"
         ],
         "timeout": 8000,
         "on_error": [
-            "买药_关闭途径弹窗"
+            "买药_换卡前关弹窗"
         ]
     },
     "买药_清河途径上滑": {
         "attach": {
-            "description": "当前画面没有整行清河生活杂物商店。在列表右侧空白从 (745, 560) 滑到 (745, 420)，y 差 140，历时 600 毫秒，松手后再按住 120 毫秒。滑完只再认整行，不先点条目。最多 3 次里的第 1 次"
+            "description": "清河阶段：首屏无清河才滑一次。滑完先认清河；若已是胡牛儿则换卡（本阶段绝不点胡牛儿）；仍没有就换卡，勿连滑"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -3188,11 +3413,12 @@
         },
         "post_delay": 100,
         "next": [
-            "买药_认清河商店"
+            "买药_认清河商店",
+            "买药_清河途径见胡牛儿"
         ],
-        "timeout": 2000,
+        "timeout": 2800,
         "on_error": [
-            "买药_清河途径再滑"
+            "买药_换卡前关弹窗"
         ]
     },
     "买药_清河途径再滑": {
@@ -3267,7 +3493,7 @@
     },
     "买药_开封途径上滑": {
         "attach": {
-            "description": "当前画面没有整行开封生活杂物商店。在列表右侧空白从 (745, 560) 滑到 (745, 420)，历时 600 毫秒，松手后再按住 120 毫秒。滑完只再认整行，不先点条目。和清河分开。最多 3 次里的第 1 次"
+            "description": "开封阶段：首屏无开封才滑一次。滑完先认开封；若已是胡牛儿则换卡（本阶段绝不点胡牛儿）；仍没有就换卡，勿连滑"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -3293,11 +3519,12 @@
         },
         "post_delay": 100,
         "next": [
-            "买药_认开封商店"
+            "买药_认开封商店",
+            "买药_开封途径见胡牛儿"
         ],
-        "timeout": 2000,
+        "timeout": 2800,
         "on_error": [
-            "买药_开封途径再滑"
+            "买药_换卡前关弹窗"
         ]
     },
     "买药_开封途径再滑": {
@@ -3372,53 +3599,57 @@
     },
     "买药_认胡牛儿商店": {
         "attach": {
-            "description": "只认整行「胡牛儿动使杂货」，不点击。当前画面没有这一整行时，父节点的下一步只有列表内下滑"
+            "description": "认「胡牛儿动使杂货」或短名「胡牛儿」，不点击。未命中时不要写 on_error，由父节点走途径没店（先宽认再滑一次）"
         },
         "recognition": "OCR",
-        "expected": "^\\s*胡牛儿动使杂货\\s*$",
-        "roi": [
-            480,
-            260,
-            420,
-            320
+        "expected": [
+            "胡牛儿动使杂货",
+            "胡牛儿"
         ],
-        "threshold": 0.45,
+        "roi": [
+            200,
+            120,
+            780,
+            520
+        ],
+        "threshold": 0.35,
         "action": "DoNothing",
         "next": [
             "买药_点击胡牛儿商店"
         ],
-        "timeout": 2000,
-        "on_error": [
-            "买药_换卡前关弹窗"
-        ]
+        "timeout": 2500,
+        "on_error": []
     },
     "买药_点击胡牛儿商店": {
         "attach": {
-            "description": "整行店名已经认出之后才点「胡牛儿动使杂货」。点的是这一整行，不是捕猎或仓库取出"
+            "description": "认出胡牛儿后点击该行。点飘了换下一张卡再试，勿直接买完返回跳过整家店"
         },
         "recognition": "OCR",
-        "expected": "^\\s*胡牛儿动使杂货\\s*$",
-        "roi": [
-            480,
-            260,
-            420,
-            320
+        "expected": [
+            "胡牛儿动使杂货",
+            "胡牛儿"
         ],
-        "threshold": 0.45,
+        "roi": [
+            200,
+            120,
+            780,
+            520
+        ],
+        "threshold": 0.35,
         "action": "Click",
         "post_wait_freezes": 700,
-        "post_delay": 300,
+        "post_delay": 500,
         "next": [
             "买药_确认胡牛儿"
         ],
         "timeout": 8000,
         "on_error": [
-            "买药_关闭途径弹窗"
+            "买药_换卡前关弹窗"
         ]
     },
     "买药_胡牛儿途径上滑": {
         "attach": {
-            "description": "当前画面没有整行胡牛儿动使杂货。在列表右侧空白从 (745, 560) 滑到 (745, 420)，历时 600 毫秒，松手后再按住 120 毫秒。滑完只再认整行，不先点条目。最多 3 次里的第 1 次"
+            "description": "当前画面没有胡牛儿目标店名。在列表右侧空白滑一次后再认；仍没有就关弹窗换下一张卡，避免在无店材料上连滑浪费时间"
         },
         "recognition": "DirectHit",
         "action": "Swipe",
@@ -3444,11 +3675,11 @@
         },
         "post_delay": 100,
         "next": [
-            "买药_认胡牛儿商店"
+            "买药_认胡牛儿商店宽"
         ],
-        "timeout": 2000,
+        "timeout": 2800,
         "on_error": [
-            "买药_胡牛儿途径再滑"
+            "买药_换卡前关弹窗"
         ]
     },
     "买药_胡牛儿途径再滑": {
@@ -3523,32 +3754,37 @@
     },
     "买药_确认商店": {
         "attach": {
-            "description": "确认进入生活杂物商店。货架停稳后按这家店的锚点找草药。进店不算买成，不改买齐锚点"
+            "description": "确认进入生活杂物商店（标题「生活杂物」或店名含清河/开封）。过场可能超过 1.5 秒，timeout 须盖住加载；认到货架后再找草药。进店不算买成。认不到标题时先点返回离开商店再换卡，勿当买完跳下一家"
         },
         "recognition": "OCR",
-        "expected": "生活杂物",
-        "roi": [
-            40,
-            8,
-            240,
-            62
+        "expected": [
+            "生活杂物",
+            "清河",
+            "开封"
         ],
-        "threshold": 0.45,
+        "roi": [
+            15,
+            0,
+            420,
+            80
+        ],
+        "threshold": 0.4,
         "action": "DoNothing",
-        "post_delay": 100,
+        "post_delay": 200,
         "next": [
             {
                 "name": "买药_本店找货",
                 "anchor": true
             }
         ],
-        "timeout": 1500,
+        "timeout": 10000,
+        "rate_limit": 400,
         "on_error": [
-            "买药_关闭途径弹窗"
+            "买药_确认商店失败返回"
         ],
         "post_wait_freezes": {
-            "time": 300,
-            "timeout": 800,
+            "time": 500,
+            "timeout": 1500,
             "rate_limit": 100,
             "target": [
                 300,
@@ -3556,6 +3792,51 @@
             ],
             "threshold": 0.95
         }
+    },
+    "买药_确认商店失败返回": {
+        "attach": {
+            "description": "点了店名但标题认不出：人可能已在店内。点右上返回离开，回到货运后换下一张卡再试，不走买完返回以免跳过整家清河/开封"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1125,
+            0,
+            145,
+            68
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "post_wait_freezes": 600,
+        "post_delay": 300,
+        "next": [
+            "买药_换卡前关弹窗"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_确认商店失败返回坐标"
+        ]
+    },
+    "买药_确认商店失败返回坐标": {
+        "attach": {
+            "description": "确认商店失败时返回模板未命中，点 (1182, 34) 再换卡"
+        },
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            1182,
+            34
+        ],
+        "post_wait_freezes": 600,
+        "post_delay": 300,
+        "max_hit": 2,
+        "next": [
+            "买药_换卡前关弹窗"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "买药_换卡前关弹窗"
+        ]
     },
     "买药_横幅还在": {
         "attach": {
@@ -4259,32 +4540,37 @@
     },
     "买药_确认胡牛儿": {
         "attach": {
-            "description": "确认进入胡牛儿动使杂货。货架停稳后按这家店的锚点找枯茱萸。进店不算买成，不改买齐锚点"
+            "description": "确认进入胡牛儿动使杂货。过场可能较慢，timeout 盖住加载。货架停稳后找枯茱萸。认不到标题时返回换卡，勿当买完跳过"
         },
         "recognition": "OCR",
-        "expected": "胡牛儿动使杂货",
+        "expected": [
+            "胡牛儿动使杂货",
+            "胡牛儿",
+            "动使杂货"
+        ],
         "roi": [
             15,
             0,
             420,
-            72
+            80
         ],
         "threshold": 0.4,
         "action": "DoNothing",
-        "post_delay": 100,
+        "post_delay": 200,
         "next": [
             {
                 "name": "买药_本店找货",
                 "anchor": true
             }
         ],
-        "timeout": 2000,
+        "timeout": 10000,
+        "rate_limit": 400,
         "on_error": [
-            "买药_关闭途径弹窗"
+            "买药_确认商店失败返回"
         ],
         "post_wait_freezes": {
-            "time": 300,
-            "timeout": 800,
+            "time": 500,
+            "timeout": 1500,
             "rate_limit": 100,
             "target": [
                 300,
@@ -6438,35 +6724,38 @@
         "threshold": 0.35,
         "action": "DoNothing",
         "next": [
-            "买药_第三轮失败"
+            "买药_第三轮收工"
         ]
     },
     "买药_第三轮失败": {
         "attach": {
-            "description": "第三轮仍然没有材料能打开药店。不提交、不领奖，用哨兵让任务失败"
+            "description": "第三轮仍然没有材料能打开药店。打印失败节点后由自定义动作返回 False 直接 Failed，不再走 OCR 哨兵（避免 error handling loop）"
         },
         "recognition": "DirectHit",
-        "action": "DoNothing",
-        "next": [
-            "买药_第三轮失败哨兵"
-        ],
-        "timeout": 400
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "第三轮仍无药店入口/三家未买齐"
+        },
+        "post_delay": 100,
+        "next": [],
+        "timeout": 4000,
+        "on_error": []
     },
     "买药_第三轮失败哨兵": {
         "attach": {
-            "description": "货运界面不会出现这句。超时后任务返回失败"
+            "description": "兼容旧入口：若仍有引用则打印后失败。新路径已不走本节点"
         },
-        "recognition": "OCR",
-        "expected": "第三轮仍无商店任务失败哨兵",
-        "roi": [
-            0,
-            0,
-            30,
-            24
-        ],
-        "threshold": 0.3,
-        "action": "DoNothing",
-        "timeout": 200
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "第三轮失败哨兵"
+        },
+        "post_delay": 100,
+        "next": [],
+        "timeout": 4000,
+        "on_error": []
     },
     "买药_开始提交": {
         "attach": {
@@ -6489,14 +6778,136 @@
     },
     "买药_提交卡0": {
         "attach": {
-            "description": "点第 1 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，材料够则直接提交，否则去获取途径买"
+            "description": "按纵坐标 OCR 点第 1 张货运材料卡（index 0），不盲点格子坐标。已提交就换下一张，材料够则直接提交，否则去获取途径买"
         },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            270,
-            300
+        "recognition": "OCR",
+        "expected": [
+            "厚脂肉块",
+            "碎肉块",
+            "蕈菇",
+            "野果",
+            "河鱼",
+            "草药",
+            "昆虫",
+            "甲壳",
+            "短毛羽",
+            "粗矿石",
+            "原木",
+            "粗毛皮",
+            "桦木",
+            "白蜡",
+            "冬青木",
+            "枫木",
+            "梨花木",
+            "梅花木",
+            "古松木",
+            "海棠木",
+            "榆木",
+            "胡杨木",
+            "榉木",
+            "柳木",
+            "紫藤木",
+            "桃木",
+            "竹子",
+            "银杏木",
+            "玉兰木",
+            "耶悉茗",
+            "黄铜",
+            "野鸡毛",
+            "龙骨",
+            "洛口石首鱼",
+            "柳叶羽",
+            "拔霞供",
+            "神仙酿鱼",
+            "三蔬杂菇",
+            "木箭",
+            "止血散",
+            "盛景路牌",
+            "普通鱼饵",
+            "面食饵",
+            "虫饵",
+            "草饵",
+            "稚子垂纶",
+            "小蟾蜍钓竿",
+            "野山参",
+            "魏紫",
+            "玉楼春",
+            "枯茱萸",
+            "一丈红",
+            "寒菌幼株",
+            "东陵瓜",
+            "独山蓝玉",
+            "青礞石",
+            "寒铁",
+            "独山玉",
+            "鳙鱼",
+            "鲈鱼",
+            "河豚",
+            "脂尾羊皮",
+            "豪猪棘券",
+            "鼬皮",
+            "吠鹿肉",
+            "獾子油",
+            "野鸡肉",
+            "长尾羽",
+            "火箭"
         ],
+        "replace": [
+            [
+                "草菇",
+                "蕈菇"
+            ],
+            [
+                "蕈茹",
+                "蕈菇"
+            ],
+            [
+                "白腊",
+                "白蜡"
+            ],
+            [
+                "耗悉茗",
+                "耶悉茗"
+            ],
+            [
+                "鱼饥",
+                "鱼饵"
+            ],
+            [
+                "面食饥",
+                "面食饵"
+            ],
+            [
+                "虫饥",
+                "虫饵"
+            ],
+            [
+                "草饥",
+                "草饵"
+            ],
+            [
+                "青礙石",
+                "青礞石"
+            ],
+            [
+                "长尾玽",
+                "长尾羽"
+            ],
+            [
+                "柳叶玽",
+                "柳叶羽"
+            ]
+        ],
+        "roi": [
+            180,
+            200,
+            620,
+            420
+        ],
+        "threshold": 0.4,
+        "order_by": "Vertical",
+        "index": 0,
+        "action": "Click",
         "post_wait_freezes": {
             "time": 300,
             "timeout": 1000,
@@ -6515,6 +6926,10 @@
         },
         "next": [
             "买药_卡0看已提交"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_提交卡1"
         ]
     },
     "买药_卡0看已提交": {
@@ -6552,14 +6967,136 @@
     },
     "买药_提交卡1": {
         "attach": {
-            "description": "点第 2 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，材料够则直接提交，否则去获取途径买"
+            "description": "按纵坐标 OCR 点第 2 张货运材料卡（index 1），不盲点格子坐标。已提交就换下一张，材料够则直接提交，否则去获取途径买"
         },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            414,
-            300
+        "recognition": "OCR",
+        "expected": [
+            "厚脂肉块",
+            "碎肉块",
+            "蕈菇",
+            "野果",
+            "河鱼",
+            "草药",
+            "昆虫",
+            "甲壳",
+            "短毛羽",
+            "粗矿石",
+            "原木",
+            "粗毛皮",
+            "桦木",
+            "白蜡",
+            "冬青木",
+            "枫木",
+            "梨花木",
+            "梅花木",
+            "古松木",
+            "海棠木",
+            "榆木",
+            "胡杨木",
+            "榉木",
+            "柳木",
+            "紫藤木",
+            "桃木",
+            "竹子",
+            "银杏木",
+            "玉兰木",
+            "耶悉茗",
+            "黄铜",
+            "野鸡毛",
+            "龙骨",
+            "洛口石首鱼",
+            "柳叶羽",
+            "拔霞供",
+            "神仙酿鱼",
+            "三蔬杂菇",
+            "木箭",
+            "止血散",
+            "盛景路牌",
+            "普通鱼饵",
+            "面食饵",
+            "虫饵",
+            "草饵",
+            "稚子垂纶",
+            "小蟾蜍钓竿",
+            "野山参",
+            "魏紫",
+            "玉楼春",
+            "枯茱萸",
+            "一丈红",
+            "寒菌幼株",
+            "东陵瓜",
+            "独山蓝玉",
+            "青礞石",
+            "寒铁",
+            "独山玉",
+            "鳙鱼",
+            "鲈鱼",
+            "河豚",
+            "脂尾羊皮",
+            "豪猪棘券",
+            "鼬皮",
+            "吠鹿肉",
+            "獾子油",
+            "野鸡肉",
+            "长尾羽",
+            "火箭"
         ],
+        "replace": [
+            [
+                "草菇",
+                "蕈菇"
+            ],
+            [
+                "蕈茹",
+                "蕈菇"
+            ],
+            [
+                "白腊",
+                "白蜡"
+            ],
+            [
+                "耗悉茗",
+                "耶悉茗"
+            ],
+            [
+                "鱼饥",
+                "鱼饵"
+            ],
+            [
+                "面食饥",
+                "面食饵"
+            ],
+            [
+                "虫饥",
+                "虫饵"
+            ],
+            [
+                "草饥",
+                "草饵"
+            ],
+            [
+                "青礙石",
+                "青礞石"
+            ],
+            [
+                "长尾玽",
+                "长尾羽"
+            ],
+            [
+                "柳叶玽",
+                "柳叶羽"
+            ]
+        ],
+        "roi": [
+            180,
+            200,
+            620,
+            420
+        ],
+        "threshold": 0.4,
+        "order_by": "Vertical",
+        "index": 1,
+        "action": "Click",
         "post_wait_freezes": {
             "time": 300,
             "timeout": 1000,
@@ -6578,6 +7115,10 @@
         },
         "next": [
             "买药_卡1看已提交"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_提交卡2"
         ]
     },
     "买药_卡1看已提交": {
@@ -6615,14 +7156,136 @@
     },
     "买药_提交卡2": {
         "attach": {
-            "description": "点第 3 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，材料够则直接提交，否则去获取途径买"
+            "description": "按纵坐标 OCR 点第 3 张货运材料卡（index 2），不盲点格子坐标。已提交就换下一张，材料够则直接提交，否则去获取途径买"
         },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            558,
-            300
+        "recognition": "OCR",
+        "expected": [
+            "厚脂肉块",
+            "碎肉块",
+            "蕈菇",
+            "野果",
+            "河鱼",
+            "草药",
+            "昆虫",
+            "甲壳",
+            "短毛羽",
+            "粗矿石",
+            "原木",
+            "粗毛皮",
+            "桦木",
+            "白蜡",
+            "冬青木",
+            "枫木",
+            "梨花木",
+            "梅花木",
+            "古松木",
+            "海棠木",
+            "榆木",
+            "胡杨木",
+            "榉木",
+            "柳木",
+            "紫藤木",
+            "桃木",
+            "竹子",
+            "银杏木",
+            "玉兰木",
+            "耶悉茗",
+            "黄铜",
+            "野鸡毛",
+            "龙骨",
+            "洛口石首鱼",
+            "柳叶羽",
+            "拔霞供",
+            "神仙酿鱼",
+            "三蔬杂菇",
+            "木箭",
+            "止血散",
+            "盛景路牌",
+            "普通鱼饵",
+            "面食饵",
+            "虫饵",
+            "草饵",
+            "稚子垂纶",
+            "小蟾蜍钓竿",
+            "野山参",
+            "魏紫",
+            "玉楼春",
+            "枯茱萸",
+            "一丈红",
+            "寒菌幼株",
+            "东陵瓜",
+            "独山蓝玉",
+            "青礞石",
+            "寒铁",
+            "独山玉",
+            "鳙鱼",
+            "鲈鱼",
+            "河豚",
+            "脂尾羊皮",
+            "豪猪棘券",
+            "鼬皮",
+            "吠鹿肉",
+            "獾子油",
+            "野鸡肉",
+            "长尾羽",
+            "火箭"
         ],
+        "replace": [
+            [
+                "草菇",
+                "蕈菇"
+            ],
+            [
+                "蕈茹",
+                "蕈菇"
+            ],
+            [
+                "白腊",
+                "白蜡"
+            ],
+            [
+                "耗悉茗",
+                "耶悉茗"
+            ],
+            [
+                "鱼饥",
+                "鱼饵"
+            ],
+            [
+                "面食饥",
+                "面食饵"
+            ],
+            [
+                "虫饥",
+                "虫饵"
+            ],
+            [
+                "草饥",
+                "草饵"
+            ],
+            [
+                "青礙石",
+                "青礞石"
+            ],
+            [
+                "长尾玽",
+                "长尾羽"
+            ],
+            [
+                "柳叶玽",
+                "柳叶羽"
+            ]
+        ],
+        "roi": [
+            180,
+            200,
+            620,
+            420
+        ],
+        "threshold": 0.4,
+        "order_by": "Vertical",
+        "index": 2,
+        "action": "Click",
         "post_wait_freezes": {
             "time": 300,
             "timeout": 1000,
@@ -6641,6 +7304,10 @@
         },
         "next": [
             "买药_卡2看已提交"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_提交卡3"
         ]
     },
     "买药_卡2看已提交": {
@@ -6678,14 +7345,136 @@
     },
     "买药_提交卡3": {
         "attach": {
-            "description": "点第 4 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，材料够则直接提交，否则去获取途径买"
+            "description": "按纵坐标 OCR 点第 4 张货运材料卡（index 3），不盲点格子坐标。已提交就换下一张，材料够则直接提交，否则去获取途径买"
         },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            703,
-            300
+        "recognition": "OCR",
+        "expected": [
+            "厚脂肉块",
+            "碎肉块",
+            "蕈菇",
+            "野果",
+            "河鱼",
+            "草药",
+            "昆虫",
+            "甲壳",
+            "短毛羽",
+            "粗矿石",
+            "原木",
+            "粗毛皮",
+            "桦木",
+            "白蜡",
+            "冬青木",
+            "枫木",
+            "梨花木",
+            "梅花木",
+            "古松木",
+            "海棠木",
+            "榆木",
+            "胡杨木",
+            "榉木",
+            "柳木",
+            "紫藤木",
+            "桃木",
+            "竹子",
+            "银杏木",
+            "玉兰木",
+            "耶悉茗",
+            "黄铜",
+            "野鸡毛",
+            "龙骨",
+            "洛口石首鱼",
+            "柳叶羽",
+            "拔霞供",
+            "神仙酿鱼",
+            "三蔬杂菇",
+            "木箭",
+            "止血散",
+            "盛景路牌",
+            "普通鱼饵",
+            "面食饵",
+            "虫饵",
+            "草饵",
+            "稚子垂纶",
+            "小蟾蜍钓竿",
+            "野山参",
+            "魏紫",
+            "玉楼春",
+            "枯茱萸",
+            "一丈红",
+            "寒菌幼株",
+            "东陵瓜",
+            "独山蓝玉",
+            "青礞石",
+            "寒铁",
+            "独山玉",
+            "鳙鱼",
+            "鲈鱼",
+            "河豚",
+            "脂尾羊皮",
+            "豪猪棘券",
+            "鼬皮",
+            "吠鹿肉",
+            "獾子油",
+            "野鸡肉",
+            "长尾羽",
+            "火箭"
         ],
+        "replace": [
+            [
+                "草菇",
+                "蕈菇"
+            ],
+            [
+                "蕈茹",
+                "蕈菇"
+            ],
+            [
+                "白腊",
+                "白蜡"
+            ],
+            [
+                "耗悉茗",
+                "耶悉茗"
+            ],
+            [
+                "鱼饥",
+                "鱼饵"
+            ],
+            [
+                "面食饥",
+                "面食饵"
+            ],
+            [
+                "虫饥",
+                "虫饵"
+            ],
+            [
+                "草饥",
+                "草饵"
+            ],
+            [
+                "青礙石",
+                "青礞石"
+            ],
+            [
+                "长尾玽",
+                "长尾羽"
+            ],
+            [
+                "柳叶玽",
+                "柳叶羽"
+            ]
+        ],
+        "roi": [
+            180,
+            200,
+            620,
+            420
+        ],
+        "threshold": 0.4,
+        "order_by": "Vertical",
+        "index": 3,
+        "action": "Click",
         "post_wait_freezes": {
             "time": 300,
             "timeout": 1000,
@@ -6704,6 +7493,10 @@
         },
         "next": [
             "买药_卡3看已提交"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_提交卡4"
         ]
     },
     "买药_卡3看已提交": {
@@ -6741,14 +7534,136 @@
     },
     "买药_提交卡4": {
         "attach": {
-            "description": "点第 5 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，材料够则直接提交，否则去获取途径买"
+            "description": "按纵坐标 OCR 点第 5 张货运材料卡（index 4），不盲点格子坐标。已提交就换下一张，材料够则直接提交，否则去获取途径买"
         },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            270,
-            512
+        "recognition": "OCR",
+        "expected": [
+            "厚脂肉块",
+            "碎肉块",
+            "蕈菇",
+            "野果",
+            "河鱼",
+            "草药",
+            "昆虫",
+            "甲壳",
+            "短毛羽",
+            "粗矿石",
+            "原木",
+            "粗毛皮",
+            "桦木",
+            "白蜡",
+            "冬青木",
+            "枫木",
+            "梨花木",
+            "梅花木",
+            "古松木",
+            "海棠木",
+            "榆木",
+            "胡杨木",
+            "榉木",
+            "柳木",
+            "紫藤木",
+            "桃木",
+            "竹子",
+            "银杏木",
+            "玉兰木",
+            "耶悉茗",
+            "黄铜",
+            "野鸡毛",
+            "龙骨",
+            "洛口石首鱼",
+            "柳叶羽",
+            "拔霞供",
+            "神仙酿鱼",
+            "三蔬杂菇",
+            "木箭",
+            "止血散",
+            "盛景路牌",
+            "普通鱼饵",
+            "面食饵",
+            "虫饵",
+            "草饵",
+            "稚子垂纶",
+            "小蟾蜍钓竿",
+            "野山参",
+            "魏紫",
+            "玉楼春",
+            "枯茱萸",
+            "一丈红",
+            "寒菌幼株",
+            "东陵瓜",
+            "独山蓝玉",
+            "青礞石",
+            "寒铁",
+            "独山玉",
+            "鳙鱼",
+            "鲈鱼",
+            "河豚",
+            "脂尾羊皮",
+            "豪猪棘券",
+            "鼬皮",
+            "吠鹿肉",
+            "獾子油",
+            "野鸡肉",
+            "长尾羽",
+            "火箭"
         ],
+        "replace": [
+            [
+                "草菇",
+                "蕈菇"
+            ],
+            [
+                "蕈茹",
+                "蕈菇"
+            ],
+            [
+                "白腊",
+                "白蜡"
+            ],
+            [
+                "耗悉茗",
+                "耶悉茗"
+            ],
+            [
+                "鱼饥",
+                "鱼饵"
+            ],
+            [
+                "面食饥",
+                "面食饵"
+            ],
+            [
+                "虫饥",
+                "虫饵"
+            ],
+            [
+                "草饥",
+                "草饵"
+            ],
+            [
+                "青礙石",
+                "青礞石"
+            ],
+            [
+                "长尾玽",
+                "长尾羽"
+            ],
+            [
+                "柳叶玽",
+                "柳叶羽"
+            ]
+        ],
+        "roi": [
+            180,
+            200,
+            620,
+            420
+        ],
+        "threshold": 0.4,
+        "order_by": "Vertical",
+        "index": 4,
+        "action": "Click",
         "post_wait_freezes": {
             "time": 300,
             "timeout": 1000,
@@ -6767,6 +7682,10 @@
         },
         "next": [
             "买药_卡4看已提交"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_提交卡5"
         ]
     },
     "买药_卡4看已提交": {
@@ -6804,14 +7723,136 @@
     },
     "买药_提交卡5": {
         "attach": {
-            "description": "点第 6 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，材料够则直接提交，否则去获取途径买"
+            "description": "按纵坐标 OCR 点第 6 张货运材料卡（index 5），不盲点格子坐标。已提交就换下一张，材料够则直接提交，否则去获取途径买"
         },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            414,
-            512
+        "recognition": "OCR",
+        "expected": [
+            "厚脂肉块",
+            "碎肉块",
+            "蕈菇",
+            "野果",
+            "河鱼",
+            "草药",
+            "昆虫",
+            "甲壳",
+            "短毛羽",
+            "粗矿石",
+            "原木",
+            "粗毛皮",
+            "桦木",
+            "白蜡",
+            "冬青木",
+            "枫木",
+            "梨花木",
+            "梅花木",
+            "古松木",
+            "海棠木",
+            "榆木",
+            "胡杨木",
+            "榉木",
+            "柳木",
+            "紫藤木",
+            "桃木",
+            "竹子",
+            "银杏木",
+            "玉兰木",
+            "耶悉茗",
+            "黄铜",
+            "野鸡毛",
+            "龙骨",
+            "洛口石首鱼",
+            "柳叶羽",
+            "拔霞供",
+            "神仙酿鱼",
+            "三蔬杂菇",
+            "木箭",
+            "止血散",
+            "盛景路牌",
+            "普通鱼饵",
+            "面食饵",
+            "虫饵",
+            "草饵",
+            "稚子垂纶",
+            "小蟾蜍钓竿",
+            "野山参",
+            "魏紫",
+            "玉楼春",
+            "枯茱萸",
+            "一丈红",
+            "寒菌幼株",
+            "东陵瓜",
+            "独山蓝玉",
+            "青礞石",
+            "寒铁",
+            "独山玉",
+            "鳙鱼",
+            "鲈鱼",
+            "河豚",
+            "脂尾羊皮",
+            "豪猪棘券",
+            "鼬皮",
+            "吠鹿肉",
+            "獾子油",
+            "野鸡肉",
+            "长尾羽",
+            "火箭"
         ],
+        "replace": [
+            [
+                "草菇",
+                "蕈菇"
+            ],
+            [
+                "蕈茹",
+                "蕈菇"
+            ],
+            [
+                "白腊",
+                "白蜡"
+            ],
+            [
+                "耗悉茗",
+                "耶悉茗"
+            ],
+            [
+                "鱼饥",
+                "鱼饵"
+            ],
+            [
+                "面食饥",
+                "面食饵"
+            ],
+            [
+                "虫饥",
+                "虫饵"
+            ],
+            [
+                "草饥",
+                "草饵"
+            ],
+            [
+                "青礙石",
+                "青礞石"
+            ],
+            [
+                "长尾玽",
+                "长尾羽"
+            ],
+            [
+                "柳叶玽",
+                "柳叶羽"
+            ]
+        ],
+        "roi": [
+            180,
+            200,
+            620,
+            420
+        ],
+        "threshold": 0.4,
+        "order_by": "Vertical",
+        "index": 5,
+        "action": "Click",
         "post_wait_freezes": {
             "time": 300,
             "timeout": 1000,
@@ -6830,6 +7871,10 @@
         },
         "next": [
             "买药_卡5看已提交"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_提交卡6"
         ]
     },
     "买药_卡5看已提交": {
@@ -6867,14 +7912,136 @@
     },
     "买药_提交卡6": {
         "attach": {
-            "description": "点第 7 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，材料够则直接提交，否则去获取途径买"
+            "description": "按纵坐标 OCR 点第 7 张货运材料卡（index 6），不盲点格子坐标。已提交就换下一张，材料够则直接提交，否则去获取途径买"
         },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            558,
-            512
+        "recognition": "OCR",
+        "expected": [
+            "厚脂肉块",
+            "碎肉块",
+            "蕈菇",
+            "野果",
+            "河鱼",
+            "草药",
+            "昆虫",
+            "甲壳",
+            "短毛羽",
+            "粗矿石",
+            "原木",
+            "粗毛皮",
+            "桦木",
+            "白蜡",
+            "冬青木",
+            "枫木",
+            "梨花木",
+            "梅花木",
+            "古松木",
+            "海棠木",
+            "榆木",
+            "胡杨木",
+            "榉木",
+            "柳木",
+            "紫藤木",
+            "桃木",
+            "竹子",
+            "银杏木",
+            "玉兰木",
+            "耶悉茗",
+            "黄铜",
+            "野鸡毛",
+            "龙骨",
+            "洛口石首鱼",
+            "柳叶羽",
+            "拔霞供",
+            "神仙酿鱼",
+            "三蔬杂菇",
+            "木箭",
+            "止血散",
+            "盛景路牌",
+            "普通鱼饵",
+            "面食饵",
+            "虫饵",
+            "草饵",
+            "稚子垂纶",
+            "小蟾蜍钓竿",
+            "野山参",
+            "魏紫",
+            "玉楼春",
+            "枯茱萸",
+            "一丈红",
+            "寒菌幼株",
+            "东陵瓜",
+            "独山蓝玉",
+            "青礞石",
+            "寒铁",
+            "独山玉",
+            "鳙鱼",
+            "鲈鱼",
+            "河豚",
+            "脂尾羊皮",
+            "豪猪棘券",
+            "鼬皮",
+            "吠鹿肉",
+            "獾子油",
+            "野鸡肉",
+            "长尾羽",
+            "火箭"
         ],
+        "replace": [
+            [
+                "草菇",
+                "蕈菇"
+            ],
+            [
+                "蕈茹",
+                "蕈菇"
+            ],
+            [
+                "白腊",
+                "白蜡"
+            ],
+            [
+                "耗悉茗",
+                "耶悉茗"
+            ],
+            [
+                "鱼饥",
+                "鱼饵"
+            ],
+            [
+                "面食饥",
+                "面食饵"
+            ],
+            [
+                "虫饥",
+                "虫饵"
+            ],
+            [
+                "草饥",
+                "草饵"
+            ],
+            [
+                "青礙石",
+                "青礞石"
+            ],
+            [
+                "长尾玽",
+                "长尾羽"
+            ],
+            [
+                "柳叶玽",
+                "柳叶羽"
+            ]
+        ],
+        "roi": [
+            180,
+            200,
+            620,
+            420
+        ],
+        "threshold": 0.4,
+        "order_by": "Vertical",
+        "index": 6,
+        "action": "Click",
         "post_wait_freezes": {
             "time": 300,
             "timeout": 1000,
@@ -6893,6 +8060,10 @@
         },
         "next": [
             "买药_卡6看已提交"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_提交卡7"
         ]
     },
     "买药_卡6看已提交": {
@@ -6930,14 +8101,136 @@
     },
     "买药_提交卡7": {
         "attach": {
-            "description": "点第 8 张材料卡（1600x900 的行 y 375/640、列 x 337/518/698/879，×0.8）。已提交就换下一张，材料够则直接提交，否则去获取途径买"
+            "description": "按纵坐标 OCR 点第 8 张货运材料卡（index 7），不盲点格子坐标。已提交就换下一张，材料够则直接提交，否则去获取途径买"
         },
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            703,
-            512
+        "recognition": "OCR",
+        "expected": [
+            "厚脂肉块",
+            "碎肉块",
+            "蕈菇",
+            "野果",
+            "河鱼",
+            "草药",
+            "昆虫",
+            "甲壳",
+            "短毛羽",
+            "粗矿石",
+            "原木",
+            "粗毛皮",
+            "桦木",
+            "白蜡",
+            "冬青木",
+            "枫木",
+            "梨花木",
+            "梅花木",
+            "古松木",
+            "海棠木",
+            "榆木",
+            "胡杨木",
+            "榉木",
+            "柳木",
+            "紫藤木",
+            "桃木",
+            "竹子",
+            "银杏木",
+            "玉兰木",
+            "耶悉茗",
+            "黄铜",
+            "野鸡毛",
+            "龙骨",
+            "洛口石首鱼",
+            "柳叶羽",
+            "拔霞供",
+            "神仙酿鱼",
+            "三蔬杂菇",
+            "木箭",
+            "止血散",
+            "盛景路牌",
+            "普通鱼饵",
+            "面食饵",
+            "虫饵",
+            "草饵",
+            "稚子垂纶",
+            "小蟾蜍钓竿",
+            "野山参",
+            "魏紫",
+            "玉楼春",
+            "枯茱萸",
+            "一丈红",
+            "寒菌幼株",
+            "东陵瓜",
+            "独山蓝玉",
+            "青礞石",
+            "寒铁",
+            "独山玉",
+            "鳙鱼",
+            "鲈鱼",
+            "河豚",
+            "脂尾羊皮",
+            "豪猪棘券",
+            "鼬皮",
+            "吠鹿肉",
+            "獾子油",
+            "野鸡肉",
+            "长尾羽",
+            "火箭"
         ],
+        "replace": [
+            [
+                "草菇",
+                "蕈菇"
+            ],
+            [
+                "蕈茹",
+                "蕈菇"
+            ],
+            [
+                "白腊",
+                "白蜡"
+            ],
+            [
+                "耗悉茗",
+                "耶悉茗"
+            ],
+            [
+                "鱼饥",
+                "鱼饵"
+            ],
+            [
+                "面食饥",
+                "面食饵"
+            ],
+            [
+                "虫饥",
+                "虫饵"
+            ],
+            [
+                "草饥",
+                "草饵"
+            ],
+            [
+                "青礙石",
+                "青礞石"
+            ],
+            [
+                "长尾玽",
+                "长尾羽"
+            ],
+            [
+                "柳叶玽",
+                "柳叶羽"
+            ]
+        ],
+        "roi": [
+            180,
+            200,
+            620,
+            420
+        ],
+        "threshold": 0.4,
+        "order_by": "Vertical",
+        "index": 7,
+        "action": "Click",
         "post_wait_freezes": {
             "time": 300,
             "timeout": 1000,
@@ -6956,6 +8249,11 @@
         },
         "next": [
             "买药_卡7看已提交"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_提交未满五",
+            "买药_结束"
         ]
     },
     "买药_卡7看已提交": {
@@ -7244,7 +8542,17 @@
             "description": "只认整行店名，不点击。整行必须是清河/开封生活杂物、胡牛儿动使杂货、杂货摊、货柜、河西商店、神仙渡杂货商熊大、或【.?货郎】山货摊（OCR 鱼旁常漂）。当前画面没有这一整行时，下一步只有列表内下滑。第一轮只认三家药店；货郎/杂货摊/河西/熊大留到提交未满五后的探路再扫"
         },
         "recognition": "OCR",
-        "expected": "^\\s*(?:清河生活杂物商店|开封生活杂物商店|胡牛儿动使杂货)\\s*$",
+        "expected": [
+            "清河生活杂物商店",
+            "开封生活杂物商店",
+            "胡牛儿动使杂货",
+            "杂货摊",
+            "货柜",
+            "河西商店",
+            "神仙渡杂货商熊大",
+            "山货摊",
+            "货郎"
+        ],
         "roi": [
             400,
             180,
@@ -7267,7 +8575,17 @@
             "description": "整行店名已经认出之后才点。能点的整行含清河/开封生活杂物、胡牛儿、杂货摊、货柜、河西商店、神仙渡杂货商熊大、【.?货郎】山货摊。第一轮只认三家药店；货郎/杂货摊/河西/熊大留到提交未满五后的探路再扫"
         },
         "recognition": "OCR",
-        "expected": "^\\s*(?:清河生活杂物商店|开封生活杂物商店|胡牛儿动使杂货)\\s*$",
+        "expected": [
+            "清河生活杂物商店",
+            "开封生活杂物商店",
+            "胡牛儿动使杂货",
+            "杂货摊",
+            "货柜",
+            "河西商店",
+            "神仙渡杂货商熊大",
+            "山货摊",
+            "货郎"
+        ],
         "roi": [
             400,
             180,
@@ -8491,7 +9809,8 @@
         ],
         "timeout": 2500,
         "on_error": [
-            "买药_点退出坐标"
+            "买药_点退出",
+            "买药_结束"
         ]
     },
     "买药_点退出": {
@@ -8515,25 +9834,19 @@
         ],
         "timeout": 3000,
         "on_error": [
-            "买药_点退出坐标"
+            "买药_结束"
         ]
     },
     "买药_点退出坐标": {
         "attach": {
-            "description": "关货运：返回模板没命中时点 (1182, 34)。仅确认仍在货运时可用；已回驻地禁止再点（会误触退出图标）"
+            "description": "已禁用盲点坐标：直接结束，改走 OCR/模板"
         },
         "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            1182,
-            34
-        ],
-        "post_delay": 1500,
-        "max_hit": 3,
+        "action": "DoNothing",
         "next": [
-            "买药_确认已离开"
+            "买药_结束"
         ],
-        "timeout": 3000,
+        "timeout": 500,
         "on_error": [
             "买药_结束"
         ]
@@ -8558,7 +9871,7 @@
         ],
         "timeout": 5000,
         "on_error": [
-            "买药_点退出坐标",
+            "买药_点退出",
             "买药_结束"
         ]
     },
@@ -8627,24 +9940,81 @@
     },
     "买药_强制结束": {
         "attach": {
-            "description": "无法继续时停原地结束任务，避免卡死或误点"
+            "description": "无法继续时停原地结束。先打印失败节点与最近走过的节点链（需 Agent）"
         },
         "recognition": "DirectHit",
-        "action": "DoNothing",
-        "next": []
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "买药强制结束"
+        },
+        "post_delay": 100,
+        "next": [],
+        "timeout": 4000,
+        "on_error": []
     },
     "买药_等获取途径": {
         "attach": {
-            "description": "点卡后先看右侧是否已提交（已提交没有获取途径，换下一张）；再认「获取途径」。两样都没有才点实测坐标"
+            "description": "点卡后先关控制器弹窗；再看右侧是否已提交（已提交没有获取途径，换下一张）；再认「获取途径」。两样都没有才点实测坐标"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
+            "[JumpBack]买药_关控制器弹窗",
             "买药_右侧已提交",
             "买药_点击获取途径"
         ],
-        "timeout": 2500,
+        "timeout": 3000,
         "rate_limit": 200,
+        "on_error": [
+            "买药_等途径_先关控制器",
+            "买药_点获取途径坐标"
+        ]
+    },
+    "买药_等途径_先关控制器": {
+        "attach": {
+            "description": "获取途径认不到时，若是控制器弹窗挡住，关掉后回到等获取途径再认"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "控制器已连接",
+            "控制设备切换为控制器"
+        ],
+        "roi": [
+            160,
+            180,
+            960,
+            360
+        ],
+        "threshold": 0.35,
+        "action": "DoNothing",
+        "next": [
+            "买药_等途径_点控制器确认"
+        ],
+        "timeout": 1800,
+        "on_error": []
+    },
+    "买药_等途径_点控制器确认": {
+        "attach": {
+            "description": "关掉控制器弹窗后重新等获取途径"
+        },
+        "recognition": "OCR",
+        "expected": "确认",
+        "roi": [
+            400,
+            360,
+            480,
+            200
+        ],
+        "threshold": 0.35,
+        "action": "Click",
+        "post_wait_freezes": 400,
+        "post_delay": 400,
+        "max_hit": 3,
+        "next": [
+            "买药_等获取途径"
+        ],
+        "timeout": 2500,
         "on_error": [
             "买药_点获取途径坐标"
         ]
@@ -8685,15 +10055,16 @@
             365
         ],
         "post_wait_freezes": 500,
-        "post_delay": 300,
+        "post_delay": 900,
         "max_hit": 3,
         "next": [
+            "[JumpBack]买药_关控制器弹窗",
             {
                 "name": "买药_目标商店",
                 "anchor": true
             }
         ],
-        "timeout": 2800,
+        "timeout": 3500,
         "on_error": [
             {
                 "name": "买药_途径没店",
@@ -8723,7 +10094,17 @@
             "description": "探路再扫：认杂货摊/货柜/河西/熊大/货郎或三家药店，只认不点"
         },
         "recognition": "OCR",
-        "expected": "^\\s*(?:清河生活杂物商店|开封生活杂物商店|胡牛儿动使杂货|杂货摊|货柜|河西商店|神仙渡杂货商熊大|【.?货郎】山货摊)\\s*$",
+        "expected": [
+            "清河生活杂物商店",
+            "开封生活杂物商店",
+            "胡牛儿动使杂货",
+            "杂货摊",
+            "货柜",
+            "河西商店",
+            "神仙渡杂货商熊大",
+            "山货摊",
+            "货郎"
+        ],
         "roi": [
             400,
             180,
@@ -8746,7 +10127,17 @@
             "description": "探路再扫：整行店名认出后才点"
         },
         "recognition": "OCR",
-        "expected": "^\\s*(?:清河生活杂物商店|开封生活杂物商店|胡牛儿动使杂货|杂货摊|货柜|河西商店|神仙渡杂货商熊大|【.?货郎】山货摊)\\s*$",
+        "expected": [
+            "清河生活杂物商店",
+            "开封生活杂物商店",
+            "胡牛儿动使杂货",
+            "杂货摊",
+            "货柜",
+            "河西商店",
+            "神仙渡杂货商熊大",
+            "山货摊",
+            "货郎"
+        ],
         "roi": [
             400,
             180,
@@ -8872,6 +10263,25 @@
         "timeout": 1500,
         "on_error": [
             "买药_点领取坐标"
+        ]
+    },
+    "买药_第三轮收工": {
+        "attach": {
+            "description": "第三轮仍未买齐三家（无入口或库存不足等）。打印原因后关货运收工，走买药_结束后继续炼药，不盲点、不 Failed 卡死"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "第三轮未买齐，收工继续炼药"
+        },
+        "post_delay": 100,
+        "next": [
+            "买药_回到主菜单"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "买药_回到主菜单"
         ]
     }
 }

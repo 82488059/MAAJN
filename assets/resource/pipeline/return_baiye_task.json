@@ -1,11 +1,13 @@
 {
     "返回百业": {
         "attach": {
-            "description": "入口。主界面→主菜单→百业→(可能过场)→右下返回驻地→确定→等加载结束（右上出现退出）。结束后走锚点回百业_结束后，未设置则停在门口"
+            "description": "入口。先关登录礼浮层。主界面→主菜单→百业→(可能过场)→右下返回驻地→确定→等加载结束（右上出现退出）。已在百业页（见返回驻地）则直接点返回。结束后走锚点回百业_结束后，未设置则停在门口"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
+            "回百业_已在驻地",
+            "回百业_已见返回驻地",
             "回百业_已开功能菜单",
             "回百业_点主菜单"
         ],
@@ -14,25 +16,52 @@
             "回百业_结束失败"
         ]
     },
+    "回百业_已见返回驻地": {
+        "attach": {
+            "description": "已在百业子系统页（技艺/首页等），右下能认到「返回驻地」。勿再走功能菜单点「百业」（会误点百业日志）"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "返回驻地",
+            "回驻地"
+        ],
+        "roi": [
+            1040,
+            620,
+            230,
+            90
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "post_delay": 200,
+        "next": [
+            "回百业_点返回驻地"
+        ],
+        "timeout": 1500,
+        "rate_limit": 300,
+        "on_error": [
+            "回百业_已开功能菜单"
+        ]
+    },
     "回百业_已开功能菜单": {
         "attach": {
-            "description": "功能菜单已打开（能看到百业）：不再点主菜单"
+            "description": "主界面功能环已打开。同时要能看到「百业」与「不肝/包裹」之一，避免野外误认"
         },
         "recognition": "OCR",
         "expected": "百业",
         "roi": [
-            780,
-            150,
-            480,
-            450
+            800,
+            280,
+            280,
+            200
         ],
-        "threshold": 0.45,
+        "threshold": 0.6,
         "action": "DoNothing",
         "post_delay": 300,
         "next": [
             "回百业_点百业"
         ],
-        "timeout": 1200,
+        "timeout": 1000,
         "rate_limit": 300,
         "on_error": [
             "回百业_点主菜单"
@@ -40,7 +69,7 @@
     },
     "回百业_点主菜单": {
         "attach": {
-            "description": "点右上角主菜单，等菜单打开"
+            "description": "点右上角主菜单，等菜单打开。阈值略降以适配主世界顶栏"
         },
         "recognition": "TemplateMatch",
         "template": "storage/主菜单.png",
@@ -50,31 +79,34 @@
             200,
             90
         ],
-        "threshold": 0.85,
+        "threshold": 0.7,
         "action": "Click",
         "post_delay": 1200,
-        "max_hit": 1,
+        "max_hit": 2,
         "next": [
             "回百业_点百业"
         ],
-        "timeout": 4000,
+        "timeout": 6000,
         "on_error": [
             "回百业_结束失败"
         ]
     },
     "回百业_点百业": {
         "attach": {
-            "description": "功能菜单点「百业」。只点一次。timeout 120 秒留给过场后认「返回驻地」；过场有时超过 1 分钟"
+            "description": "功能菜单点独立「百业」入口。只点一次。已在百业页则改走已见返回驻地。timeout 120 秒留给过场后认「返回驻地」"
         },
         "recognition": "OCR",
-        "expected": "百业",
-        "roi": [
-            780,
-            150,
-            480,
-            450
+        "expected": [
+            "^百业$",
+            "百业"
         ],
-        "threshold": 0.45,
+        "roi": [
+            820,
+            180,
+            400,
+            320
+        ],
+        "threshold": 0.55,
         "action": "Click",
         "post_delay": 800,
         "max_hit": 1,
@@ -84,12 +116,13 @@
         "timeout": 120000,
         "rate_limit": 500,
         "on_error": [
+            "回百业_已见返回驻地",
             "回百业_结束失败"
         ]
     },
     "回百业_点返回驻地": {
         "attach": {
-            "description": "右下「返回驻地」。出现后点击；timeout 留给确定弹窗。认不到返回驻地则失败，绝不盲点确定坐标"
+            "description": "右下「返回驻地」。ROI 收紧到按钮行，避免点偏。出现后点击；timeout 留给确定弹窗。认不到则失败，绝不盲点确定坐标"
         },
         "recognition": "OCR",
         "expected": [
@@ -97,19 +130,20 @@
             "回驻地"
         ],
         "roi": [
-            900,
-            520,
-            380,
-            200
+            1040,
+            620,
+            230,
+            90
         ],
         "threshold": 0.4,
         "action": "Click",
-        "post_delay": 800,
-        "max_hit": 1,
+        "post_delay": 1200,
+        "max_hit": 3,
         "next": [
+            "回百业_已在驻地提示",
             "回百业_点确定"
         ],
-        "timeout": 5000,
+        "timeout": 20000,
         "rate_limit": 400,
         "on_error": [
             "回百业_结束失败"
@@ -117,19 +151,22 @@
     },
     "回百业_点确定": {
         "attach": {
-            "description": "弹窗金色按钮「确定」。只认确定，勿认确认（正文「是否确认返回…」会误点）。认不到则失败，不点 (1082, 475)。timeout 120 秒留给进驻地加载，等右上退出"
+            "description": "弹窗金色按钮「确定」。只认确定，勿认确认。点完后 timeout 须盖住进驻地加载（常超过 8 秒），与点百业一样用 120 秒等右上退出"
         },
         "recognition": "OCR",
-        "expected": "确定",
-        "roi": [
-            990,
-            440,
-            190,
-            70
+        "expected": [
+            "确定",
+            "确 定"
         ],
-        "threshold": 0.5,
+        "roi": [
+            900,
+            400,
+            320,
+            160
+        ],
+        "threshold": 0.4,
         "action": "Click",
-        "post_delay": 800,
+        "post_delay": 1500,
         "max_hit": 2,
         "next": [
             "回百业_等退出出现"
@@ -137,12 +174,44 @@
         "timeout": 120000,
         "rate_limit": 500,
         "on_error": [
+            "回百业_再点返回驻地",
+            "回百业_关百业菜单",
+            "回百业_结束失败"
+        ]
+    },
+    "回百业_再点返回驻地": {
+        "attach": {
+            "description": "确定未出现时再点一次「返回驻地」（上次可能点偏）。仍无确定则关菜单"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "返回驻地",
+            "回驻地"
+        ],
+        "roi": [
+            1040,
+            620,
+            230,
+            90
+        ],
+        "threshold": 0.4,
+        "action": "Click",
+        "post_delay": 1500,
+        "max_hit": 1,
+        "next": [
+            "回百业_已在驻地提示",
+            "回百业_点确定"
+        ],
+        "timeout": 20000,
+        "rate_limit": 400,
+        "on_error": [
+            "回百业_关百业菜单",
             "回百业_结束失败"
         ]
     },
     "回百业_等退出出现": {
         "attach": {
-            "description": "进驻地加载结束标志：右上「退出」/「退」（与离百业_点退出同一放宽 ROI）。只认不点"
+            "description": "进驻地加载结束标志：右上「退出」/「退」。阈值略降。只认不点"
         },
         "recognition": "OCR",
         "expected": [
@@ -155,16 +224,17 @@
             380,
             110
         ],
-        "threshold": 0.35,
+        "threshold": 0.3,
         "action": "DoNothing",
-        "post_delay": 400,
+        "post_delay": 600,
         "next": [
             "回百业_结束"
         ],
-        "timeout": 3000,
+        "timeout": 120000,
         "on_error": [
             "回百业_结束失败"
-        ]
+        ],
+        "rate_limit": 500
     },
     "回百业_结束": {
         "attach": {
@@ -194,10 +264,119 @@
     },
     "回百业_结束失败": {
         "attach": {
-            "description": "进不了菜单、过场后无返回驻地、认不到确定（不盲点坐标），或确定后加载超时无退出"
+            "description": "进不了菜单、过场后无返回驻地、认不到确定，或加载超时无退出。打印失败节点后停住"
         },
         "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "返回百业结束失败"
+        },
+        "post_delay": 100,
+        "next": [],
+        "timeout": 4000,
+        "on_error": []
+    },
+    "回百业_已在驻地": {
+        "attach": {
+            "description": "右上已有「退出」，人已在百业驻地，不再进菜单返回"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "退出",
+            "退"
+        ],
+        "roi": [
+            900,
+            0,
+            380,
+            110
+        ],
+        "threshold": 0.35,
         "action": "DoNothing",
-        "next": []
+        "next": [
+            "回百业_结束"
+        ],
+        "timeout": 2000,
+        "rate_limit": 300,
+        "on_error": [
+            "回百业_已开功能菜单"
+        ]
+    },
+    "回百业_已在驻地提示": {
+        "attach": {
+            "description": "点返回驻地后出现「当前已在百业驻地中」提示。关百业菜单回3D驻地，不点确定"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "当前已在",
+            "已在百业驻地",
+            "已在驻地"
+        ],
+        "roi": [
+            200,
+            0,
+            880,
+            120
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "回百业_关百业菜单"
+        ],
+        "timeout": 2500,
+        "rate_limit": 300,
+        "on_error": [
+            "回百业_点确定"
+        ]
+    },
+    "回百业_关百业菜单": {
+        "attach": {
+            "description": "模板点右上返回箭头关掉百业菜单，回到驻地3D（右上应有退出）"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1100,
+            0,
+            180,
+            100
+        ],
+        "threshold": 0.65,
+        "action": "Click",
+        "post_delay": 1200,
+        "max_hit": 3,
+        "next": [
+            "回百业_等退出出现"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "回百业_关百业菜单再认",
+            "回百业_结束失败"
+        ]
+    },
+    "回百业_关百业菜单再认": {
+        "attach": {
+            "description": "返回模板未命中时，放宽 ROI 再认一次右上返回箭头"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1050,
+            0,
+            230,
+            120
+        ],
+        "threshold": 0.55,
+        "action": "Click",
+        "post_delay": 1200,
+        "max_hit": 2,
+        "next": [
+            "回百业_等退出出现"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "回百业_结束失败"
+        ]
     }
 }

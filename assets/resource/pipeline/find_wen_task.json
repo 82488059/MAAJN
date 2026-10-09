@@ -1,14 +1,40 @@
 {
     "找温无双": {
         "attach": {
-            "description": "入口。返回驻地后人在门口、脸朝正房。先点按唤起左侧摇杆，再朝前按住 10 秒过院子和水渠，往右进正房直到右侧「温无双」。只走不点。可单独跑"
+            "description": "入口。返回驻地后人在门口、脸朝正房。同帧先认右侧「温无双」对话（已在柜台则收工），认不到再点按唤起摇杆开走。勿把「唤起摇杆」只写在 OCR 的 on_error：门口 OCR 进不去节点，on_error 不会跑，会空等入口 timeout 后直接失败。只走不点。可单独跑"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
+            "找温_已见对话",
             "找温_唤起摇杆"
         ],
-        "timeout": 3000,
+        "timeout": 5000,
+        "rate_limit": 300,
+        "on_error": [
+            "找温无双_结束失败"
+        ]
+    },
+    "找温_已见对话": {
+        "attach": {
+            "description": "右侧已有「温无双」对话条则直接结束，避免从炉旁/柜台再摇杆走过头。门口没有对话时本节点认不到，由入口 next 第二个「找温_唤起摇杆」接手"
+        },
+        "recognition": "OCR",
+        "expected": "温无双",
+        "roi": [
+            600,
+            300,
+            450,
+            280
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "post_delay": 200,
+        "next": [
+            "找温无双_结束"
+        ],
+        "timeout": 1500,
+        "rate_limit": 300,
         "on_error": [
             "找温无双_结束失败"
         ]
@@ -26,6 +52,10 @@
         "post_delay": 250,
         "next": [
             "找温_直走"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "找温无双_结束失败"
         ]
     },
     "找温_直走": {
@@ -227,10 +257,17 @@
     },
     "找温无双_结束失败": {
         "attach": {
-            "description": "走到正房后仍没有对话条，或摇杆动作失败。停在当前画面，不进退出游戏"
+            "description": "走到正房后仍没有对话条，或摇杆动作失败。打印失败节点后停在当前画面，不进退出游戏"
         },
         "recognition": "DirectHit",
-        "action": "DoNothing",
-        "next": []
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "找温无双结束失败"
+        },
+        "post_delay": 100,
+        "next": [],
+        "timeout": 4000,
+        "on_error": []
     }
 }

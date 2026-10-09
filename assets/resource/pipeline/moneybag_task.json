@@ -1,19 +1,4 @@
 {
-    "买钱袋": {
-        "attach": {
-            "description": "入口。主界面→不肝商店→体力≥200买金丝否则跳过→赛季追赶物资栏一贯通宝最大购买→回主界面。代币不够视为成功。需 Agent"
-        },
-        "recognition": "DirectHit",
-        "action": "DoNothing",
-        "next": [
-            "钱袋_已开功能菜单",
-            "钱袋_点主菜单"
-        ],
-        "timeout": 3000,
-        "on_error": [
-            "钱袋_结束失败"
-        ]
-    },
     "钱袋_已开功能菜单": {
         "attach": {
             "description": "功能菜单已打开（能看到不肝）：不再点主菜单，避免开关抖动"
@@ -951,7 +936,7 @@
     },
     "钱袋_结束": {
         "attach": {
-            "description": "已回主界面。走锚点钱袋_结束后（若入口设置）；单独买钱袋进钱袋_收工。炼药/一条龙已不再接本任务"
+            "description": "已回主界面。走锚点钱袋_结束后（一条龙设为返回百业）；单独自动买钱进钱袋_收工"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -977,11 +962,32 @@
     },
     "钱袋_结束失败": {
         "attach": {
-            "description": "进不去主菜单等硬失败；不走返回百业"
+            "description": "进不去主菜单等硬失败。打印失败节点后停住；不走返回百业"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "买钱袋结束失败"
+        },
+        "post_delay": 100,
+        "next": [],
+        "timeout": 4000,
+        "on_error": []
+    },
+    "自动买钱": {
+        "attach": {
+            "description": "入口。主界面→不肝商店→体力≥200买金丝否则跳过→赛季追赶物资栏一贯通宝最大购买→回主界面。代币不够视为成功。需 Agent"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
-        "next": []
+        "next": [
+            "钱袋_已开功能菜单",
+            "钱袋_点主菜单"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "钱袋_结束失败"
+        ]
     }
 }
-

@@ -1,41 +1,29 @@
 {
-    "炼药": {
-        "attach": {
-            "description": "入口。假定已退出百业且有炼药对话。timeout 15 秒盖住离开后对话晚出。认不到对话走结束失败并停在当前界面。需 Agent"
-        },
-        "recognition": "DirectHit",
-        "action": "DoNothing",
-        "next": [
-            "炼药_点对话"
-        ],
-        "timeout": 15000,
-        "rate_limit": 400,
-        "on_error": [
-            "炼药_结束失败"
-        ]
-    },
     "炼药_点对话": {
         "attach": {
-            "description": "点炉旁对话条「炼药」。ROI 略放宽以适配离开后落点偏移；仍避开右下技能键"
+            "description": "点炉旁交互「炼药」或「点火」（离开驻地后炉上常出点火）。ROI 略放宽；仍避开右下技能键"
         },
         "recognition": "OCR",
-        "expected": "炼药",
-        "roi": [
-            620,
-            280,
-            400,
-            280
+        "expected": [
+            "炼药",
+            "点火"
         ],
-        "threshold": 0.45,
+        "roi": [
+            480,
+            180,
+            560,
+            420
+        ],
+        "threshold": 0.4,
         "action": "Click",
-        "post_delay": 600,
-        "max_hit": 3,
+        "post_delay": 800,
+        "max_hit": 5,
         "next": [
             "炼药_点逍遥散"
         ],
-        "timeout": 8000,
+        "timeout": 12000,
         "on_error": [
-            "炼药_结束失败"
+            "炼药_再等对话"
         ]
     },
     "炼药_点逍遥散": {
@@ -505,7 +493,7 @@
     },
     "炼药_结束": {
         "attach": {
-            "description": "已回主界面（有主菜单）。走锚点炼药_结束后：一条龙进返回百业；单独炼药进炼药_收工。不买钱袋"
+            "description": "已回主界面（有主菜单）。走锚点炼药_结束后：一条龙进自动买钱；单独炼药进炼药_收工"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -523,7 +511,7 @@
     },
     "炼药_收工": {
         "attach": {
-            "description": "单独炼药：已回主界面即停，不买钱袋、不返回百业"
+            "description": "单独炼药：已回主界面即停，不买钱、不返回百业（一条龙用锚点炼药_结束后接自动买钱）"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
@@ -531,10 +519,94 @@
     },
     "炼药_结束失败": {
         "attach": {
-            "description": "算量失败、未认出逍遥散、回不了主界面等。停在当前界面，不点返回、不提交、不走炼药_结束后"
+            "description": "算量失败、未认出逍遥散、回不了主界面等。先打印失败节点与最近链路，停在当前界面，不点返回、不提交、不走炼药_结束后"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "炼药结束失败"
+        },
+        "post_delay": 100,
+        "next": [],
+        "timeout": 4000,
+        "on_error": []
+    },
+    "炼药_再等对话": {
+        "attach": {
+            "description": "离开百业后交互可能晚出。空等再认「炼药/点火」；仍没有则收工继续一条龙，不盲点"
         },
         "recognition": "DirectHit",
         "action": "DoNothing",
-        "next": []
+        "post_delay": 4000,
+        "next": [
+            "炼药_点对话宽"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "炼药_无对话收工"
+        ]
+    },
+    "炼药_点对话宽": {
+        "attach": {
+            "description": "扩大 ROI 再认「炼药」或「点火」并点击。仍没有则无炉收工"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "炼药",
+            "点火"
+        ],
+        "roi": [
+            300,
+            120,
+            700,
+            480
+        ],
+        "threshold": 0.35,
+        "action": "Click",
+        "post_delay": 800,
+        "max_hit": 3,
+        "next": [
+            "炼药_点逍遥散"
+        ],
+        "timeout": 10000,
+        "on_error": [
+            "炼药_无对话收工"
+        ]
+    },
+    "炼药_无对话收工": {
+        "attach": {
+            "description": "离开后附近没有炼药/点火（人不在炉旁）。打印后按成功收工走炼药_结束，继续返回百业，不盲点乱跑"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "无炼药对话，收工续一条龙",
+            "soft": true
+        },
+        "post_delay": 100,
+        "next": [
+            "炼药_结束"
+        ],
+        "timeout": 4000,
+        "on_error": [
+            "炼药_结束"
+        ]
+    },
+    "自动炼药": {
+        "attach": {
+            "description": "入口。假定已退出百业且有炼药对话。timeout 15 秒盖住离开后对话晚出。认不到对话走结束失败并停在当前界面。需 Agent"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "炼药_点对话"
+        ],
+        "timeout": 20000,
+        "rate_limit": 400,
+        "on_error": [
+            "炼药_无对话收工"
+        ]
     }
 }

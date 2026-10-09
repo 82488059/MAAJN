@@ -151,7 +151,7 @@
     },
     "离百业_关活动弹窗": {
         "attach": {
-            "description": "离开后活动宣传挡住主菜单（OCR「前往」或「活动上新」）。认到后点右上关闭叉 (1182,121)，不要点前往。关完继续等主菜单，可能连出多张"
+            "description": "离开后活动宣传挡住主菜单。先认「前往/活动上新」，再点「关闭」文字关掉，不盲点"
         },
         "recognition": "OCR",
         "expected": [
@@ -165,16 +165,9 @@
             430
         ],
         "threshold": 0.45,
-        "action": "Click",
-        "target": [
-            1182,
-            121
-        ],
-        "post_delay": 800,
-        "max_hit": 3,
+        "action": "DoNothing",
         "next": [
-            "离百业_等主菜单",
-            "离百业_关活动弹窗"
+            "离百业_点关闭活动"
         ],
         "timeout": 8000,
         "rate_limit": 400,
@@ -248,10 +241,45 @@
     },
     "离开百业_结束失败": {
         "attach": {
-            "description": "没认到退出或确认，或加载超时仍无主菜单。不点固定坐标，不继续炼药"
+            "description": "没认到退出或确认，或加载超时仍无主菜单。打印失败节点后停住，不点固定坐标，不继续炼药"
         },
         "recognition": "DirectHit",
-        "action": "DoNothing",
-        "next": []
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "离开百业结束失败"
+        },
+        "post_delay": 100,
+        "next": [],
+        "timeout": 4000,
+        "on_error": []
+    },
+    "离百业_点关闭活动": {
+        "attach": {
+            "description": "活动弹窗上 OCR 点「关闭」。点不到则再等主菜单，不盲点叉坐标"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "关闭",
+            "关"
+        ],
+        "roi": [
+            900,
+            40,
+            360,
+            200
+        ],
+        "threshold": 0.4,
+        "action": "Click",
+        "post_delay": 800,
+        "max_hit": 3,
+        "next": [
+            "离百业_等主菜单",
+            "离百业_关活动弹窗"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "离百业_等主菜单"
+        ]
     }
 }

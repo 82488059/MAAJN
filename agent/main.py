@@ -7,6 +7,7 @@ import my_action
 import my_reco
 import alchemy_action
 import moneybag_action
+import debug_action
 
 
 def main():
