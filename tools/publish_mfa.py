@@ -60,14 +60,22 @@ def publish_mfa(mfa_dir: Path) -> None:
     with open(mfa_dir / "interface.json", "w", encoding="utf-8") as f:
         jsonc.dump(interface, f, ensure_ascii=False, indent=4)
 
+    # 避免 MFA 误载 resource/pipeline（仅 sample）导致入口节点缺失、任务瞬间失败
+    stale_pipeline = mfa_dir / "resource" / "pipeline"
+    if stale_pipeline.is_dir():
+        sample_only = sorted(p.name for p in stale_pipeline.glob("*.json")) == ["sample.json"]
+        if sample_only or not any(stale_pipeline.glob("medicine_task.json")):
+            shutil.rmtree(stale_pipeline)
+            print(f"  已删除过期目录: {stale_pipeline}")
+
     print(f"已发布到: {mfa_dir}")
-    print(f"  interface.json")
+    print(f"  interface.json (resource → {{PROJECT_DIR}}/resource/base)")
     print(f"  resource/base/ (pipeline, image, model)")
     agent_files = ", ".join(p.name for p in sorted(agent_dst.glob("*.py")))
     print(f"  agent/ ({agent_files})")
     print("任务:", [t["name"] for t in interface.get("task", [])])
-    print("\n启动 MFAAvalonia.exe，资源选「官服」后连接开始。")
-    print("跑炼药/买钱袋/一条龙前需: python -m pip install maafw==5.8.1")
+    print("\n请重启 MFAAvalonia.exe 以重载 interface.json，资源选「官服」后连接开始。")
+    print("跑自动炼药/自动买钱/一条龙前需: python -m pip install maafw==5.8.1")
 
 
 if __name__ == "__main__":
