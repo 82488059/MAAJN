@@ -1,26 +1,17 @@
 {
-    // 本文件主要定义了通用 UI 的行为和显示内容
-    // 可参考文档和示例添加更多您需要的功能
-    // 文档：https://maafw.xyz/docs/3.3-ProjectInterfaceV2
-    // 示例：https://github.com/MaaXYZ/MaaFramework/blob/main/sample/interface.json
     "interface_version": 2,
     "name": "MAAJN",
     "description": "这是一个使用 MaaFramework 创建的新项目。",
     "contact": "QQ群: 123456789",
     "license": "MIT",
     "welcome": "首次使用！欢迎使用 MAA!",
-    // 填写项目地址和版本号可实现自动更新功能
     "github": "https://github.com/82488059/MAAJN",
     "version": "1.0.2",
-    // Mirror酱为第三方分发服务，新项目默认关闭
-    // 若有需要请联系 Mirror酱 开通，直接自行开启是无法使用的
-    // "mirrorchyan_rid": "MaaXXX",
-    // "mirrorchyan_multiplatform": true,
     "controller": [
         {
             "name": "安卓端",
             "type": "Adb",
-            "display_short_side": 720 // 默认缩放分辨率的短边长度
+            "display_short_side": 720
         }
     ],
     "resource": [
@@ -76,6 +67,14 @@
             "name": "自动炼药",
             "entry": "自动炼药",
             "description": "角色已退出百业，屏幕上有「炼药」对话。点开后选逍遥散，按体力与材料上限循环炼到不能再炼；材料或体力不够也按成功退出回主界面。单独跑不买钱；一条龙经锚点接自动买钱。需要 Agent。"
+        },
+        {
+            "name": "自动天工",
+            "entry": "自动天工",
+            "description": "打开炼药/天工界面后，按勾选的多种合成目标依次合成：不耗体力，按数量框最大数输入后点「炼药」，每种炼到可炼≤1再下一项。已开天工页可直接开跑。需要 Agent。选项「天工合成目标」为复选框。",
+            "option": [
+                "天工合成目标"
+            ]
         },
         {
             "name": "自动买钱",
@@ -147,6 +146,205 @@
                                 "买药_输入数量1",
                                 "买药_放弃本店"
                             ]
+                        }
+                    }
+                }
+            ]
+        },
+        "天工合成目标": {
+            "type": "checkbox",
+            "label": "合成目标",
+            "description": "可多选。含「淬·基础（三种）」「积·三级/二级（三种）」快捷。找不到/可炼≤1/缺材料跳过该项，整任务成功。\n\n扫描材料（「需要材料」同行红圈；格式 材料×单次消耗）：\n- 淬火油·灼焰：淬火油×2、淬水蜡×1\n- 淬火油·焚烬：淬火油×2、淬毒散×1\n- 淬水蜡·渊渟：淬水蜡×2、淬火油×1\n- 淬水蜡·浩溟：淬水蜡×2、淬毒散×1\n- 淬毒散·鸩炎：淬毒散×2、淬火油×1\n- 淬毒散·凝煞：淬毒散×2、淬水蜡×1\n- 淬火油：积火脂·三级×10\n- 淬水蜡：积水蜡·三级×10\n- 淬毒散：积毒锭·三级×10\n- 积火脂·三级：积火脂·二级×2\n- 积水蜡·三级：积水蜡·二级×2\n- 积毒锭·三级：积毒锭·二级×2\n- 积火脂·二级：材料×2\n- 积水蜡·二级：材料×2\n- 积毒锭·二级：材料×2",
+            "default_case": [
+                "淬·基础（三种）",
+                "淬火油·灼焰",
+                "淬火油·焚烬",
+                "淬水蜡·渊渟",
+                "淬水蜡·浩溟",
+                "淬毒散·鸩炎",
+                "淬毒散·凝煞",
+                "积火脂·三级",
+                "积水蜡·三级",
+                "积毒锭·三级"
+            ],
+            "cases": [
+                {
+                    "name": "淬·基础（三种）",
+                    "label": "淬·基础（三种）",
+                    "description": "按序合成。淬火油←积火脂·三级×10；淬水蜡←积水蜡·三级×10；淬毒散←积毒锭·三级×10。缺材料跳过，整任务成功。",
+                    "pipeline_override": {
+                        "天工_勾选_tier淬": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "积·三级（三种）",
+                    "label": "积·三级（三种）",
+                    "description": "按序合成。积火脂·三级←积火脂·二级×2；积水蜡·三级←积水蜡·二级×2；积毒锭·三级←积毒锭·二级×2。缺材料跳过，整任务成功。",
+                    "pipeline_override": {
+                        "天工_勾选_tier三级": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "积·二级（三种）",
+                    "label": "积·二级（三种）",
+                    "description": "按序合成。积火脂·二级←材料×2；积水蜡·二级←材料×2；积毒锭·二级←材料×2。缺材料跳过，整任务成功。",
+                    "pipeline_override": {
+                        "天工_勾选_tier二级": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "淬火油·灼焰",
+                    "label": "淬火油·灼焰",
+                    "description": "需要材料：淬火油×2、淬水蜡×1（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_淬火油灼焰": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "淬火油·焚烬",
+                    "label": "淬火油·焚烬",
+                    "description": "需要材料：淬火油×2、淬毒散×1（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_淬火油焚烬": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "淬水蜡·渊渟",
+                    "label": "淬水蜡·渊渟",
+                    "description": "需要材料：淬水蜡×2、淬火油×1（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_淬水蜡渊渟": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "淬水蜡·浩溟",
+                    "label": "淬水蜡·浩溟",
+                    "description": "需要材料：淬水蜡×2、淬毒散×1（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_淬水蜡浩溟": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "淬毒散·鸩炎",
+                    "label": "淬毒散·鸩炎",
+                    "description": "需要材料：淬毒散×2、淬火油×1（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_淬毒散鸩炎": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "淬毒散·凝煞",
+                    "label": "淬毒散·凝煞",
+                    "description": "需要材料：淬毒散×2、淬水蜡×1（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_淬毒散凝煞": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "淬火油",
+                    "label": "淬火油",
+                    "description": "需要材料：积火脂·三级×10（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_淬火油": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "淬水蜡",
+                    "label": "淬水蜡",
+                    "description": "需要材料：积水蜡·三级×10（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_淬水蜡": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "淬毒散",
+                    "label": "淬毒散",
+                    "description": "需要材料：积毒锭·三级×10（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_淬毒散": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "积火脂·三级",
+                    "label": "积火脂·三级",
+                    "description": "需要材料：积火脂·二级×2（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_积火脂三级": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "积水蜡·三级",
+                    "label": "积水蜡·三级",
+                    "description": "需要材料：积水蜡·二级×2（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_积水蜡三级": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "积毒锭·三级",
+                    "label": "积毒锭·三级",
+                    "description": "需要材料：积毒锭·二级×2（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_积毒锭三级": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "积火脂·二级",
+                    "label": "积火脂·二级",
+                    "description": "需要材料：材料×2（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_积火脂二级": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "积水蜡·二级",
+                    "label": "积水蜡·二级",
+                    "description": "需要材料：材料×2（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_积水蜡二级": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "积毒锭·二级",
+                    "label": "积毒锭·二级",
+                    "description": "需要材料：材料×2（单次）。可炼≤1/缺材料跳过。",
+                    "pipeline_override": {
+                        "天工_勾选_积毒锭二级": {
+                            "enabled": true
                         }
                     }
                 }

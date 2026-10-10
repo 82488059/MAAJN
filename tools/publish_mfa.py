@@ -37,6 +37,7 @@ def publish_mfa(mfa_dir: Path) -> None:
     for name in (
         "main.py",
         "alchemy_action.py",
+        "tiangong_action.py",
         "moneybag_action.py",
         "debug_action.py",
         "my_action.py",

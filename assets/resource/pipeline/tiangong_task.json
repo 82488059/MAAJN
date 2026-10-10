@@ -1,0 +1,666 @@
+{
+    "自动天工": {
+        "attach": {
+            "description": "入口。已在天工页则直接合成；已开炼药页则点天工道具；否则点对话。多选目标由 checkbox 合并进天工_开始多选队列"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "天工_已在天工页",
+            "天工_已开界面",
+            "天工_点对话"
+        ],
+        "timeout": 3000,
+        "rate_limit": 400,
+        "on_error": [
+            "自动天工_结束失败"
+        ]
+    },
+    "天工_已在天工页": {
+        "attach": {
+            "description": "右栏已有「数量选择」或「需要材料」：天工界面已打开，不再点对话/分类，直接进合成路由"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "数量选择",
+            "需要材料"
+        ],
+        "roi": [
+            700,
+            200,
+            560,
+            400
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "post_delay": 200,
+        "next": [
+            "天工_合成路由"
+        ],
+        "timeout": 1200,
+        "rate_limit": 300,
+        "on_error": [
+            "天工_已开界面"
+        ]
+    },
+    "天工_已开界面": {
+        "attach": {
+            "description": "顶栏有「天工道具」或「药剂」：炼药界面已开，跳过对话，再点分类"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "天工道具",
+            "药剂"
+        ],
+        "roi": [
+            0,
+            0,
+            420,
+            90
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "post_delay": 200,
+        "next": [
+            "天工_点天工道具"
+        ],
+        "timeout": 1500,
+        "rate_limit": 300,
+        "on_error": [
+            "天工_点对话"
+        ]
+    },
+    "天工_点对话": {
+        "attach": {
+            "description": "点炉旁「炼药」或「点火」。ROI 对齐炼药_点对话"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "炼药",
+            "点火"
+        ],
+        "roi": [
+            480,
+            180,
+            560,
+            420
+        ],
+        "threshold": 0.4,
+        "action": "Click",
+        "post_delay": 800,
+        "max_hit": 5,
+        "next": [
+            "天工_点天工道具"
+        ],
+        "timeout": 12000,
+        "on_error": [
+            "自动天工_结束失败"
+        ]
+    },
+    "天工_点天工道具": {
+        "attach": {
+            "description": "左上分类点「天工道具」，只点一次"
+        },
+        "recognition": "OCR",
+        "expected": "天工道具",
+        "roi": [
+            0,
+            0,
+            420,
+            100
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 600,
+        "max_hit": 1,
+        "next": [
+            "天工_合成路由"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "自动天工_结束失败"
+        ]
+    },
+    "天工_合成路由": {
+        "attach": {
+            "description": "进入多选队列。checkbox 各 case 的 override 合并到天工_开始多选队列.custom_action_param"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "天工_开始多选队列"
+        ],
+        "timeout": 1000
+    },
+    "天工_开始多选队列": {
+        "attach": {
+            "description": "Custom：读各 天工_勾选_* enabled 建队列（避免 custom_action_param 整段被替换只剩最后一项）"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "天工_开始多选队列",
+        "custom_action_param": {},
+        "post_delay": 100,
+        "next": [
+            "天工_找并点配方"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "自动天工_结束失败"
+        ]
+    },
+    "天工_找并点配方": {
+        "attach": {
+            "description": "Custom：找当前配方；已在详情或点中后若材料不足→队列下一项直到最后一项，禁止为缺材料再翻页"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "天工_找并点配方",
+        "post_delay": 100,
+        "next": [
+            "天工_算量并输入"
+        ],
+        "timeout": 90000,
+        "on_error": [
+            "天工_队列下一项"
+        ]
+    },
+    "天工_队列下一项": {
+        "attach": {
+            "description": "Custom：当前材料炼完/找不到/不可合成后推进队列；空则退出界面"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "天工_队列下一项",
+        "post_delay": 100,
+        "next": [
+            "天工_找并点配方"
+        ],
+        "timeout": 5000,
+        "on_error": [
+            "天工_退出界面"
+        ]
+    },
+    "天工_点配方": {
+        "attach": {
+            "description": "仅供自定义动作 OCR。expected 由 Agent 覆盖。不作为流水线翻页入口"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "^淬火油$",
+            "^淬水蜡$",
+            "^淬毒散$",
+            "积火脂·三级",
+            "积水蜡·三级",
+            "积毒锭·三级"
+        ],
+        "roi": [
+            20,
+            90,
+            680,
+            560
+        ],
+        "threshold": 0.4
+    },
+    "天工_读标题": {
+        "attach": {
+            "description": "仅供自定义动作。右侧详情标题；已选中当前配方时禁止再翻列表"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "^淬火油$",
+            "^淬水蜡$",
+            "^淬毒散$",
+            "积火脂·三级",
+            "积水蜡·三级",
+            "积毒锭·三级"
+        ],
+        "roi": [
+            700,
+            60,
+            520,
+            90
+        ],
+        "threshold": 0.35
+    },
+    "天工_读数量": {
+        "attach": {
+            "description": "仅供自定义动作。数量选择框 当前/上限（如 1/100）。ROI 宽于炼药，天工页 y≈528"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "\\d+\\s*[/／]\\s*\\d+",
+            "\\d+/\\d+"
+        ],
+        "roi": [
+            1000,
+            500,
+            220,
+            60
+        ],
+        "threshold": 0.25
+    },
+    "天工_点最大": {
+        "attach": {
+            "description": "仅供自定义动作 TemplateMatch。数量栏右侧「最大」图标，禁止盲点坐标"
+        },
+        "recognition": "TemplateMatch",
+        "template": "tiangong/最大.png",
+        "roi": [
+            1100,
+            500,
+            160,
+            80
+        ],
+        "threshold": 0.7
+    },
+    "天工_算量并输入": {
+        "attach": {
+            "description": "Custom：模板点最大后 OCR 点「炼药」。无识别则队列下一项，禁止坐标盲点"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "天工_算量并输入",
+        "post_delay": 200,
+        "next": [
+            "天工_点提交"
+        ],
+        "timeout": 20000,
+        "on_error": [
+            "天工_队列下一项"
+        ]
+    },
+    "天工_点提交": {
+        "attach": {
+            "description": "OCR 点「炼药」。未认出则队列下一项，禁止坐标盲点"
+        },
+        "recognition": "OCR",
+        "expected": "炼药",
+        "roi": [
+            1000,
+            620,
+            280,
+            100
+        ],
+        "threshold": 0.45,
+        "action": "Click",
+        "post_delay": 800,
+        "next": [
+            "天工_等提交结果"
+        ],
+        "timeout": 50000,
+        "rate_limit": 500,
+        "on_error": [
+            "天工_队列下一项"
+        ]
+    },
+    "天工_等提交结果": {
+        "attach": {
+            "description": "先认缺材料，再 OCR 点确定。禁止坐标盲点"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "天工_缺材料弹窗",
+            "天工_点完成确定"
+        ],
+        "timeout": 50000,
+        "rate_limit": 500,
+        "on_error": [
+            "天工_耗尽则退出"
+        ]
+    },
+    "天工_缺材料弹窗": {
+        "attach": {
+            "description": "缺少材料正文，不点确认"
+        },
+        "recognition": "OCR",
+        "expected": [
+            "缺少材料",
+            "材料不足"
+        ],
+        "roi": [
+            280,
+            200,
+            720,
+            280
+        ],
+        "threshold": 0.4,
+        "action": "DoNothing",
+        "next": [
+            "天工_缺材料点取消"
+        ],
+        "timeout": 1500
+    },
+    "天工_缺材料点取消": {
+        "attach": {
+            "description": "OCR 点取消后队列下一项。未认出也进下一项，禁止坐标盲点"
+        },
+        "recognition": "OCR",
+        "expected": "取消",
+        "roi": [
+            60,
+            400,
+            220,
+            120
+        ],
+        "threshold": 0.4,
+        "action": "Click",
+        "post_delay": 400,
+        "next": [
+            "天工_队列下一项"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "天工_队列下一项"
+        ]
+    },
+    "天工_点完成确定": {
+        "attach": {
+            "description": "OCR 点结算确定。未认出则复查耗尽/缺材料，禁止坐标盲点"
+        },
+        "recognition": "OCR",
+        "expected": "确定",
+        "roi": [
+            1000,
+            620,
+            260,
+            100
+        ],
+        "threshold": 0.5,
+        "action": "Click",
+        "post_delay": 500,
+        "next": [
+            "天工_耗尽则退出"
+        ],
+        "timeout": 45000,
+        "rate_limit": 500,
+        "on_error": [
+            "天工_缺材料弹窗",
+            "天工_耗尽则退出"
+        ]
+    },
+    "天工_耗尽则退出": {
+        "attach": {
+            "description": "Custom：再读数量上限。≤1 队列下一项（多选未完不退出）；≥2 继续算量"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "天工_耗尽则退出",
+        "post_delay": 300,
+        "next": [
+            "天工_队列下一项"
+        ],
+        "timeout": 8000,
+        "on_error": [
+            "自动天工_结束失败"
+        ]
+    },
+    "天工_退出界面": {
+        "attach": {
+            "description": "模板点右上返回。未命中仍尝试回主界面识别，禁止坐标盲点"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1125,
+            0,
+            145,
+            68
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "post_delay": 500,
+        "max_hit": 2,
+        "next": [
+            "天工_回主界面"
+        ],
+        "timeout": 3000,
+        "on_error": [
+            "天工_回主界面"
+        ]
+    },
+    "天工_回主界面": {
+        "attach": {
+            "description": "等主菜单或再模板点返回。禁止坐标盲点"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "天工_已在主界面",
+            "天工_回主界面点返回"
+        ],
+        "timeout": 1500,
+        "rate_limit": 350,
+        "on_error": [
+            "自动天工_结束"
+        ]
+    },
+    "天工_已在主界面": {
+        "attach": {
+            "description": "认出主菜单图标"
+        },
+        "recognition": "TemplateMatch",
+        "template": "storage/主菜单.png",
+        "roi": [
+            1080,
+            0,
+            200,
+            90
+        ],
+        "threshold": 0.85,
+        "action": "DoNothing",
+        "next": [
+            "自动天工_结束"
+        ]
+    },
+    "天工_回主界面点返回": {
+        "attach": {
+            "description": "再模板点返回箭头。未命中则结束，禁止坐标盲点"
+        },
+        "recognition": "TemplateMatch",
+        "template": "medicine/返回.png",
+        "roi": [
+            1125,
+            0,
+            145,
+            68
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "post_delay": 450,
+        "max_hit": 6,
+        "next": [
+            "天工_回主界面"
+        ],
+        "timeout": 2500,
+        "on_error": [
+            "自动天工_结束"
+        ]
+    },
+    "自动天工_结束": {
+        "attach": {
+            "description": "成功收工"
+        },
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": []
+    },
+    "自动天工_结束失败": {
+        "attach": {
+            "description": "算量失败、进不了界面等。打印失败节点后停住"
+        },
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "打印失败节点",
+        "custom_action_param": {
+            "reason": "自动天工结束失败"
+        },
+        "post_delay": 100,
+        "next": [],
+        "timeout": 4000,
+        "on_error": []
+    },
+    "天工_勾选_tier淬": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。按序合成。淬火油←积火脂·三级×10；淬水蜡←积水蜡·三级×10；淬毒散←积毒锭·三级×10。缺材料跳过，整任务成功。",
+            "tier": "淬"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_tier三级": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。按序合成。积火脂·三级←积火脂·二级×2；积水蜡·三级←积水蜡·二级×2；积毒锭·三级←积毒锭·二级×2。缺材料跳过，整任务成功。",
+            "tier": "三级"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_tier二级": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。按序合成。积火脂·二级←材料×2；积水蜡·二级←材料×2；积毒锭·二级←材料×2。缺材料跳过，整任务成功。",
+            "tier": "二级"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_淬火油灼焰": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：淬火油×2、淬水蜡×1（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "淬火油·灼焰"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_淬火油焚烬": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：淬火油×2、淬毒散×1（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "淬火油·焚烬"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_淬水蜡渊渟": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：淬水蜡×2、淬火油×1（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "淬水蜡·渊渟"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_淬水蜡浩溟": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：淬水蜡×2、淬毒散×1（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "淬水蜡·浩溟"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_淬毒散鸩炎": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：淬毒散×2、淬火油×1（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "淬毒散·鸩炎"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_淬毒散凝煞": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：淬毒散×2、淬水蜡×1（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "淬毒散·凝煞"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_淬火油": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：积火脂·三级×10（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "淬火油"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_淬水蜡": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：积水蜡·三级×10（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "淬水蜡"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_淬毒散": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：积毒锭·三级×10（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "淬毒散"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_积火脂三级": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：积火脂·二级×2（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "积火脂·三级"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_积水蜡三级": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：积水蜡·二级×2（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "积水蜡·三级"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_积毒锭三级": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：积毒锭·二级×2（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "积毒锭·三级"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_积火脂二级": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：材料×2（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "积火脂·二级"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_积水蜡二级": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：材料×2（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "积水蜡·二级"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    },
+    "天工_勾选_积毒锭二级": {
+        "attach": {
+            "description": "checkbox 勾选标记（默认关闭）。需要材料：材料×2（单次）。可炼≤1/缺材料跳过。",
+            "recipe": "积毒锭·二级"
+        },
+        "enabled": false,
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+    }
+}
