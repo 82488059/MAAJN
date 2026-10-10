@@ -18,6 +18,7 @@
         "action": "DoNothing",
         "next": [
             "集英",
+            "集英_OCR",
             "取消yysls",
             "点击空白区域关闭"
         ],
@@ -47,20 +48,46 @@
     },
     "集英": {
         "attach": {
-            "description": "集英"
+            "description": "模板点灵赋·集英图标+文字。户外白字 OCR 在 MFA 常 all 空，天工菜单字不受影响"
+        },
+        "action": "Click",
+        "recognition": "TemplateMatch",
+        "template": "yysls/jiying_btn.png",
+        "threshold": 0.7,
+        "roi": [
+            800,
+            360,
+            0,
+            0
+        ],
+        "post_delay": 11000,
+        "next": [],
+        "on_error": []
+    },
+    "集英_OCR": {
+        "attach": {
+            "description": "OCR 备用。正文常被拆成灵赋 / ·集英 / 赋·集英"
         },
         "action": "Click",
         "recognition": "OCR",
         "expected": [
+            "灵赋·集英",
+            "灵赋·集卖",
+            "赋：集英",
+            "赋·集英",
+            "·集英",
             "集英",
-            "灵赋"
+            "集卖",
+            "灵赋",
+            "赋·集",
+            "赋集"
         ],
-        "threshold": 0.65,
+        "threshold": 0.7,
         "roi": [
-            880,
-            450,
-            280,
-            160
+            800,
+            360,
+            0,
+            0
         ],
         "post_delay": 11000,
         "next": [],
